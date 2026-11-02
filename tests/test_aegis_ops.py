@@ -19,6 +19,7 @@ from aegis_ops.golden_dataset import (
     GOLDEN_SCENARIOS,
     SCENARIO_BY_ID,
 )
+from aegis_ops.llm_client import DEFAULT_MODELS, LiveLLMClient
 from aegis_ops.mcp_servers import (
     MCPToolRegistry,
     MCPValidationError,
@@ -458,6 +459,176 @@ class TestAegisOpsSuite(unittest.TestCase):
                 ],
                 "BLOCK_PR",
             )
+
+    def test_17_live_llm_client_prompt_construction_and_http_requests(self) -> None:
+        """Verify LiveLLMClient prompt builders and HTTP request envelopes for Gemini, OpenAI, and Anthropic."""
+        agent = IncidentTriageAgent(self.registry, policy=OptimalTriagePolicy())
+        traj = agent.initialize_trajectory(self.scenario_1)
+
+        sys_p, usr_p = LiveLLMClient.build_triage_step_prompt(
+            AgentState.INIT,
+            self.scenario_1,
+            traj,
+            self.registry.list_tool_schemas(),
+        )
+        self.assertIn("AegisOps", sys_p)
+        self.assertIn("INC-001", usr_p)
+        self.assertIn("checkout-service", usr_p)
+
+        rca_sys, rca_usr = LiveLLMClient.build_rca_synthesis_prompt(
+            self.scenario_1, traj
+        )
+        self.assertIn("rca_summary", rca_sys)
+        self.assertIn("ConnectionPoolExhausted", rca_usr)
+
+        judge_sys, judge_usr = LiveLLMClient.build_judge_rubric_prompt(
+            "Sample RCA", self.scenario_1
+        )
+        self.assertIn("factuality", judge_sys)
+        self.assertIn("Sample RCA", judge_usr)
+
+        # Verify default model map and provider HTTP request construction
+        self.assertEqual(DEFAULT_MODELS["gemini"], "gemini-2.5-flash")
+        self.assertEqual(DEFAULT_MODELS["openai"], "gpt-4o-mini")
+        self.assertEqual(DEFAULT_MODELS["anthropic"], "claude-opus-5-5")
+        self.assertEqual(
+            DEFAULT_MODELS["bedrock"], "us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+        )
+
+        gemini_client = LiveLLMClient(
+            provider="gemini", api_key="test-gem-key", autoload_dotenv=False
+        )
+        gem_req = gemini_client.build_provider_http_request(sys_p, usr_p)
+        self.assertIn("gemini-2.5-flash:generateContent", gem_req.full_url)
+
+        openai_client = LiveLLMClient(
+            provider="openai", api_key="test-oai-key", autoload_dotenv=False
+        )
+        oai_req = openai_client.build_provider_http_request(sys_p, usr_p)
+        self.assertEqual(oai_req.full_url, "https://api.openai.com/v1/chat/completions")
+
+        anthropic_client = LiveLLMClient(
+            provider="anthropic", api_key="test-ant-key", autoload_dotenv=False
+        )
+        ant_req = anthropic_client.build_provider_http_request(sys_p, usr_p)
+        self.assertEqual(ant_req.full_url, "https://api.anthropic.com/v1/messages")
+        self.assertEqual(ant_req.get_header("Anthropic-version"), "2026-10-21")
+
+    def test_18_live_llm_client_response_parsing_all_providers(self) -> None:
+        """Verify LiveLLMClient parses Gemini, OpenAI, Anthropic, and Bedrock responses & code fences."""
+        fenced_actions = """```json
+        {
+          "actions": [
+            {
+              "tool_name": "query_golden_signals",
+              "arguments": {"service": "checkout-service", "window_minutes": 15},
+              "next_state": "TRIAGE_METRICS",
+              "rationale": "Check golden signals via Gemini 2.5 Flash."
+            }
+          ]
+        }
+        ```"""
+        parsed_actions = LiveLLMClient.parse_triage_actions_response(fenced_actions)
+        self.assertEqual(len(parsed_actions), 1)
+        self.assertEqual(parsed_actions[0].tool_name, "query_golden_signals")
+        self.assertEqual(parsed_actions[0].next_state, AgentState.TRIAGE_METRICS)
+
+        # Gemini payload parsing
+        gem_client = LiveLLMClient(provider="gemini", api_key="test-key")
+        gem_resp = gem_client.parse_provider_api_payload(
+            {
+                "candidates": [{"content": {"parts": [{"text": fenced_actions}]}}],
+                "usageMetadata": {"promptTokenCount": 210, "candidatesTokenCount": 65},
+            },
+            latency_ms=142.5,
+        )
+        self.assertEqual(gem_resp.provider, "gemini")
+        self.assertEqual(gem_resp.prompt_tokens, 210)
+        self.assertEqual(gem_resp.completion_tokens, 65)
+
+        # OpenAI payload parsing
+        oai_client = LiveLLMClient(provider="openai", api_key="test-key")
+        oai_resp = oai_client.parse_provider_api_payload(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": '{"factuality": 0.95, "completeness": 0.92, "actionability": 0.94, "safety": 0.98, "critique": "Strong RCA."}'
+                        }
+                    }
+                ],
+                "usage": {"prompt_tokens": 180, "completion_tokens": 45},
+            }
+        )
+        rubric = LiveLLMClient.parse_judge_rubric_response(oai_resp.raw_text)
+        self.assertAlmostEqual(rubric["factuality"], 0.95, places=4)
+        self.assertGreater(rubric["overall_score"], 0.90)
+
+        # Anthropic & Bedrock payload parsing
+        ant_client = LiveLLMClient(provider="anthropic", api_key="test-key")
+        ant_resp = ant_client.parse_provider_api_payload(
+            {
+                "content": [{"text": '{"rca_summary": "Anthropic grounded RCA."}'}],
+                "usage": {"input_tokens": 150, "output_tokens": 30},
+            }
+        )
+        self.assertEqual(
+            ant_resp.parsed_json["rca_summary"], "Anthropic grounded RCA."
+        )
+
+        bed_client = LiveLLMClient(provider="bedrock", api_key="aws-iam")
+        bed_resp = bed_client.parse_provider_api_payload(
+            {
+                "output": {
+                    "message": {
+                        "content": [{"text": '{"rca_summary": "Bedrock grounded RCA."}'}]
+                    }
+                },
+                "usage": {"inputTokens": 160, "outputTokens": 35},
+            }
+        )
+        self.assertEqual(bed_resp.parsed_json["rca_summary"], "Bedrock grounded RCA.")
+
+        # Verify CalibratedRCAJudge with mocked live LLM transport
+        def _mock_transport(req: object, timeout: float) -> bytes:
+            _ = (req, timeout)
+            return json.dumps(
+                {
+                    "candidates": [
+                        {
+                            "content": {
+                                "parts": [
+                                    {
+                                        "text": json.dumps(
+                                            {
+                                                "factuality": 0.96,
+                                                "completeness": 0.94,
+                                                "actionability": 0.95,
+                                                "safety": 0.98,
+                                                "critique": "Live Gemini Judge verified all citations.",
+                                            }
+                                        )
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "usageMetadata": {
+                        "promptTokenCount": 200,
+                        "candidatesTokenCount": 50,
+                    },
+                }
+            ).encode("utf-8")
+
+        live_judge_client = LiveLLMClient(
+            provider="gemini",
+            api_key="mock-live-key",
+            http_transport=_mock_transport,
+        )
+        judge = CalibratedRCAJudge(llm_client=live_judge_client)
+        live_score = judge.score_rca("Live evaluated RCA text", self.scenario_1)
+        self.assertTrue(live_score.overall_pass)
+        self.assertIn("Live Gemini Judge", live_score.critique)
 
 
 if __name__ == "__main__":

@@ -140,10 +140,18 @@ class CIRegressionGateResult:
 
 
 class CalibratedRCAJudge:
-    """Length-normalized, rubric-calibrated Judge for Incident Root Cause Analysis (RCA)."""
+    """Length-normalized, rubric-calibrated Judge for Incident Root Cause Analysis (RCA).
+
+    Supports optional `llm_client` (`LiveLLMClient`) so `score_rca` can evaluate via
+    live Gemini, OpenAI, Anthropic, or Bedrock when an API key is configured, while
+    falling back deterministically to the calibrated rubric when offline.
+    """
 
     PASS_THRESHOLD = 0.74
     SAFETY_MIN_THRESHOLD = 0.65
+
+    def __init__(self, llm_client: Any | None = None) -> None:
+        self.llm_client = llm_client
 
     def score_rca(
         self,
@@ -153,6 +161,36 @@ class CalibratedRCAJudge:
         """Evaluate an RCA summary on Factuality, Completeness, Actionability, and Safety."""
         words = rca_text.split()
         word_count = len(words)
+
+        if (
+            self.llm_client is not None
+            and getattr(self.llm_client, "is_live_configured", False)
+        ):
+            try:
+                sys_prompt, usr_prompt = self.llm_client.build_judge_rubric_prompt(
+                    rca_text, scenario
+                )
+                llm_resp = self.llm_client.generate_json(sys_prompt, usr_prompt)
+                parsed = self.llm_client.parse_judge_rubric_response(llm_resp.raw_text)
+                overall = parsed["overall_score"]
+                safety = parsed["safety"]
+                return RCARubricScore(
+                    incident_id=scenario.incident_id,
+                    factuality=parsed["factuality"],
+                    completeness=parsed["completeness"],
+                    actionability=parsed["actionability"],
+                    safety=safety,
+                    overall_score=overall,
+                    overall_pass=(
+                        overall >= self.PASS_THRESHOLD
+                        and safety >= self.SAFETY_MIN_THRESHOLD
+                    ),
+                    word_count=word_count,
+                    critique=parsed["critique"],
+                )
+            except Exception:
+                pass
+
         lower_text = rca_text.lower()
 
         # 1. Factuality (0.0 - 1.0): Ground-truth entity citation minus hallucination penalties

@@ -19,6 +19,7 @@ from aegis_ops.golden_dataset import (
     DAGSpec,
     IncidentScenario,
 )
+from aegis_ops.llm_client import DEFAULT_MODELS, LLMResponse, LiveLLMClient
 from aegis_ops.mcp_servers import (
     CloudWatchLogsMCP,
     MCPToolRegistry,
@@ -26,7 +27,7 @@ from aegis_ops.mcp_servers import (
     MCPValidationError,
     PrometheusMetricsMCP,
     RunbookRemediationMCP,
-     validate_json_schema,
+    validate_json_schema,
 )
 from aegis_ops.otel_tracer import OTelSpan, OTelTracer, TraceSummary
 from aegis_ops.trajectory_eval import (
@@ -61,11 +62,14 @@ __all__ = [
     "CalibrationAnchor",
     "CloudWatchLogsMCP",
     "DAGSpec",
+    "DEFAULT_MODELS",
     "GOLDEN_SCENARIOS",
     "HallucinatingParamPolicy",
     "IncidentScenario",
     "IncidentTriageAgent",
     "JudgeCalibrationReport",
+    "LLMResponse",
+    "LiveLLMClient",
     "MCPToolRegistry",
     "MCPToolResult",
     "MCPValidationError",

@@ -50,9 +50,8 @@ def load_dotenv_local(explicit_path: str | Path | None = None) -> dict[str, str]
     if explicit_path is not None:
         candidates.append(Path(explicit_path))
     cwd = Path.cwd()
-    for d in [cwd, *cwd.parents]:
+    for d in [cwd, *cwd.parents, *Path(__file__).resolve().parents]:
         candidates.append(d / ".env.local")
-    candidates.append(Path("/Users/ritwika/projects/interview-prep/.env.local"))
 
     env_vars: dict[str, str] = {}
     for path in candidates:

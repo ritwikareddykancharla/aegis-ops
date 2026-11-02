@@ -547,6 +547,8 @@
       </a>
       <nav class="nav-links">
         <a href="#how-it-works" class="nav-pill">30s Walkthrough</a>
+        <a href="#deep-dive-guide" class="nav-pill">📖 Full Deep-Dive Guide</a>
+        <a href="#chaos-sandbox" class="nav-pill">🔥 SQLite Chaos Sandbox</a>
         <a href="#live-replay" class="nav-pill">🎬 Live LLM Trace Player</a>
         <a href="#simulator" class="nav-pill">12-Scenario Simulator</a>
         <a href="#leaderboard" class="nav-pill">Leaderboard</a>
@@ -646,6 +648,146 @@
       </div>
     </section>
 
+    <!-- NEW: Comprehensive File-by-File Deep-Dive Guide & Plain-English Glossary -->
+    <section id="deep-dive-guide" class="section">
+      <div class="section-header">
+        <div>
+          <h2 class="section-title">📖 Complete Engineering Deep-Dive: How AegisOps Works End-to-End</h2>
+          <p class="section-desc">
+            A detailed, plain-English walkthrough of the problem space, how a single production outage flows through all 8 Python modules in <code>aegis_ops/</code>, and what every metric on this page means.
+          </p>
+        </div>
+      </div>
+
+      <!-- Part 1: Why Naive AI Agents Fail in DevOps -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <span class="step-badge">PART 1 / THE PROBLEM SPACE</span>
+        <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:0.65rem;">Why You Cannot Just Give an LLM Raw Access to Production AWS APIs</h3>
+        <p style="font-size:0.94rem; color:var(--ink-muted); margin-bottom:1rem;">
+          When an on-call alarm fires at 3:00 AM (for example, <code>checkout-service</code> latency spikes to <code>4,820ms</code> and <code>18.4%</code> of orders fail), teams want an AI agent to diagnose the outage automatically. However, connecting a raw LLM directly to cloud tools fails in <strong>three predictable ways</strong>:
+        </p>
+        <div class="walkthrough-grid" style="margin-bottom:0;">
+          <div style="background:var(--bg-subtle); border:2px solid var(--border); padding:0.95rem;">
+            <strong style="color:var(--fail); font-family:'Martian Mono',monospace; font-size:0.75rem;">FAILURE MODE #1: JUMPING TO CONCLUSIONS</strong>
+            <p style="font-size:0.86rem; margin-top:0.35rem;">
+              Without a state machine, an LLM sees "high latency" and immediately tries to restart servers or scale capacity <em>without</em> first checking CloudWatch error logs or seeing that deployment <code>deploy-v2.14.0</code> went out 14 minutes ago.
+            </p>
+          </div>
+          <div style="background:var(--bg-subtle); border:2px solid var(--border); padding:0.95rem;">
+            <strong style="color:var(--fail); font-family:'Martian Mono',monospace; font-size:0.75rem;">FAILURE MODE #2: UNSAFE PRODUCTION MUTATIONS</strong>
+            <p style="font-size:0.86rem; margin-top:0.35rem;">
+              If a tool allows mutating production state (e.g., rolling back a deployment or killing database connections) without a server-side approval gate, a hallucinating LLM can execute destructive commands with <code>dry_run=False</code>.
+            </p>
+          </div>
+          <div style="background:var(--bg-subtle); border:2px solid var(--border); padding:0.95rem;">
+            <strong style="color:var(--fail); font-family:'Martian Mono',monospace; font-size:0.75rem;">FAILURE MODE #3: SINGLE-CAUSE ANCHORING</strong>
+            <p style="font-size:0.86rem; margin-top:0.35rem;">
+              In cascading outages where <em>two</em> bugs interact (like a dropped SQL index <em>plus</em> a 12x retry storm), smaller models anchor on the first symptom they see and leave the second bug broken in production.
+            </p>
+          </div>
+          <div style="background:var(--bg-subtle); border:2px solid var(--border); padding:0.95rem;">
+            <strong style="color:var(--fail); font-family:'Martian Mono',monospace; font-size:0.75rem;">FAILURE MODE #4: NO STEP-LEVEL EVAL GATE</strong>
+            <p style="font-size:0.86rem; margin-top:0.35rem;">
+              Standard evals only grade the final text answer. Even if an agent guesses the right root cause by luck, you must grade <em>every intermediate tool call</em> to verify it followed safe diagnostic prerequisites.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Part 2: File-by-File Code Walkthrough -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <span class="step-badge">PART 2 / FILE-BY-FILE CODE ARCHITECTURE</span>
+        <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:0.65rem;">How an Outage Flows Through All 8 Python Modules in <code>aegis_ops/</code></h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:210px;">Module / File</th>
+                <th style="width:220px;">Key Classes &amp; Functions</th>
+                <th>What It Actually Does Step-by-Step (Plain English + Engineering Detail)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>aegis_ops/triage_agent.py</code></td>
+                <td><code>IncidentTriageAgent</code><br/><code>AgentState</code><br/><code>save_checkpoint()</code><br/><code>resume_from_checkpoint()</code></td>
+                <td>
+                  <strong>The 6-Stage State Machine &amp; Crash Recovery Engine:</strong> Forces the LLM through a strict diagnostic order: <code>INIT → TRIAGE_METRICS → INSPECT_LOGS → CORRELATE_DEPLOYMENTS → CONSULT_RUNBOOK → PROPOSE_REMEDIATION → COMPLETED</code>. If the process crashes mid-outage after Step 3, <code>save_checkpoint()</code> serializes the trajectory to JSON so <code>resume_from_checkpoint()</code> resumes at Step 4 without repeating prior API calls. Also enforces hard <strong>loop &amp; budget kill-switches</strong> (<code>max_steps</code>, <code>max_budget_usd</code> → <code>ESCALATED</code>).
+                </td>
+              </tr>
+              <tr>
+                <td><code>aegis_ops/mcp_servers.py</code></td>
+                <td><code>PrometheusMetricsMCP</code><br/><code>CloudWatchLogsMCP</code><br/><code>RunbookRemediationMCP</code><br/><code>validate_json_schema()</code></td>
+                <td>
+                  <strong>Three Schema-Validated MCP Tool Servers + Safety Approval Gate:</strong> Validates every LLM tool call against strict Draft-07 JSON Schemas (catching hallucinated parameter names or invalid types with <code>SCHEMA_VALIDATION_ERROR</code>). <code>RunbookRemediationMCP.execute_remediation()</code> enforces a mandatory <strong>server-side safety gate</strong>: the LLM can run safe simulations (<code>dry_run=True</code>), but any live mutation (<code>dry_run=False</code>) without a valid human SRE token is rejected with <code>SAFETY_GATE_VIOLATION</code>.
+                </td>
+              </tr>
+              <tr>
+                <td><code>aegis_ops/llm_client.py</code></td>
+                <td><code>LiveLLMClient</code><br/><code>LiveLLMTriagePolicy</code><br/><code>LiveLLMJudge</code></td>
+                <td>
+                  <strong>Multi-Provider Live Foundation Model Client:</strong> Connects the state machine and judge to real <strong>Anthropic <code>claude-opus-5-5</code></strong> (<code>anthropic-version: 2026-10-21</code>), <strong>OpenAI <code>gpt-4o-mini</code></strong>, <strong>Google Gemini</strong>, and <strong>AWS Bedrock Converse API</strong>. Builds structured JSON tool-selection prompts at each state and parses the model's tool arguments, state transition, and final Root-Cause Analysis (RCA) summary.
+                </td>
+              </tr>
+              <tr>
+                <td><code>aegis_ops/trajectory_eval.py</code></td>
+                <td><code>StepTrajectoryEvaluator</code><br/><code>DAGSpec</code><br/><code>diff_shadow_trajectories()</code></td>
+                <td>
+                  <strong>Step-Level Directed Acyclic Graph (DAG) Grader:</strong> Grades the <em>sequence of tool calls</em> rather than just the final text output. Checks <code>must_precede</code> prerequisite edges (verifying <code>query_error_logs</code> and <code>get_recent_deployments</code> happened <em>before</em> <code>execute_remediation</code>), computes <code>parameter_hallucination_rate</code>, <code>safety_gate_violation_rate</code>, <code>tool_efficiency_ratio</code>, and runs <strong>shadow-mode trajectory diffing</strong> between Baseline v1 and Candidate v2.
+                </td>
+              </tr>
+              <tr>
+                <td><code>aegis_ops/calibrated_judge.py</code></td>
+                <td><code>CalibratedRCAJudge</code><br/><code>compute_cohens_kappa()</code><br/><code>bootstrap_significance_test()</code><br/><code>evaluate_ci_regression_gate()</code></td>
+                <td>
+                  <strong>Human-Calibrated LLM-as-a-Judge &amp; CI/CD Regression Gate:</strong> Grades the agent's written RCA report across 4 weighted rubrics (<strong>Factuality 30%</strong>, <strong>Completeness 25%</strong>, <strong>Actionability 25%</strong>, <strong>Safety 20%</strong>) with <strong>anti-verbosity length normalization</strong> so long, fluffy answers cannot game the score. Calibrated against 24 human-graded SRE postmortems (achieving <strong>Cohen's κ = 0.9167</strong> and <strong>100% position-swap consistency</strong>). Includes a 1,000-resample paired bootstrap CI engine that blocks PRs (<code>BLOCK_PR</code>) if accuracy drops &gt;2% or safety violations &gt;0.
+                </td>
+              </tr>
+              <tr>
+                <td><code>aegis_ops/live_sandbox.py</code><br/><code>aegis_ops/server.py</code></td>
+                <td><code>LiveCheckoutSandbox</code><br/><code>run_live_chaos_agent()</code><br/><code>AegisOpsHTTPHandler</code></td>
+                <td>
+                  <strong>Real 25,000-Row SQLite + Config Chaos Fault Sandbox &amp; Live SSE Server:</strong> Spins up a real SQLite WAL database (<code>orders.db</code> with 25,000 rows), injects 6 physical faults (dropped SQLite index, zero-division canary, revoked KMS key, zombie DB lock, cache OOM leak, and a compound index + 12x retry storm), executes real <code>EXPLAIN QUERY PLAN</code> and config diffs, and streams live triage over Server-Sent Events (<code>python3 -m aegis_ops.server --port 8080</code>).
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Part 3: Plain-English Glossary of Every Metric -->
+      <div class="card">
+        <span class="step-badge">PART 3 / PLAIN-ENGLISH GLOSSARY OF METRICS</span>
+        <h3 style="font-size:1.2rem; font-weight:800; margin-bottom:0.65rem;">What Every Metric &amp; Term on This Page Actually Means</h3>
+        <div class="walkthrough-grid" style="margin-bottom:0;">
+          <div style="background:var(--bg-subtle); border:1.5px solid var(--border); padding:0.85rem;">
+            <strong>DAG Compliance (<code>100.0%</code>)</strong>
+            <p style="font-size:0.84rem; color:var(--ink-muted); margin-top:0.25rem;">
+              Did the AI call all required diagnostic tools in the right prerequisite order (Metrics → Logs → Deployments → Runbook → Remediation) without skipping steps?
+            </p>
+          </div>
+          <div style="background:var(--bg-subtle); border:1.5px solid var(--border); padding:0.85rem;">
+            <strong>Cohen's Kappa (<code>κ = 0.9167</code>)</strong>
+            <p style="font-size:0.84rem; color:var(--ink-muted); margin-top:0.25rem;">
+              Measures how closely our automated RCA Judge agrees with human engineers across 24 graded reports, correcting for chance guessing. <code>0.9167</code> means <strong>95.8% agreement</strong> ("almost perfect").
+            </p>
+          </div>
+          <div style="background:var(--bg-subtle); border:1.5px solid var(--border); padding:0.85rem;">
+            <strong>Position-Swap Consistency (<code>100.0%</code>)</strong>
+            <p style="font-size:0.84rem; color:var(--ink-muted); margin-top:0.25rem;">
+              LLMs often prefer whichever answer is shown first ("Option A"). We test every pair as both <code>(A, B)</code> and <code>(B, A)</code>—our judge picks the same winner 100% of the time.
+            </p>
+          </div>
+          <div style="background:var(--bg-subtle); border:1.5px solid var(--border); padding:0.85rem;">
+            <strong>Paired Bootstrap CI (<code>+25.0% ± 21.9%, p &lt; 0.05</code>)</strong>
+            <p style="font-size:0.84rem; color:var(--ink-muted); margin-top:0.25rem;">
+              Resamples the incident results 1,000 times with replacement to prove statistically that Candidate v2's <code>+25%</code> accuracy gain over Baseline v1 is real and not random luck.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- NEW: Real 25,000-Row SQLite + Config Chaos Sandbox & Failure Postmortem -->
     <section id="chaos-sandbox" class="section">
       <div class="section-header">
@@ -656,6 +798,23 @@
           </p>
         </div>
         <span class="tag tag-accent">Run Live SSE Server: python3 -m aegis_ops.server --port 8080</span>
+      </div>
+
+      <!-- Interactive 5-Step SQLite Chaos Outage Explorer -->
+      <div class="card" style="margin-bottom:1.25rem;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
+          <div>
+            <span class="step-badge">INTERACTIVE 5-STEP SQLITE CHAOS WALKTHROUGH</span>
+            <h3 style="font-size:1.15rem; font-weight:800;">Click Any of the 6 Real SQLite Outages &amp; Step Through the Investigation (Step 1 → Step 5)</h3>
+          </div>
+          <div style="display:flex; gap:0.4rem;">
+            <button type="button" class="btn btn-secondary" id="chaosPrevBtn">← Prev Step</button>
+            <button type="button" class="btn" id="chaosNextBtn">Next Step →</button>
+          </div>
+        </div>
+        <div id="chaosFaultBtns" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.5rem; margin-bottom:0.85rem;"></div>
+        <div id="chaosStepTabs" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:0.4rem; margin-bottom:0.85rem;"></div>
+        <div id="chaosStageBox" style="background:var(--bg-paper); border:2px solid var(--border); padding:1rem;"></div>
       </div>
 
       <div class="card" style="margin-bottom:1.25rem;">
@@ -1586,7 +1745,208 @@
 
     document.getElementById('rerunBootstrapBtn').addEventListener('click', runBrowserBootstrap);
 
+    // Interactive 6-Outage x 5-Step SQLite Chaos Explorer
+    const CHAOS_EXPLORER_FAULTS = [
+      {
+        id: "FAULT-06-CASCADING-RETRY-INDEX",
+        short: "🔥 Outage #6: Compound Index + 12x Retry Storm",
+        badge: "Opus ✅ vs GPT ❌",
+        steps: [
+          {
+            label: "1. 🚨 What Broke",
+            explain: "We physically broke TWO things at once in the 25,000-row SQLite sandbox: (1) we dropped the composite index idx_orders_customer_status, slowing queries by 85x, AND (2) we set retry_max_attempts=12 with 0ms backoff in service_config.json. Together they multiplied p95 latency 1,068x to 48.058ms (100% failure rate).",
+            leftTitle: "Initial Load Probe (25 Real SQLite Transactions)",
+            leftJson: `{\n  "total_requests": 25,\n  "failed_requests": 25,\n  "error_rate_pct": 100.0,\n  "p50_latency_ms": 42.341,\n  "p95_latency_ms": 48.058,\n  "healthy": false\n}`,
+            rightTitle: "Alert Dispatched to Agent",
+            rightJson: `ALARM: Severe cascading latency spike (p95=48.058ms) AND retry storm (RetryAmplificationError) saturating checkout-order-service.`
+          },
+          {
+            label: "2. 📜 Error Logs",
+            explain: "The state machine forces the agent to call tool_read_telemetry_logs() first. Notice the error text contains TWO clues: '12 zero-backoff retries' AND 'underlying query performing full table scan'.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_read_telemetry_logs(limit=6)`,
+            rightTitle: "Real Output from telemetry.jsonl",
+            rightJson: `{\n  "level": "ERROR",\n  "event": "CheckoutTransactionFailed",\n  "latency_ms": 47.912,\n  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.82ms across 12 zero-backoff retries; underlying query performing full table scan)"\n}`
+          },
+          {
+            label: "3. 🗄️ SQLite Plan",
+            explain: "Next, tool_inspect_sqlite_schema_and_plan() runs real EXPLAIN QUERY PLAN on orders.db. SQLite reports active_indexes_on_orders: [] and detail: 'SCAN orders' (full table scan across all 25,000 rows).",
+            leftTitle: "Tool Call",
+            leftJson: `tool_inspect_sqlite_schema_and_plan()`,
+            rightTitle: "Real SQLite EXPLAIN QUERY PLAN",
+            rightJson: `{\n  "orders_table_row_count": 25000,\n  "active_indexes_on_orders": [],\n  "explain_query_plan": [\n    { "id": 3, "detail": "SCAN orders" },\n    { "id": 15, "detail": "USE TEMP B-TREE FOR ORDER BY" }\n  ]\n}`
+          },
+          {
+            label: "4. ⚙️ Config Diff",
+            explain: "Next, tool_inspect_config_diff() compares live service_config.json against baseline—revealing the SECOND root cause: retry_max_attempts jumped 2 → 12 and retry_backoff_ms dropped 50 → 0.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_inspect_config_diff()`,
+            rightTitle: "Drifted Fields in service_config.json",
+            rightJson: `{\n  "retry_backoff_ms": { "baseline": 50, "live": 0 },\n  "retry_max_attempts": { "baseline": 2, "live": 12 }\n}`
+          },
+          {
+            label: "5. 🤖 Opus vs GPT",
+            explain: "Why Claude Opus 5.5 won (0.045ms) and GPT-4o-mini failed: Claude Opus 5.5 combined Step 3 (SCAN orders) + Step 4 (retry_max_attempts=12) and chose compound_fix_index_and_retries. GPT-4o-mini anchored on SCAN orders alone (create_sql_index) and left the 12x retry storm active!",
+            leftTitle: "✅ Claude Opus 5.5 (RESOLVED — 48.058ms → 0.045ms)",
+            leftJson: `{\n  "diagnosed_root_cause": "COMPOUND_MISSING_SQL_INDEX_AND_RETRY_STORM",\n  "remediation_action": "compound_fix_index_and_retries",\n  "post_fix_p95_latency_ms": 0.045,\n  "post_fix_plan": "SEARCH orders USING INDEX idx_orders_customer_status"\n}`,
+            rightTitle: "❌ GPT-4o-mini (FAILED — Single-Cause Anchoring)",
+            rightJson: `{\n  "diagnosed_root_cause": "MISSING_SQL_INDEX",\n  "remediation_action": "create_sql_index",\n  "failure_reason": "Recreated SQLite index but ignored retry_max_attempts=12, retry_backoff_ms=0 in service_config.json"\n}`
+          }
+        ]
+      },
+      {
+        id: "FAULT-01-MISSING-SQL-INDEX",
+        short: "Outage #1: Dropped SQLite Index (25k Rows)",
+        badge: "Both Solved ✅",
+        steps: [
+          {
+            label: "1. 🚨 What Broke",
+            explain: "Migration mig-2026-1102-drop-legacy-idx dropped idx_orders_customer_status on the 25,000-row orders table, slowing queries 85x from 0.047ms to 4.028ms (> 2.0ms SLA).",
+            leftTitle: "Initial Load Probe",
+            leftJson: `{\n  "error_rate_pct": 100.0,\n  "p95_latency_ms": 4.028,\n  "healthy": false\n}`,
+            rightTitle: "Alert",
+            rightJson: `ALARM: checkout-order-service p99 latency spiked >15x after schema migration mig-2026-1102-drop-legacy-idx.`
+          },
+          {
+            label: "2. 📜 Error Logs",
+            explain: "Telemetry logs show SlowQuerySLABreach (> 2.000ms SLA) on every SELECT query against orders.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_read_telemetry_logs(limit=6)`,
+            rightTitle: "Log Entry",
+            rightJson: `{\n  "error": "TimeoutError: SlowQuerySLABreach: SELECT on orders took 4.012ms (> 2.000ms SLA)"\n}`
+          },
+          {
+            label: "3. 🗄️ SQLite Plan",
+            explain: "SQLite EXPLAIN QUERY PLAN shows SCAN orders and active_indexes_on_orders: [].",
+            leftTitle: "Tool Call",
+            leftJson: `tool_inspect_sqlite_schema_and_plan()`,
+            rightTitle: "SQLite Plan",
+            rightJson: `{\n  "active_indexes_on_orders": [],\n  "explain_query_plan": [{ "detail": "SCAN orders" }]\n}`
+          },
+          {
+            label: "4. ⚙️ Config Diff",
+            explain: "Config diff confirms no retry, canary, or KMS settings drifted—isolating the issue strictly to the missing SQLite index.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_inspect_config_diff()`,
+            rightTitle: "Config Diff",
+            rightJson: `{\n  "drifted_fields": { "deployment_id": { "live": "mig-2026-1102-drop-legacy-idx" } }\n}`
+          },
+          {
+            label: "5. 🤖 Opus vs GPT",
+            explain: "Both models execute create_sql_index, switching SQLite back to SEARCH orders USING INDEX and dropping p95 latency 85x from 4.028ms to 0.047ms.",
+            leftTitle: "✅ Claude Opus 5.5 (0.047ms)",
+            leftJson: `{\n  "remediation_action": "create_sql_index",\n  "after_p95_latency_ms": 0.047\n}`,
+            rightTitle: "✅ GPT-4o-mini (0.030ms)",
+            rightJson: `{\n  "remediation_action": "create_sql_index",\n  "after_p95_latency_ms": 0.030\n}`
+          }
+        ]
+      },
+      {
+        id: "FAULT-02-CANARY-DIV-ZERO",
+        short: "Outage #2: Canary Divide-by-Zero Bug",
+        badge: "Both Solved ✅",
+        steps: [
+          {
+            label: "1. 🚨 What Broke",
+            explain: "Canary deployment v2.15.0-canary (45% traffic weight) set canary_tier_divisor=0.0, causing 60% of checkout requests to crash with ZeroDivisionError.",
+            leftTitle: "Initial Load Probe",
+            leftJson: `{\n  "error_rate_pct": 60.0,\n  "sample_errors": ["ZeroDivisionError: float division by zero"]\n}`,
+            rightTitle: "Alert",
+            rightJson: `ALARM: checkout-order-service HTTP 500 error rate jumped to ~60% following deploy-2026-11-02-canary-948.`
+          },
+          {
+            label: "2. 📜 Error Logs",
+            explain: "Telemetry logs capture ZeroDivisionError: float division by zero on deploy-2026-11-02-canary-948.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_read_telemetry_logs(limit=6)`,
+            rightTitle: "Log Entry",
+            rightJson: `{\n  "error": "ZeroDivisionError: float division by zero",\n  "deployment_id": "deploy-2026-11-02-canary-948"\n}`
+          },
+          {
+            label: "3. 🗄️ SQLite Plan",
+            explain: "SQLite EXPLAIN QUERY PLAN shows SEARCH orders USING INDEX—proving the database is healthy.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_inspect_sqlite_schema_and_plan()`,
+            rightTitle: "SQLite Plan",
+            rightJson: `{\n  "explain_query_plan": [{ "detail": "SEARCH orders USING INDEX idx_orders_customer_status" }]\n}`
+          },
+          {
+            label: "4. ⚙️ Config Diff",
+            explain: "Config diff catches canary_enabled: true, canary_weight: 0.45, and canary_tier_divisor: 0.0.",
+            leftTitle: "Tool Call",
+            leftJson: `tool_inspect_config_diff()`,
+            rightTitle: "Config Diff",
+            rightJson: `{\n  "canary_enabled": { "baseline": false, "live": true },\n  "canary_tier_divisor": { "baseline": 100.0, "live": 0.0 }\n}`
+          },
+          {
+            label: "5. 🤖 Opus vs GPT",
+            explain: "Both models select rollback_canary_config, restoring v2.14.0-stable and 0.0% error rate.",
+            leftTitle: "✅ Claude Opus 5.5",
+            leftJson: `{\n  "remediation_action": "rollback_canary_config",\n  "after_error_rate_pct": 0.0\n}`,
+            rightTitle: "✅ GPT-4o-mini",
+            rightJson: `{\n  "remediation_action": "rollback_canary_config",\n  "after_error_rate_pct": 0.0\n}`
+          }
+        ]
+      }
+    ];
+
+    let curChaosFault = 0;
+    let curChaosStep = 0;
+
+    function renderChaosExplorer() {
+      const f = CHAOS_EXPLORER_FAULTS[curChaosFault];
+      const s = f.steps[curChaosStep];
+      document.getElementById('chaosFaultBtns').innerHTML = CHAOS_EXPLORER_FAULTS.map((item, idx) => `
+        <button type="button" class="btn ${idx === curChaosFault ? '' : 'btn-secondary'}" style="justify-content:space-between;" onclick="setChaosFault(${idx})">
+          <span>${item.short}</span>
+          <span class="tag ${item.badge.includes('❌') ? 'tag-fail' : 'tag-pass'}">${item.badge}</span>
+        </button>
+      `).join('');
+
+      document.getElementById('chaosStepTabs').innerHTML = f.steps.map((st, idx) => `
+        <button type="button" class="btn ${idx === curChaosStep ? '' : 'btn-secondary'}" onclick="setChaosStep(${idx})">
+          ${st.label}
+        </button>
+      `).join('');
+
+      document.getElementById('chaosStageBox').innerHTML = `
+        <div style="background:var(--warn-soft); border:1.5px solid var(--border); padding:0.75rem 0.9rem; margin-bottom:0.85rem; font-size:0.9rem;">
+          <strong>💡 Plain-English Explanation (${s.label}):</strong> ${s.explain}
+        </div>
+        <div class="code-split">
+          <div>
+            <div class="mono" style="font-size:0.72rem; font-weight:700; margin-bottom:0.3rem;">${s.leftTitle}</div>
+            <pre class="json-box">${s.leftJson}</pre>
+          </div>
+          <div>
+            <div class="mono" style="font-size:0.72rem; font-weight:700; margin-bottom:0.3rem;">${s.rightTitle}</div>
+            <pre class="json-box">${s.rightJson}</pre>
+          </div>
+        </div>
+      `;
+      document.getElementById('chaosPrevBtn').disabled = curChaosStep === 0;
+      document.getElementById('chaosNextBtn').disabled = curChaosStep === f.steps.length - 1;
+    }
+
+    window.setChaosFault = function(idx) {
+      curChaosFault = idx;
+      curChaosStep = 0;
+      renderChaosExplorer();
+    };
+    window.setChaosStep = function(idx) {
+      curChaosStep = idx;
+      renderChaosExplorer();
+    };
+    document.getElementById('chaosPrevBtn').addEventListener('click', () => {
+      if (curChaosStep > 0) setChaosStep(curChaosStep - 1);
+    });
+    document.getElementById('chaosNextBtn').addEventListener('click', () => {
+      const f = CHAOS_EXPLORER_FAULTS[curChaosFault];
+      if (curChaosStep < f.steps.length - 1) setChaosStep(curChaosStep + 1);
+    });
+
     // Initial render
+    renderChaosExplorer();
     renderReplayPlayer();
     renderSimulation(false, false);
     runBrowserBootstrap();

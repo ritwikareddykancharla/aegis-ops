@@ -600,6 +600,13 @@
         <a href="architecture.excalidraw" download class="btn btn-secondary">✎ Download Excalidraw Scene (.excalidraw)</a>
       </div>
 
+      <div class="rca-box" style="margin-bottom:1.25rem;">
+        <strong>💡 Plain-English Summary (What AegisOps Does in 3 Sentences):</strong><br/>
+        <strong>1. The Problem:</strong> When an e-commerce checkout service crashes at 3:00 AM, giving an AI agent direct access to production is dangerous—it might guess the wrong root cause or restart live servers without checking the logs.<br/>
+        <strong>2. The Guardrail Engine:</strong> AegisOps forces <code>claude-opus-5-5</code> and <code>gpt-4o-mini</code> through a strict diagnostic checklist (<em>Check Metrics → Read Error Logs → Check SQLite Query Plan &amp; Recent Deployments → Read Runbook → Propose Dry-Run Fix</em>) and blocks any live production change without a human SRE approval token.<br/>
+        <strong>3. How We Test &amp; Grade It:</strong> We test the agent against both <strong>12 AWS outage scenarios</strong> and a <strong>real 25,000-row SQLite database chaos sandbox</strong>, grading both the <em>exact order of tool calls</em> (<code>StepTrajectoryEvaluator</code>) and the <em>final Root-Cause Report</em> (<code>CalibratedRCAJudge</code>, Cohen's κ = 0.9167).
+      </div>
+
       <div class="walkthrough-grid">
         <div class="card walkthrough-card">
           <span class="step-badge">01 / THREE MCP SERVERS</span>

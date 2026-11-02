@@ -177,12 +177,3 @@ aegis-ops/
 ├── pyproject.toml                # Package configuration
 └── README.md                     # Architecture, benchmarks, and usage documentation
 ```
-
----
-
-## Resume Bullets (Tailored for AWS DevOps Agent & Eva Data Center GenAI Roles)
-
-1. **Autonomous DevOps Incident Triage Agent & MCP Tooling (AWS DevOps Agent #1 / Eva GenAI #2):** Engineered `AegisOps`, a checkpointable finite-state-machine incident triage agent (`INIT -> TRIAGE_METRICS -> INSPECT_LOGS -> CORRELATE_DEPLOYMENTS -> CONSULT_RUNBOOK -> PROPOSE_REMEDIATION`) integrated with 3 JSON-Schema-validated MCP servers (`CloudWatchLogsMCP`, `PrometheusMetricsMCP`, `RunbookRemediationMCP`) and hard approval-token safety gates on mutating remediations.
-2. **Step-Level DAG Trajectory Grading Engine:** Built a deterministic Directed Acyclic Graph (DAG) trajectory evaluator measuring prerequisite ordering compliance (`must_precede`), parameter hallucination rate, premature remediation detection, and tool efficiency across 12 AWS production failure modes (RDS pool exhaustion, EKS `OOMKilled`, KMS IAM regression, DynamoDB hot partition, ALB mTLS expiry, NAT port exhaustion).
-3. **Calibrated LLM-as-a-Judge & Anti-Verbosity Rubric:** Designed a multi-dimensional RCA Judge (Factuality, Completeness, Actionability, Safety) calibrated against 24 human-annotated SRE anchors, achieving **Cohen's $\kappa = 0.9167$** (95.8% agreement), **100.0% position-bias swap consistency**, and length-normalized verbosity bias correlation ($r = +0.199$).
-4. **Statistical Significance & CI/CD Regression Gating:** Implemented shadow-mode trajectory diffing, OpenTelemetry W3C span tracing (latency, token count, USD cost per step), and a 1,000-resample paired bootstrap CI gate that verified a **+25.0% ± 21.9% ($p < 0.05$)** root-cause accuracy gain over baseline while automatically blocking PRs on >2% accuracy drops or any safety-gate violation.

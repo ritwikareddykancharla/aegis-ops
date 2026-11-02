@@ -1,0 +1,152 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1180 640" width="100%" height="auto" style="background:#ffffff; font-family: Virgil, Caveat, 'Segoe Print', 'Bradley Hand', 'Chalkboard SE', 'Comic Sans MS', cursive, sans-serif;">
+<defs>
+  <style>@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=JetBrains+Mono:wght@500;600&amp;display=swap");</style>
+  <pattern id="excali-grid" width="24" height="24" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1" fill="#e5e7eb" />
+  </pattern>
+</defs>
+<rect width="1180" height="640" fill="#ffffff" />
+<rect width="1180" height="640" fill="url(#excali-grid)" />
+<text x="36" y="42" font-size="24" font-weight="700" fill="#1e1e1e">AegisOps — Autonomous DevOps Triage Agent &amp; Step-Level Trajectory Eval Gate</text>
+<text x="36" y="66" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#495057">Excalidraw Architecture • Stateful Incident Agent + 3 MCP Servers + DAG Grader + Calibrated LLM Judge</text>
+<rect x="30" y="90" width="360" height="510" rx="10" ry="10" fill="#f8f9fa" stroke="none" /><rect x="30" y="90" width="360" height="510" rx="10" ry="10" fill="none" stroke="#495057" stroke-width="1.8" stroke-dasharray="8 6" />
+<text x="44" y="114" font-size="14.5" font-weight="700" fill="#495057">1. Stateful Triage Agent (Checkpointable FSM)</text>
+<rect x="430" y="90" width="320" height="510" rx="10" ry="10" fill="#fff9db" stroke="none" /><rect x="430" y="90" width="320" height="510" rx="10" ry="10" fill="none" stroke="#e67700" stroke-width="1.8" stroke-dasharray="8 6" />
+<text x="444" y="114" font-size="14.5" font-weight="700" fill="#e67700">2. Sandboxed MCP Tool Servers</text>
+<rect x="790" y="90" width="360" height="510" rx="10" ry="10" fill="#f3f0ff" stroke="none" /><rect x="790" y="90" width="360" height="510" rx="10" ry="10" fill="none" stroke="#5f3dc4" stroke-width="1.8" stroke-dasharray="8 6" />
+<text x="804" y="114" font-size="14.5" font-weight="700" fill="#5f3dc4">3. Trajectory Eval &amp; Calibrated Judge Gate</text>
+<rect x="55" y="135" width="310" height="62" rx="10" ry="10" fill="#ffc9c9" stroke="none" />
+<path d="M 66.2 135.97 Q 209.56 135.61 355.6 134.29 Q 365 135 365.8 143.74 Q 363.91 166.4 364.13 188.03 Q 365 197 354.56 197.38 Q 209.72 196.49 65.94 197.21 Q 55 197 55.32 187.33 Q 55.1 165.37 54.76 144.91 Q 55 135 66.2 135.97 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 64.42 135.12 Q 210.54 135.65 354.28 135.18 Q 365 135 364.55 144.85 Q 365.97 165.46 365.76 186.73 Q 365 197 355.61 196.17 Q 210.09 197.26 65.3 197.55 Q 55 197 55.74 187.89 Q 54.09 165.78 54.42 145.04 Q 55 135 64.42 135.12 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="210.0" y="162.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">Production Incident Alert (INC-001..012)</text>
+<text x="210.0" y="180.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">p99 Latency / Error Spike / OOM / IAM</text>
+<rect x="55" y="225" width="310" height="72" rx="10" ry="10" fill="#a5d8ff" stroke="none" />
+<path d="M 65.98 224.61 Q 209.51 225.77 355.76 226.17 Q 365 225 364.57 234.13 Q 363.99 261.41 364.61 287.65 Q 365 297 354.61 296.14 Q 209.9 298.09 64.82 296.7 Q 55 297 56.09 286.29 Q 56.31 261.82 56.27 235.29 Q 55 225 65.98 224.61 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 65.05 224.55 Q 210.22 224.24 355.77 225.9 Q 365 225 365.58 235.48 Q 365.94 261.43 365.68 287.86 Q 365 297 354.81 297.06 Q 210.23 297.65 65.01 297.47 Q 55 297 55.03 287.16 Q 55.85 261.36 55.83 235.53 Q 55 225 65.05 224.55 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="210.0" y="248.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">State-Machine Triage Orchestrator</text>
+<text x="210.0" y="266.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">INIT → METRICS → LOGS → DEPLOY → RUNBOOK</text>
+<text x="210.0" y="284.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">claude-opus-5-5 / gpt-4o-mini / Policy</text>
+<rect x="55" y="325" width="310" height="64" rx="10" ry="10" fill="#d0bfff" stroke="none" />
+<path d="M 65.55 326.04 Q 210.83 323.73 353.74 326.15 Q 365 325 365.8 335.79 Q 364.61 356.87 364.19 380.23 Q 365 389 355.4 389.49 Q 209.96 387.96 65.64 388.42 Q 55 389 54.41 378.98 Q 55.9 356.16 53.89 334.61 Q 55 325 65.55 326.04 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 64.88 324.17 Q 209.43 325.49 355.43 324.28 Q 365 325 364.9 335.1 Q 364.85 356.38 365.2 378.99 Q 365 389 354.36 388.47 Q 210.71 388.43 64.54 388.68 Q 55 389 54.34 378.58 Q 55.9 357.48 54.34 335.59 Q 55 325 64.88 324.17 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="210.0" y="353.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">Checkpoint &amp; Crash Recovery Store</text>
+<text x="210.0" y="371.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">save_checkpoint() + Cost/Loop Kill-Switch</text>
+<rect x="55" y="415" width="310" height="68" rx="10" ry="10" fill="#b2f2bb" stroke="none" />
+<path d="M 64.34 415.21 Q 209.95 414.45 356.23 415.41 Q 365 415 364.06 426.3 Q 365.27 449.54 365.66 472.35 Q 365 483 356.06 482.43 Q 210.23 484.21 64.51 482.19 Q 55 483 55.61 472.06 Q 54.03 448.98 54.67 423.9 Q 55 415 64.34 415.21 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 64.38 414.59 Q 210.64 414.48 354.54 414.86 Q 365 415 365.2 424.82 Q 365.55 449.62 364.62 472.64 Q 365 483 355.42 483.7 Q 209.52 483.13 65.41 482.64 Q 55 483 55.2 473.51 Q 55.94 449.31 55.73 425.54 Q 55 415 64.38 414.59 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="210.0" y="445.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">Root-Cause Analysis (RCA) &amp; Fix Plan</text>
+<text x="210.0" y="463.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">Grounded Evidence + Remediation Proposal</text>
+<rect x="55" y="510" width="310" height="66" rx="10" ry="10" fill="#e9ecef" stroke="none" />
+<path d="M 64.04 510.82 Q 209.42 509.13 355.99 509.7 Q 365 510 363.91 519.26 Q 364.12 542.19 364.23 566.92 Q 365 576 356.11 577.08 Q 211.27 575.69 63.97 575.54 Q 55 576 55.33 566.5 Q 55.64 543.82 55.38 518.84 Q 55 510 64.04 510.82 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 64.91 509.72 Q 210.8 509.41 355.4 510.88 Q 365 510 365.47 519.98 Q 364.97 543.72 365.88 566.85 Q 365 576 355.69 575.3 Q 209.52 575.88 64.83 576.8 Q 55 576 55.23 565.73 Q 55.19 543.09 55.51 519.43 Q 55 510 64.91 509.72 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="210.0" y="539.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">OpenTelemetry W3C Span Tracer</text>
+<text x="210.0" y="557.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">trace_id / latency_ms / tokens / JSONL</text>
+<rect x="455" y="145" width="270" height="95" rx="10" ry="10" fill="#ffec99" stroke="none" />
+<path d="M 464.43 144.89 Q 590.01 146.31 715.12 143.96 Q 725 145 725.16 155.05 Q 724.36 193.38 725.75 229.87 Q 725 240 714.13 241.01 Q 590.04 238.76 466.0 240.13 Q 455 240 454.15 230.71 Q 453.96 193.08 455.59 155.32 Q 455 145 464.43 144.89 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 465.88 145.67 Q 589.86 144.31 715.3 144.9 Q 725 145 724.17 155.84 Q 724.97 193.37 724.81 229.8 Q 725 240 715.75 240.34 Q 590.27 240.59 465.51 240.05 Q 455 240 455.3 229.19 Q 455.34 193.28 454.94 155.15 Q 455 145 465.88 145.67 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="590.0" y="170.5" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">PrometheusMetricsMCP</text>
+<text x="590.0" y="188.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• query_golden_signals()</text>
+<text x="590.0" y="206.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• get_recent_deployments()</text>
+<text x="590.0" y="224.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">JSON-Schema Draft-07 Validated</text>
+<rect x="455" y="275" width="270" height="95" rx="10" ry="10" fill="#ffd8a8" stroke="none" />
+<path d="M 466.13 274.71 Q 589.95 274.35 715.84 274.34 Q 725 275 725.11 283.89 Q 723.68 323.32 724.78 359.52 Q 725 370 716.07 369.09 Q 589.81 370.26 465.34 370.07 Q 455 370 455.42 359.42 Q 456.41 323.62 454.64 285.02 Q 455 275 466.13 274.71 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 465.5 274.92 Q 590.69 274.39 715.74 275.86 Q 725 275 724.84 284.51 Q 724.99 322.19 724.91 360.64 Q 725 370 714.4 369.35 Q 590.7 369.02 465.58 370.81 Q 455 370 454.58 359.35 Q 454.97 322.41 454.93 284.46 Q 455 275 465.5 274.92 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="590.0" y="300.5" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">CloudWatchLogsMCP</text>
+<text x="590.0" y="318.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• query_error_logs()</text>
+<text x="590.0" y="336.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• detect_error_signatures()</text>
+<text x="590.0" y="354.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">PoolExhausted / OOM / Deadlock</text>
+<rect x="455" y="405" width="270" height="115" rx="10" ry="10" fill="#ffc9c9" stroke="none" />
+<path d="M 465.85 404.25 Q 589.73 405.34 716.15 404.98 Q 725 405 724.14 414.2 Q 725.49 462.28 724.8 509.3 Q 725 520 714.7 519.42 Q 591.05 519.57 464.27 520.56 Q 455 520 455.79 509.51 Q 455.2 462.26 455.68 414.32 Q 455 405 465.85 404.25 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 465.67 405.47 Q 589.93 404.44 714.29 404.28 Q 725 405 724.53 415.81 Q 724.05 462.73 725.79 509.13 Q 725 520 715.81 520.7 Q 589.97 519.98 465.35 520.43 Q 455 520 455.64 509.29 Q 454.32 462.99 455.33 415.4 Q 455 405 465.67 405.47 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="590.0" y="440.5" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">RunbookRemediationMCP</text>
+<text x="590.0" y="458.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• get_runbook(incident_type)</text>
+<text x="590.0" y="476.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• execute_remediation()</text>
+<text x="590.0" y="494.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">🔒 Mandatory Approval Token Gate</text>
+<rect x="815" y="140" width="310" height="100" rx="10" ry="10" fill="#d0bfff" stroke="none" />
+<path d="M 824.95 140.43 Q 971.05 140.72 1115.31 140.52 Q 1125 140 1124.12 149.27 Q 1126.32 190.59 1124.88 229.71 Q 1125 240 1114.92 239.61 Q 971.1 239.05 824.29 240.27 Q 815 240 814.88 229.6 Q 813.76 190.46 815.28 149.36 Q 815 140 824.95 140.43 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 824.65 140.26 Q 970.74 140.6 1115.73 140.15 Q 1125 140 1124.21 149.54 Q 1124.02 190.58 1125.29 229.96 Q 1125 240 1115.27 239.88 Q 970.09 239.29 825.04 239.41 Q 815 240 815.3 230.8 Q 815.15 190.68 814.49 149.58 Q 815 140 824.65 140.26 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="970.0" y="168.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">Step-Level DAG Trajectory Grader</text>
+<text x="970.0" y="186.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• Prerequisite Order (must_precede)</text>
+<text x="970.0" y="204.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• Param Hallucination &amp; Safety Check</text>
+<text x="970.0" y="222.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• Shadow-Mode Trajectory Diff</text>
+<rect x="815" y="270" width="310" height="100" rx="10" ry="10" fill="#a5d8ff" stroke="none" />
+<path d="M 823.78 270.96 Q 970.13 269.25 1115.58 268.75 Q 1125 270 1125.99 280.92 Q 1124.99 319.43 1124.48 360.26 Q 1125 370 1114.83 369.73 Q 970.6 368.68 824.92 371.18 Q 815 370 814.62 361.22 Q 815.42 320.48 815.68 280.28 Q 815 270 823.78 270.96 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 824.4 269.83 Q 970.34 269.08 1114.6 269.45 Q 1125 270 1124.42 280.38 Q 1125.7 320.6 1125.71 359.65 Q 1125 370 1114.38 370.75 Q 969.25 369.2 824.4 369.95 Q 815 370 815.29 360.61 Q 815.22 320.17 814.3 279.69 Q 815 270 824.4 269.83 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="970.0" y="298.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">Calibrated LLM-as-a-Judge</text>
+<text x="970.0" y="316.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• 24 Human Anchors (Cohen&#x27;s κ = 0.92)</text>
+<text x="970.0" y="334.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• Position-Swap &amp; Verbosity Debiasing</text>
+<text x="970.0" y="352.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">• Factuality / Actionability / Safety</text>
+<rect x="815" y="400" width="310" height="82" rx="10" ry="10" fill="#ffec99" stroke="none" />
+<path d="M 824.33 398.95 Q 970.32 399.01 1115.43 399.33 Q 1125 400 1126.25 410.45 Q 1125.96 442.03 1124.46 470.87 Q 1125 482 1114.58 480.98 Q 969.9 480.89 826.24 483.03 Q 815 482 815.65 473.22 Q 816.06 441.65 814.48 409.66 Q 815 400 824.33 398.95 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 825.75 400.22 Q 970.56 400.72 1114.52 400.81 Q 1125 400 1124.7 409.65 Q 1124.21 440.24 1125.85 472.77 Q 1125 482 1114.34 482.29 Q 970.03 482.92 824.55 481.4 Q 815 482 814.96 471.25 Q 814.67 440.48 814.35 409.64 Q 815 400 825.75 400.22 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="970.0" y="437.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">1,000-Sample Paired Bootstrap CI</text>
+<text x="970.0" y="455.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">+25.0% ± 21.9% (95% CI, p &lt; 0.05)</text>
+<rect x="815" y="508" width="310" height="68" rx="10" ry="10" fill="#b2f2bb" stroke="none" />
+<path d="M 826.03 507.21 Q 970.66 509.02 1113.99 506.99 Q 1125 508 1126.28 518.46 Q 1124.95 542.12 1125.36 566.49 Q 1125 576 1114.07 574.81 Q 971.21 576.69 825.96 576.78 Q 815 576 815.23 565.13 Q 816.05 542.73 815.96 518.08 Q 815 508 826.03 507.21 Z" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.95" />
+<path d="M 825.51 508.24 Q 970.38 508.05 1115.54 507.87 Q 1125 508 1125.2 518.85 Q 1125.2 541.52 1125.7 566.39 Q 1125 576 1115.61 575.84 Q 969.96 576.39 824.77 576.65 Q 815 576 814.43 566.46 Q 815.69 542.13 815.82 518.2 Q 815 508 825.51 508.24 Z" fill="none" stroke="#1e1e1e" stroke-width="1.6500000000000001" stroke-linecap="round" stroke-linejoin="round" opacity="0.65" />
+<text x="970.0" y="538.0" text-anchor="middle" font-family="Virgil, Caveat, 'Segoe Print', 'Comic Sans MS', cursive, sans-serif" font-size="15" font-weight="700" fill="#1e1e1e">GitHub Actions CI/CD Release Gate</text>
+<text x="970.0" y="556.0" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="500" fill="#343a40">✅ PASS or 🛑 BLOCK_PR on Regression</text>
+<path d="M 210.0 197.0 Q 211.3 211.4 210.0 225.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 210.4 196.0 Q 211.7 212.1 210.0 225.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 206.0 214.2 L 210.0 225.0 L 216.0 215.2" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="180.8" y="192.2" width="59.6" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="210.6" y="205.2" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Trigger</text>
+<path d="M 210.0 297.0 Q 209.0 309.7 210.0 325.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 209.8 296.3 Q 208.7 308.5 210.0 325.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 204.3 315.0 L 210.0 325.0 L 214.3 314.3" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="169.5" y="291.3" width="80.0" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="209.5" y="304.3" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Checkpoint</text>
+<path d="M 210.0 389.0 Q 210.8 400.7 210.0 415.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 209.2 388.7 Q 211.6 400.1 210.0 415.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 205.6 404.4 L 210.0 415.0 L 215.6 405.0" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="170.4" y="382.4" width="80.0" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="210.4" y="395.4" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Synthesize</text>
+<path d="M 210.0 483.0 Q 211.7 495.2 210.0 510.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round" stroke-dasharray="7 5" />
+<path d="M 210.6 483.1 Q 213.1 495.4 210.0 510.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6" stroke-dasharray="7 5" />
+<path d="M 206.2 499.1 L 210.0 510.0 L 216.2 500.3" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="170.9" y="476.9" width="80.0" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="210.9" y="489.9" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Emit Spans</text>
+<path d="M 365.0 245.0 Q 410.1 217.3 455.0 192.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 365.9 245.3 Q 410.3 218.6 455.0 192.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 448.4 201.4 L 455.0 192.0 L 443.5 192.7" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="346.2" y="198.9" width="127.6" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="410.0" y="211.9" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">1. Golden Signals</text>
+<path d="M 365.0 265.0 Q 408.3 292.8 455.0 320.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 364.8 265.8 Q 408.7 292.9 455.0 320.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 443.5 319.1 L 455.0 320.0 L 448.6 310.5" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="359.0" y="273.7" width="100.4" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="409.2" y="286.7" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">2. Error Logs</text>
+<path d="M 365.0 285.0 Q 410.0 370.4 455.0 455.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 364.6 285.9 Q 410.7 371.2 455.0 455.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 445.7 448.2 L 455.0 455.0 L 454.6 443.5" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="329.2" y="351.2" width="161.6" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="410.0" y="364.2" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">3. Runbook + Gated Fix</text>
+<path d="M 725.0 192.0 Q 768.2 186.8 815.0 185.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round" stroke-dasharray="7 5" />
+<path d="M 724.8 191.2 Q 769.4 185.5 815.0 185.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6" stroke-dasharray="7 5" />
+<path d="M 804.9 190.4 L 815.0 185.0 L 804.5 180.4" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="729.1" y="168.7" width="80.0" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="769.1" y="181.7" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Tool Trace</text>
+<path d="M 725.0 320.0 Q 771.8 262.7 815.0 205.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round" stroke-dasharray="7 5" />
+<path d="M 724.4 320.9 Q 771.6 263.6 815.0 205.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6" stroke-dasharray="7 5" />
+<path d="M 812.8 216.3 L 815.0 205.0 L 804.8 210.3" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="737.7" y="243.6" width="66.4" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="770.9" y="256.6" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Step Log</text>
+<path d="M 365.0 450.0 Q 584.7 359.9 815.0 320.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 365.6 449.6 Q 585.4 359.4 815.0 320.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 805.6 326.7 L 815.0 320.0 L 803.9 316.8" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="547.3" y="353.4" width="80.0" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="587.3" y="366.4" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">RCA Report</text>
+<path d="M 970.0 240.0 Q 970.3 255.3 970.0 270.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 969.9 240.3 Q 970.2 255.2 970.0 270.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 965.2 259.5 L 970.0 270.0 L 975.2 259.7" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<path d="M 970.0 370.0 Q 968.2 385.5 970.0 400.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 970.1 369.2 Q 966.8 386.8 970.0 400.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 963.7 390.3 L 970.0 400.0 L 973.7 389.1" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="925.7" y="366.2" width="86.8" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="969.1" y="379.2" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Score Delta</text>
+<path d="M 970.0 482.0 Q 971.8 493.9 970.0 508.0" fill="none" stroke="#1e1e1e" stroke-width="2.1" stroke-linecap="round"  />
+<path d="M 970.0 481.3 Q 970.3 492.9 970.0 508.0" fill="none" stroke="#1e1e1e" stroke-width="1.2" stroke-linecap="round" opacity="0.6"  />
+<path d="M 966.3 497.1 L 970.0 508.0 L 976.3 498.3" fill="none" stroke="#1e1e1e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+<rect x="941.1" y="475.5" width="59.6" height="18" rx="4" fill="#ffffff" opacity="0.92" />
+<text x="970.9" y="488.5" text-anchor="middle" font-family="Virgil, Caveat, 'Comic Sans MS', cursive, sans-serif" font-size="12.5" font-weight="600" fill="#1e1e1e">Gate PR</text>
+</svg>

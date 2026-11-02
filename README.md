@@ -12,39 +12,10 @@ It is engineered so that every MCP server, state-machine checkpoint, trajectory 
 
 ## System Architecture
 
-```mermaid
-flowchart TD
-    Alert["CloudWatch / PagerDuty Alert<br/>(12 Golden AWS Incident Scenarios)"] --> Agent["Stateful Incident Triage Agent<br/>(aegis_ops/triage_agent.py)"]
+> **Live Interactive Dashboard & Trace Replay Player:** [https://ritwikareddykancharla.github.io/aegis-ops/](https://ritwikareddykancharla.github.io/aegis-ops/)  
+> **Excalidraw Source:** [`docs/architecture.excalidraw`](docs/architecture.excalidraw)
 
-    subgraph StateMachine["Checkpointable Agent State Machine (Kill-Switch Protected)"]
-        S0["INIT"] --> S1["TRIAGE_METRICS"]
-        S1 --> S2["INSPECT_LOGS"]
-        S2 --> S3["CORRELATE_DEPLOYMENTS"]
-        S3 --> S4["CONSULT_RUNBOOK"]
-        S4 --> S5["PROPOSE_REMEDIATION"]
-        S5 --> S6["COMPLETED / ESCALATED"]
-    end
-
-    Agent --> StateMachine
-    StateMachine <-->|"JSON-Schema Validated Calls"| Registry["MCPToolRegistry<br/>(aegis_ops/mcp_servers.py)"]
-
-    subgraph MCPServers["Deterministic MCP Tool Servers"]
-        CW["CloudWatchLogsMCP<br/>• query_error_logs<br/>• detect_error_signatures"]
-        Prom["PrometheusMetricsMCP<br/>• query_golden_signals<br/>• get_recent_deployments"]
-        RB["RunbookRemediationMCP<br/>• get_runbook<br/>• execute_remediation (Approval Gate)"]
-    end
-
-    Registry --> CW
-    Registry --> Prom
-    Registry --> RB
-    Registry -.->|"W3C Spans, Latency, Tokens, USD Cost"| OTel["OTelTracer<br/>(benchmarks/otel_traces.jsonl)"]
-
-    StateMachine --> Eval["Step-Level Trajectory Grading Engine<br/>(aegis_ops/trajectory_eval.py)"]
-    StateMachine --> Judge["Calibrated LLM-as-a-Judge<br/>(aegis_ops/calibrated_judge.py)"]
-
-    Eval --> Gate["Paired Bootstrap (1,000 Resamples)<br/>& CI/CD Regression Gate (PASS / BLOCK_PR)"]
-    Judge --> Gate
-```
+![AegisOps Architecture Diagram](docs/architecture.svg)
 
 ---
 

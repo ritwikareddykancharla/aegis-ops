@@ -1,0 +1,731 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "https://excalidraw.com",
+  "elements": [
+    {
+      "id": "zone-101",
+      "type": "rectangle",
+      "x": 30,
+      "y": 90,
+      "width": 360,
+      "height": 510,
+      "strokeColor": "#495057",
+      "backgroundColor": "#f8f9fa",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 101
+    },
+    {
+      "id": "zone-102",
+      "type": "rectangle",
+      "x": 430,
+      "y": 90,
+      "width": 320,
+      "height": 510,
+      "strokeColor": "#e67700",
+      "backgroundColor": "#fff9db",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 102
+    },
+    {
+      "id": "zone-103",
+      "type": "rectangle",
+      "x": 790,
+      "y": 90,
+      "width": 360,
+      "height": 510,
+      "strokeColor": "#5f3dc4",
+      "backgroundColor": "#f3f0ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 103
+    },
+    {
+      "id": "box-104",
+      "type": "rectangle",
+      "x": 55,
+      "y": 135,
+      "width": 310,
+      "height": 62,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 104
+    },
+    {
+      "id": "text-104",
+      "type": "text",
+      "x": 65,
+      "y": 147,
+      "width": 290,
+      "height": 42,
+      "text": "Production Incident Alert (INC-001..012)\np99 Latency / Error Spike / OOM / IAM",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 604
+    },
+    {
+      "id": "box-105",
+      "type": "rectangle",
+      "x": 55,
+      "y": 225,
+      "width": 310,
+      "height": 72,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 105
+    },
+    {
+      "id": "text-105",
+      "type": "text",
+      "x": 65,
+      "y": 237,
+      "width": 290,
+      "height": 52,
+      "text": "State-Machine Triage Orchestrator\nINIT \u2192 METRICS \u2192 LOGS \u2192 DEPLOY \u2192 RUNBOOK\nclaude-opus-5-5 / gpt-4o-mini / Policy",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 605
+    },
+    {
+      "id": "box-106",
+      "type": "rectangle",
+      "x": 55,
+      "y": 325,
+      "width": 310,
+      "height": 64,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 106
+    },
+    {
+      "id": "text-106",
+      "type": "text",
+      "x": 65,
+      "y": 337,
+      "width": 290,
+      "height": 44,
+      "text": "Checkpoint & Crash Recovery Store\nsave_checkpoint() + Cost/Loop Kill-Switch",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 606
+    },
+    {
+      "id": "box-107",
+      "type": "rectangle",
+      "x": 55,
+      "y": 415,
+      "width": 310,
+      "height": 68,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 107
+    },
+    {
+      "id": "text-107",
+      "type": "text",
+      "x": 65,
+      "y": 427,
+      "width": 290,
+      "height": 48,
+      "text": "Root-Cause Analysis (RCA) & Fix Plan\nGrounded Evidence + Remediation Proposal",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 607
+    },
+    {
+      "id": "box-108",
+      "type": "rectangle",
+      "x": 55,
+      "y": 510,
+      "width": 310,
+      "height": 66,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#e9ecef",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 108
+    },
+    {
+      "id": "text-108",
+      "type": "text",
+      "x": 65,
+      "y": 522,
+      "width": 290,
+      "height": 46,
+      "text": "OpenTelemetry W3C Span Tracer\ntrace_id / latency_ms / tokens / JSONL",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 608
+    },
+    {
+      "id": "box-109",
+      "type": "rectangle",
+      "x": 455,
+      "y": 145,
+      "width": 270,
+      "height": 95,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 109
+    },
+    {
+      "id": "text-109",
+      "type": "text",
+      "x": 465,
+      "y": 157,
+      "width": 250,
+      "height": 75,
+      "text": "PrometheusMetricsMCP\n\u2022 query_golden_signals()\n\u2022 get_recent_deployments()\nJSON-Schema Draft-07 Validated",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 609
+    },
+    {
+      "id": "box-110",
+      "type": "rectangle",
+      "x": 455,
+      "y": 275,
+      "width": 270,
+      "height": 95,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffd8a8",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 110
+    },
+    {
+      "id": "text-110",
+      "type": "text",
+      "x": 465,
+      "y": 287,
+      "width": 250,
+      "height": 75,
+      "text": "CloudWatchLogsMCP\n\u2022 query_error_logs()\n\u2022 detect_error_signatures()\nPoolExhausted / OOM / Deadlock",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 610
+    },
+    {
+      "id": "box-111",
+      "type": "rectangle",
+      "x": 455,
+      "y": 405,
+      "width": 270,
+      "height": 115,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffc9c9",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 111
+    },
+    {
+      "id": "text-111",
+      "type": "text",
+      "x": 465,
+      "y": 417,
+      "width": 250,
+      "height": 95,
+      "text": "RunbookRemediationMCP\n\u2022 get_runbook(incident_type)\n\u2022 execute_remediation()\n\ud83d\udd12 Mandatory Approval Token Gate",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 611
+    },
+    {
+      "id": "box-112",
+      "type": "rectangle",
+      "x": 815,
+      "y": 140,
+      "width": 310,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#d0bfff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 112
+    },
+    {
+      "id": "text-112",
+      "type": "text",
+      "x": 825,
+      "y": 152,
+      "width": 290,
+      "height": 80,
+      "text": "Step-Level DAG Trajectory Grader\n\u2022 Prerequisite Order (must_precede)\n\u2022 Param Hallucination & Safety Check\n\u2022 Shadow-Mode Trajectory Diff",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 612
+    },
+    {
+      "id": "box-113",
+      "type": "rectangle",
+      "x": 815,
+      "y": 270,
+      "width": 310,
+      "height": 100,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#a5d8ff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 113
+    },
+    {
+      "id": "text-113",
+      "type": "text",
+      "x": 825,
+      "y": 282,
+      "width": 290,
+      "height": 80,
+      "text": "Calibrated LLM-as-a-Judge\n\u2022 24 Human Anchors (Cohen's \u03ba = 0.92)\n\u2022 Position-Swap & Verbosity Debiasing\n\u2022 Factuality / Actionability / Safety",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 613
+    },
+    {
+      "id": "box-114",
+      "type": "rectangle",
+      "x": 815,
+      "y": 400,
+      "width": 310,
+      "height": 82,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#ffec99",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 114
+    },
+    {
+      "id": "text-114",
+      "type": "text",
+      "x": 825,
+      "y": 412,
+      "width": 290,
+      "height": 62,
+      "text": "1,000-Sample Paired Bootstrap CI\n+25.0% \u00b1 21.9% (95% CI, p < 0.05)",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 614
+    },
+    {
+      "id": "box-115",
+      "type": "rectangle",
+      "x": 815,
+      "y": 508,
+      "width": 310,
+      "height": 68,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "#b2f2bb",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "seed": 115
+    },
+    {
+      "id": "text-115",
+      "type": "text",
+      "x": 825,
+      "y": 520,
+      "width": 290,
+      "height": 48,
+      "text": "GitHub Actions CI/CD Release Gate\n\u2705 PASS or \ud83d\uded1 BLOCK_PR on Regression",
+      "fontSize": 16,
+      "fontFamily": 1,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "strokeColor": "#1e1e1e",
+      "seed": 615
+    },
+    {
+      "id": "arrow-116",
+      "type": "arrow",
+      "x": 210,
+      "y": 197,
+      "width": 0,
+      "height": 28,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          28
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 116
+    },
+    {
+      "id": "arrow-117",
+      "type": "arrow",
+      "x": 210,
+      "y": 297,
+      "width": 0,
+      "height": 28,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          28
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 117
+    },
+    {
+      "id": "arrow-118",
+      "type": "arrow",
+      "x": 210,
+      "y": 389,
+      "width": 0,
+      "height": 26,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          26
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 118
+    },
+    {
+      "id": "arrow-119",
+      "type": "arrow",
+      "x": 210,
+      "y": 483,
+      "width": 0,
+      "height": 27,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          27
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "seed": 119
+    },
+    {
+      "id": "arrow-120",
+      "type": "arrow",
+      "x": 365,
+      "y": 245,
+      "width": 90,
+      "height": 53,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          -53
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 120
+    },
+    {
+      "id": "arrow-121",
+      "type": "arrow",
+      "x": 365,
+      "y": 265,
+      "width": 90,
+      "height": 55,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          55
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 121
+    },
+    {
+      "id": "arrow-122",
+      "type": "arrow",
+      "x": 365,
+      "y": 285,
+      "width": 90,
+      "height": 170,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          170
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 122
+    },
+    {
+      "id": "arrow-123",
+      "type": "arrow",
+      "x": 725,
+      "y": 192,
+      "width": 90,
+      "height": 7,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          -7
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "seed": 123
+    },
+    {
+      "id": "arrow-124",
+      "type": "arrow",
+      "x": 725,
+      "y": 320,
+      "width": 90,
+      "height": 115,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          90,
+          -115
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "dashed",
+      "roughness": 1,
+      "seed": 124
+    },
+    {
+      "id": "arrow-125",
+      "type": "arrow",
+      "x": 365,
+      "y": 450,
+      "width": 450,
+      "height": 130,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          450,
+          -130
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 125
+    },
+    {
+      "id": "arrow-126",
+      "type": "arrow",
+      "x": 970,
+      "y": 240,
+      "width": 0,
+      "height": 30,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          30
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 126
+    },
+    {
+      "id": "arrow-127",
+      "type": "arrow",
+      "x": 970,
+      "y": 370,
+      "width": 0,
+      "height": 30,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          30
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 127
+    },
+    {
+      "id": "arrow-128",
+      "type": "arrow",
+      "x": 970,
+      "y": 482,
+      "width": 0,
+      "height": 26,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          26
+        ]
+      ],
+      "strokeColor": "#1e1e1e",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "seed": 128
+    }
+  ],
+  "appState": {
+    "viewBackgroundColor": "#ffffff",
+    "gridSize": 20
+  },
+  "files": {}
+}

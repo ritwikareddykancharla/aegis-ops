@@ -1,0 +1,47 @@
+name: AegisOps CI Evaluation & Regression Gate
+
+on:
+  push:
+    branches: ["main", "master"]
+  pull_request:
+    branches: ["main", "master"]
+
+jobs:
+  unit-tests-and-eval-gate:
+    name: Run Unit Tests & Agent Trajectory Regression Gate
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run Unit & Integration Test Suite
+        run: python3 -m unittest discover -s tests -v
+
+      - name: Execute AegisOps Benchmark & CI Regression Gate
+        run: |
+          python3 -m aegis_ops.cli --run-eval-suite --output benchmarks/latest_results.json
+          python3 -c '
+          import json, sys
+          data = json.load(open("benchmarks/latest_results.json"))
+          gate = data["ci_cd_regression_gates"]["OptimalTriagePolicy_vs_Baseline"]
+          print("CI Gate Decision:", gate["decision"], "| Bootstrap:", gate["bootstrap_summary"])
+          if gate["decision"] != "PASS":
+              sys.exit(1)
+          '
+
+      - name: Upload Benchmark & OpenTelemetry Trace Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: aegis-ops-benchmarks-py${{ matrix.python-version }}
+          path: |
+            benchmarks/latest_results.json
+            benchmarks/otel_traces.jsonl

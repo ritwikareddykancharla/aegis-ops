@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aegis-ops"
+version = "0.1.0"
+description = "Autonomous DevOps Incident Triage Agent, Step-Level Trajectory Grading Engine & Calibrated LLM-as-a-Judge"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Ritwika" }
+]
+keywords = [
+    "devops-agent",
+    "incident-triage",
+    "mcp",
+    "trajectory-evaluation",
+    "llm-as-a-judge",
+    "opentelemetry",
+    "aws-bedrock"
+]
+dependencies = []
+
+[project.optional-dependencies]
+bedrock = ["boto3>=1.34.0"]
+anthropic = ["anthropic>=0.34.0"]
+
+[project.scripts]
+aegis-ops = "aegis_ops.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["aegis_ops*"]

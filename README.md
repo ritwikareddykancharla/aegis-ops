@@ -51,6 +51,17 @@ Rather than grading only final text outputs, `StepTrajectoryEvaluator` grades th
 - Calibrates against **24 human-annotated RCA anchors** (`CALIBRATION_ANCHORS`), computing **Cohen's Kappa ($\kappa = 0.9167$)**, **position-bias swap consistency ($100.0\%$)** across `(A, B)` vs. `(B, A)` slot orderings, and **verbosity bias correlation ($r = +0.1990$)**.
 - **Paired Bootstrap Confidence Interval Engine** (1,000 resamples) and **CI/CD Regression Gate** (`PASS` / `BLOCK_PR` if task success drops $> 2.0\%$ or safety violations $> 0$).
 
+### 5. Real 25,000-Row SQLite + Config Chaos Fault Injection Sandbox & Live SSE Server (`aegis_ops/live_sandbox.py`, `aegis_ops/server.py`)
+Beyond synthetic incident fixtures, `LiveCheckoutSandbox` spins up a **real local e-commerce checkout service** backed by a **25,000-row SQLite WAL database (`orders.db`)**, live runtime config (`service_config.json`), and JSONL telemetry logs (`telemetry.jsonl`).
+- **6 Physical Fault-Injection Modes**:
+  1. `FAULT-01-MISSING-SQL-INDEX`: Drops `idx_orders_customer_status`, forcing SQLite into 25,000-row full table scans (`SCAN orders` in `EXPLAIN QUERY PLAN`, spiking `p95` query latency `85x` from `0.047ms` to `4.028ms`).
+  2. `FAULT-02-CANARY-DIV-ZERO`: Pushes canary release `v2.15.0-canary` (`45%` traffic weight) with `canary_tier_divisor=0.0`, raising real `ZeroDivisionError` exceptions on `60%` of checkout requests.
+  3. `FAULT-03-KMS-KEY-REVOKED`: Drifts `active_kms_key_id` to `kms-key-2025-v3` (`PendingDeletion` in `kms_keys` table), failing `100%` of payment decryptions with `KMSKeyDisabledException`.
+  4. `FAULT-04-DB-LOCK-CONTENTION`: Acquires a zombie exclusive lock (`holder_pid=48912`) on `inventory_locks` while throttling `db_max_connections=2`.
+  5. `FAULT-05-CACHE-MEMORY-LEAK`: Sets `session_cache_eviction="NONE"`, growing worker memory past `536.8 MB` (`> 512 MB` limit) and raising `MemoryError: OOMKilled`.
+  6. `FAULT-06-CASCADING-RETRY-INDEX` (**Compound Multi-Fault**): Simultaneously drops the SQLite composite index (`SCAN orders`) **and** injects a `12x` zero-backoff retry loop (`retry_max_attempts=12, retry_backoff_ms=0`), amplifying `p95` latency to **`48.058ms`** (`1,068x` degradation).
+- **Live HTTP + Server-Sent Events (SSE) Streaming Backend (`python3 -m aegis_ops.server --port 8080`)**: Streams live fault injection, `EXPLAIN QUERY PLAN` output, LLM diagnosis, and post-remediation load probes over `text/event-stream`.
+
 ---
 
 ## Real Benchmark Results (`benchmarks/latest_results.json`)
@@ -96,6 +107,23 @@ Recorded across 6 live multi-turn LLM calls per incident (`INIT -> TRIAGE_METRIC
 | `openai:gpt-4o-mini` | `INC-001` (RDS Pool) | 100.0% | 100.0% | 0.645 | 6 | 11,861.7 | `PASS` |
 | `openai:gpt-4o-mini` | `INC-002` (EKS OOM) | 100.0% | 100.0% | 0.675 | 6 | 12,120.8 | `PASS` |
 | `openai:gpt-4o-mini` | `INC-003` (KMS IAM) | 100.0% | 100.0% | 0.725 | 6 | 13,163.0 | `PASS` |
+
+### 5. Real 25,000-Row SQLite + Config Chaos Sandbox Benchmark & Failure Postmortem (`benchmarks/live_chaos_sandbox_traces.json`)
+
+Executed against the live SQLite WAL checkout database (`25,000` rows in `orders.db`) where each model inspects real `EXPLAIN QUERY PLAN` output, `telemetry.jsonl` exception tracebacks, and `service_config.json` diffs, executes a live remediation, and is verified by a post-remediation load probe:
+
+| Chaos Fault ID | Injected Physical Fault | SQLite `EXPLAIN QUERY PLAN` (Before) | Pre-Fix Error / `p95` Latency | `claude-opus-5-5` Action & Post-Fix `p95` | `gpt-4o-mini` Action & Post-Fix `p95` |
+| :--- | :--- | :--- | :---: | :---: | :---: |
+| `FAULT-01-MISSING-SQL-INDEX` | `DROP INDEX idx_orders_customer_status` | `SCAN orders` (25k rows) | `100%` / `4.028ms` | `create_sql_index` -> **`0.047ms` (PASS)** | `create_sql_index` -> `0.030ms` (PASS) |
+| `FAULT-02-CANARY-DIV-ZERO` | Canary `v2.15.0` (`canary_tier_divisor=0.0`) | `SEARCH orders USING INDEX` | `60%` / `0.019ms` | `rollback_canary_config` -> **`0.025ms` (PASS)** | `rollback_canary_config` -> `0.289ms` (PASS) |
+| `FAULT-03-KMS-KEY-REVOKED` | Config drift to `kms-key-2025-v3` (`PendingDeletion`) | `SEARCH orders USING INDEX` | `100%` / `0.003ms` | `update_kms_key_config` -> **`0.081ms` (PASS)** | `update_kms_key_config` -> `0.192ms` (PASS) |
+| `FAULT-04-DB-LOCK-CONTENTION` | Zombie exclusive lock (`PID 48912`) + `max_conn=2` | `SEARCH orders USING INDEX` | `100%` / `0.007ms` | `kill_zombie_db_lock` -> **`0.076ms` (PASS)** | `kill_zombie_db_lock` -> `0.066ms` (PASS) |
+| `FAULT-05-CACHE-MEMORY-LEAK` | `session_cache_eviction="NONE"` (`536.8 MB > 512 MB`) | `SEARCH orders USING INDEX` | `100%` / `0.010ms` | `restore_cache_eviction_policy` -> **`0.036ms` (PASS)** | `restore_cache_eviction_policy` -> `0.072ms` (PASS) |
+| **`FAULT-06-CASCADING-RETRY-INDEX`** | **Compound:** Dropped SQL Index + `12x` `0ms` Retry Storm | `SCAN orders` + `retry=12` | `100%` / **`48.058ms`** | **`compound_fix_index_and_retries` -> `0.045ms` (PASS ✅)** | **`create_sql_index` ONLY -> `0.296ms` (FAIL ❌)** |
+| **Overall Resolution Rate** | **6 Real SQLite/Config Chaos Faults** | — | — | **`6 / 6 (100.0%)`** | **`5 / 6 (83.3%)`** |
+
+> **Failure Postmortem (`FAULT-06-CASCADING-RETRY-INDEX` — Single-Cause Anchoring Bias):**  
+> On Faults 1–5 (single-root-cause outages), both `claude-opus-5-5` and `gpt-4o-mini` achieved `100%` resolution. However, on **`FAULT-06`** (where a dropped composite SQLite index caused `4ms` table scans that were amplified `12x` to **`48.058ms`** by a concurrent `retry_max_attempts=12, retry_backoff_ms=0` config regression), **`gpt-4o-mini` failed (`resolved=False`)** due to **single-cause anchoring**: it anchored on `SCAN orders` in `EXPLAIN QUERY PLAN` and executed `create_sql_index` alone, leaving the `12x` zero-backoff retry storm active in `service_config.json`. By contrast, **`claude-opus-5-5`** synthesized both `STEP_2_SQLITE_EXPLAIN_PLAN` and `STEP_3_CONFIG_DIFF`, selecting `compound_fix_index_and_retries` and cutting `p95` latency **1,068x** (`48.058ms -> 0.045ms`).
 
 ---
 

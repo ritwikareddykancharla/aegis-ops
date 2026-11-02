@@ -1,0 +1,3114 @@
+{
+  "benchmark": "AegisOps Real SQLite + Config Chaos Fault Injection Benchmark",
+  "sqlite_orders_rows": 25000,
+  "models": [
+    "anthropic:claude-opus-5-5",
+    "openai:gpt-4o-mini"
+  ],
+  "runs": {
+    "FAULT-01-MISSING-SQL-INDEX": {
+      "anthropic:claude-opus-5-5": {
+        "fault_id": "FAULT-01-MISSING-SQL-INDEX",
+        "title": "Dropped Composite SQLite Index (`idx_orders_customer_status`) Causing 25,000-Row Full Table Scans",
+        "provider": "anthropic",
+        "model": "claude-opus-5-5",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 3.946,
+          "p95_latency_ms": 4.028,
+          "p99_latency_ms": 4.153,
+          "mean_latency_ms": 3.97,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 4.174ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+            "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.907ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+            "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 4.013ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.025,
+          "p95_latency_ms": 0.047,
+          "p99_latency_ms": 0.053,
+          "mean_latency_ms": 0.057,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "create_sql_index",
+        "expected_action": "create_sql_index",
+        "incident_resolved": true,
+        "llm_latency_ms": 3919.707,
+        "llm_tokens": {
+          "input": 2650,
+          "output": 403
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "missing_orders_index_after_migration",
+          "remediation_action": "create_sql_index",
+          "sql_plan_finding": "EXPLAIN QUERY PLAN shows a full SCAN orders across 25000 rows plus USE TEMP B-TREE FOR ORDER BY, with zero active indexes on orders.",
+          "config_diff_finding": "Only deployment_id drifted, from deploy-2026-10-30-stable to mig-2026-1102-drop-legacy-idx; KMS key v4 is Enabled, canary is disabled, retries are 2, eviction is LRU_TTL_300S, and no inventory lock is held.",
+          "technical_rca_summary": "Migration mig-2026-1102-drop-legacy-idx dropped the orders index, so SELECTs do a full SCAN of 25000 rows plus a temp B-tree sort, causing SlowQuerySLABreach TimeoutErrors at p99 4.153ms against a 2ms SLA and a 100% error rate. Remediation is to recreate the index on the orders filter and ORDER BY columns, then re-run EXPLAIN QUERY PLAN to confirm it no longer scans."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:22:52Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.948,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.938ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:52Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.908,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.899ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:52Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.914,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.903ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:52Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.942,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.934ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:52Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 4.018,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 4.009ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:52Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.946,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.937ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [],
+              "explain_query_plan": [
+                {
+                  "id": 4,
+                  "parent": 0,
+                  "notused": 216,
+                  "detail": "SCAN orders"
+                },
+                {
+                  "id": 23,
+                  "parent": 0,
+                  "notused": 0,
+                  "detail": "USE TEMP B-TREE FOR ORDER BY"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "mig-2026-1102-drop-legacy-idx",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "mig-2026-1102-drop-legacy-idx"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "anthropic",
+            "llm_model": "claude-opus-5-5",
+            "llm_latency_ms": 3919.707,
+            "llm_input_tokens": 2650,
+            "llm_output_tokens": 403,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "missing_orders_index_after_migration",
+              "remediation_action": "create_sql_index",
+              "sql_plan_finding": "EXPLAIN QUERY PLAN shows a full SCAN orders across 25000 rows plus USE TEMP B-TREE FOR ORDER BY, with zero active indexes on orders.",
+              "config_diff_finding": "Only deployment_id drifted, from deploy-2026-10-30-stable to mig-2026-1102-drop-legacy-idx; KMS key v4 is Enabled, canary is disabled, retries are 2, eviction is LRU_TTL_300S, and no inventory lock is held.",
+              "technical_rca_summary": "Migration mig-2026-1102-drop-legacy-idx dropped the orders index, so SELECTs do a full SCAN of 25000 rows plus a temp B-tree sort, causing SlowQuerySLABreach TimeoutErrors at p99 4.153ms against a 2ms SLA and a 100% error rate. Remediation is to recreate the index on the orders filter and ORDER BY columns, then re-run EXPLAIN QUERY PLAN to confirm it no longer scans."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "create_sql_index",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "create_sql_index",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "create_sql_index",
+              "applied_changes": [
+                "Created SQLite index idx_orders_customer_status ON orders(customer_id, status, created_ts)"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.025,
+                "p95_latency_ms": 0.047,
+                "p99_latency_ms": 0.053,
+                "mean_latency_ms": 0.057,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      },
+      "openai:gpt-4o-mini": {
+        "fault_id": "FAULT-01-MISSING-SQL-INDEX",
+        "title": "Dropped Composite SQLite Index (`idx_orders_customer_status`) Causing 25,000-Row Full Table Scans",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 3.987,
+          "p95_latency_ms": 4.11,
+          "p99_latency_ms": 4.174,
+          "mean_latency_ms": 4.02,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 4.345ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+            "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 4.156ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+            "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 4.060ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.027,
+          "p95_latency_ms": 0.03,
+          "p99_latency_ms": 0.032,
+          "mean_latency_ms": 0.051,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "create_sql_index",
+        "expected_action": "create_sql_index",
+        "incident_resolved": true,
+        "llm_latency_ms": 2365.358,
+        "llm_tokens": {
+          "input": 1663,
+          "output": 131
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "missing_index_on_orders",
+          "remediation_action": "create_sql_index",
+          "sql_plan_finding": "The query plan indicates a full table scan on `orders` with no active indexes.",
+          "config_diff_finding": "The deployment ID has changed from `deploy-2026-10-30-stable` to `mig-2026-1102-drop-legacy-idx`.",
+          "technical_rca_summary": "After the schema migration, p99 latency increased to 4.345ms, exceeding the 2ms SLA due to missing indexes on the `orders` table. Remediation involves creating an index to optimize query performance."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:22:56Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.98,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.970ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:56Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.886,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.876ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:56Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.918,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.906ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:56Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.992,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.979ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:56Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.907,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.898ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:56Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 3.976,
+                  "error": "TimeoutError: SlowQuerySLABreach: SELECT on `orders` took 3.968ms (> 2.000ms SLA; check EXPLAIN QUERY PLAN for missing index)",
+                  "details": {
+                    "deployment_id": "mig-2026-1102-drop-legacy-idx"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [],
+              "explain_query_plan": [
+                {
+                  "id": 4,
+                  "parent": 0,
+                  "notused": 216,
+                  "detail": "SCAN orders"
+                },
+                {
+                  "id": 23,
+                  "parent": 0,
+                  "notused": 0,
+                  "detail": "USE TEMP B-TREE FOR ORDER BY"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "mig-2026-1102-drop-legacy-idx",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "mig-2026-1102-drop-legacy-idx"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4o-mini",
+            "llm_latency_ms": 2365.358,
+            "llm_input_tokens": 1663,
+            "llm_output_tokens": 131,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "missing_index_on_orders",
+              "remediation_action": "create_sql_index",
+              "sql_plan_finding": "The query plan indicates a full table scan on `orders` with no active indexes.",
+              "config_diff_finding": "The deployment ID has changed from `deploy-2026-10-30-stable` to `mig-2026-1102-drop-legacy-idx`.",
+              "technical_rca_summary": "After the schema migration, p99 latency increased to 4.345ms, exceeding the 2ms SLA due to missing indexes on the `orders` table. Remediation involves creating an index to optimize query performance."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "create_sql_index",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "create_sql_index",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "create_sql_index",
+              "applied_changes": [
+                "Created SQLite index idx_orders_customer_status ON orders(customer_id, status, created_ts)"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.027,
+                "p95_latency_ms": 0.03,
+                "p99_latency_ms": 0.032,
+                "mean_latency_ms": 0.051,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "FAULT-02-CANARY-DIV-ZERO": {
+      "anthropic:claude-opus-5-5": {
+        "fault_id": "FAULT-02-CANARY-DIV-ZERO",
+        "title": "Bad Canary Release (`v2.15.0-canary`, 40% traffic) with `canary_tier_divisor=0.0` Raising ZeroDivisionError",
+        "provider": "anthropic",
+        "model": "claude-opus-5-5",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 15,
+          "error_rate_pct": 60.0,
+          "p50_latency_ms": 0.004,
+          "p95_latency_ms": 0.019,
+          "p99_latency_ms": 0.02,
+          "mean_latency_ms": 0.018,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "ZeroDivisionError: division by zero"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.022,
+          "p95_latency_ms": 0.025,
+          "p99_latency_ms": 0.029,
+          "mean_latency_ms": 0.036,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "rollback_canary_config",
+        "expected_action": "rollback_canary_config",
+        "incident_resolved": true,
+        "llm_latency_ms": 3604.169,
+        "llm_tokens": {
+          "input": 2222,
+          "output": 348
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "canary_config_zero_divisor",
+          "remediation_action": "rollback_canary_config",
+          "sql_plan_finding": "Orders query (25000 rows) uses SEARCH via idx_orders_customer_status, so no full scan; KMS v4 key is Enabled and inventory locks are free.",
+          "config_diff_finding": "Canary deploy-2026-11-02-canary-948 set canary_tier_divisor 100.0->0.0, canary_enabled true, canary_weight 0.45, release v2.15.0-canary.",
+          "technical_rca_summary": "Canary deploy-2026-11-02-canary-948 set canary_tier_divisor=0.0, so canary_weight=0.45 traffic hit ZeroDivisionError, causing a 60% error rate with fast-fail p99 latency of 0.02ms. The SQL plan is indexed and KMS and locks are healthy, so roll back the canary config to the v2.14.0-stable baseline with divisor 100.0 and canary disabled."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 15,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:22:59Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:59Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:59Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:59Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:59Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:22:59Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.15.0-canary",
+                "deployment_id": "deploy-2026-11-02-canary-948",
+                "canary_enabled": true,
+                "canary_weight": 0.45,
+                "canary_tier_divisor": 0.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "canary_enabled": {
+                  "baseline": false,
+                  "live": true
+                },
+                "canary_tier_divisor": {
+                  "baseline": 100.0,
+                  "live": 0.0
+                },
+                "canary_weight": {
+                  "baseline": 0.0,
+                  "live": 0.45
+                },
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "deploy-2026-11-02-canary-948"
+                },
+                "release_version": {
+                  "baseline": "v2.14.0-stable",
+                  "live": "v2.15.0-canary"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "anthropic",
+            "llm_model": "claude-opus-5-5",
+            "llm_latency_ms": 3604.169,
+            "llm_input_tokens": 2222,
+            "llm_output_tokens": 348,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "canary_config_zero_divisor",
+              "remediation_action": "rollback_canary_config",
+              "sql_plan_finding": "Orders query (25000 rows) uses SEARCH via idx_orders_customer_status, so no full scan; KMS v4 key is Enabled and inventory locks are free.",
+              "config_diff_finding": "Canary deploy-2026-11-02-canary-948 set canary_tier_divisor 100.0->0.0, canary_enabled true, canary_weight 0.45, release v2.15.0-canary.",
+              "technical_rca_summary": "Canary deploy-2026-11-02-canary-948 set canary_tier_divisor=0.0, so canary_weight=0.45 traffic hit ZeroDivisionError, causing a 60% error rate with fast-fail p99 latency of 0.02ms. The SQL plan is indexed and KMS and locks are healthy, so roll back the canary config to the v2.14.0-stable baseline with divisor 100.0 and canary disabled."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "rollback_canary_config",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "rollback_canary_config",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "rollback_canary_config",
+              "applied_changes": [
+                "Rolled back canary release v2.15.0-canary and restored canary_tier_divisor=100.0"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.022,
+                "p95_latency_ms": 0.025,
+                "p99_latency_ms": 0.029,
+                "mean_latency_ms": 0.036,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      },
+      "openai:gpt-4o-mini": {
+        "fault_id": "FAULT-02-CANARY-DIV-ZERO",
+        "title": "Bad Canary Release (`v2.15.0-canary`, 40% traffic) with `canary_tier_divisor=0.0` Raising ZeroDivisionError",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 15,
+          "error_rate_pct": 60.0,
+          "p50_latency_ms": 0.005,
+          "p95_latency_ms": 0.021,
+          "p99_latency_ms": 0.021,
+          "mean_latency_ms": 0.018,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "ZeroDivisionError: division by zero"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.099,
+          "p95_latency_ms": 0.289,
+          "p99_latency_ms": 0.289,
+          "mean_latency_ms": 0.166,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "rollback_canary_config",
+        "expected_action": "rollback_canary_config",
+        "incident_resolved": true,
+        "llm_latency_ms": 2183.417,
+        "llm_tokens": {
+          "input": 1452,
+          "output": 113
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "zero_division_error",
+          "remediation_action": "rollback_canary_config",
+          "sql_plan_finding": "Using index idx_orders_customer_status for searching orders by customer_id and status.",
+          "config_diff_finding": "Canary deployment enabled with significant changes in canary_weight and canary_tier_divisor.",
+          "technical_rca_summary": "The service experienced a 60% error rate due to ZeroDivisionError following the canary deployment. The SQL plan indicates reliance on an index, while config changes include canary settings that need to be reverted."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 15,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:03Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:03Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:03Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:03Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:03Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:03Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.007,
+                  "error": "ZeroDivisionError: division by zero",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-canary-948"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.15.0-canary",
+                "deployment_id": "deploy-2026-11-02-canary-948",
+                "canary_enabled": true,
+                "canary_weight": 0.45,
+                "canary_tier_divisor": 0.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "canary_enabled": {
+                  "baseline": false,
+                  "live": true
+                },
+                "canary_tier_divisor": {
+                  "baseline": 100.0,
+                  "live": 0.0
+                },
+                "canary_weight": {
+                  "baseline": 0.0,
+                  "live": 0.45
+                },
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "deploy-2026-11-02-canary-948"
+                },
+                "release_version": {
+                  "baseline": "v2.14.0-stable",
+                  "live": "v2.15.0-canary"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4o-mini",
+            "llm_latency_ms": 2183.417,
+            "llm_input_tokens": 1452,
+            "llm_output_tokens": 113,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "zero_division_error",
+              "remediation_action": "rollback_canary_config",
+              "sql_plan_finding": "Using index idx_orders_customer_status for searching orders by customer_id and status.",
+              "config_diff_finding": "Canary deployment enabled with significant changes in canary_weight and canary_tier_divisor.",
+              "technical_rca_summary": "The service experienced a 60% error rate due to ZeroDivisionError following the canary deployment. The SQL plan indicates reliance on an index, while config changes include canary settings that need to be reverted."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "rollback_canary_config",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "rollback_canary_config",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "rollback_canary_config",
+              "applied_changes": [
+                "Rolled back canary release v2.15.0-canary and restored canary_tier_divisor=100.0"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.099,
+                "p95_latency_ms": 0.289,
+                "p99_latency_ms": 0.289,
+                "mean_latency_ms": 0.166,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "FAULT-03-KMS-KEY-REVOKED": {
+      "anthropic:claude-opus-5-5": {
+        "fault_id": "FAULT-03-KMS-KEY-REVOKED",
+        "title": "Config Drift Pointing to Revoked KMS Key (`kms-key-2025-v3` in PendingDeletion)",
+        "provider": "anthropic",
+        "model": "claude-opus-5-5",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 0.003,
+          "p95_latency_ms": 0.003,
+          "p99_latency_ms": 0.006,
+          "mean_latency_ms": 0.011,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.074,
+          "p95_latency_ms": 0.081,
+          "p99_latency_ms": 0.082,
+          "mean_latency_ms": 0.112,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "update_kms_key_config",
+        "expected_action": "update_kms_key_config",
+        "incident_resolved": true,
+        "llm_latency_ms": 4842.016,
+        "llm_tokens": {
+          "input": 2651,
+          "output": 396
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "KMS_KEY_CONFIG_DRIFT_PENDING_DELETION",
+          "remediation_action": "update_kms_key_config",
+          "sql_plan_finding": "The orders query (25000 rows) uses idx_orders_customer_status via SEARCH, inventory locks are clear, and kms_keys shows key-2025-v3 PendingDeletion while key-2026-v4 is Enabled.",
+          "config_diff_finding": "active_kms_key_id drifted from baseline kms-key-2026-v4 to the PendingDeletion kms-key-2025-v3 in deployment cfg-kms-drift-2026-11-02.",
+          "technical_rca_summary": "Config deployment cfg-kms-drift-2026-11-02 reverted active_kms_key_id to kms-key-2025-v3, which is PendingDeletion, causing 100% fast-fail KMSKeyDisabledException (p99 0.006ms) while the SQL plan stayed index-backed. Remediation: set active_kms_key_id to the Enabled kms-key-2026-v4 and redeploy."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:05Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.002,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:05Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.002,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:05Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.002,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:05Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:05Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.002,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:05Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "cfg-kms-drift-2026-11-02",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "active_kms_key_id": {
+                  "baseline": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "live": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3"
+                },
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "cfg-kms-drift-2026-11-02"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "anthropic",
+            "llm_model": "claude-opus-5-5",
+            "llm_latency_ms": 4842.016,
+            "llm_input_tokens": 2651,
+            "llm_output_tokens": 396,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "KMS_KEY_CONFIG_DRIFT_PENDING_DELETION",
+              "remediation_action": "update_kms_key_config",
+              "sql_plan_finding": "The orders query (25000 rows) uses idx_orders_customer_status via SEARCH, inventory locks are clear, and kms_keys shows key-2025-v3 PendingDeletion while key-2026-v4 is Enabled.",
+              "config_diff_finding": "active_kms_key_id drifted from baseline kms-key-2026-v4 to the PendingDeletion kms-key-2025-v3 in deployment cfg-kms-drift-2026-11-02.",
+              "technical_rca_summary": "Config deployment cfg-kms-drift-2026-11-02 reverted active_kms_key_id to kms-key-2025-v3, which is PendingDeletion, causing 100% fast-fail KMSKeyDisabledException (p99 0.006ms) while the SQL plan stayed index-backed. Remediation: set active_kms_key_id to the Enabled kms-key-2026-v4 and redeploy."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "update_kms_key_config",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "update_kms_key_config",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "update_kms_key_config",
+              "applied_changes": [
+                "Updated active_kms_key_id to Enabled key kms-key-2026-v4"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.074,
+                "p95_latency_ms": 0.081,
+                "p99_latency_ms": 0.082,
+                "mean_latency_ms": 0.112,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      },
+      "openai:gpt-4o-mini": {
+        "fault_id": "FAULT-03-KMS-KEY-REVOKED",
+        "title": "Config Drift Pointing to Revoked KMS Key (`kms-key-2025-v3` in PendingDeletion)",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 0.003,
+          "p95_latency_ms": 0.009,
+          "p99_latency_ms": 0.011,
+          "mean_latency_ms": 0.013,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.071,
+          "p95_latency_ms": 0.192,
+          "p99_latency_ms": 0.45,
+          "mean_latency_ms": 0.171,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "update_kms_key_config",
+        "expected_action": "update_kms_key_config",
+        "incident_resolved": true,
+        "llm_latency_ms": 2304.57,
+        "llm_tokens": {
+          "input": 1708,
+          "output": 133
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "KMSKeyDisabledException",
+          "remediation_action": "update_kms_key_config",
+          "sql_plan_finding": "Using index idx_orders_customer_status for customer_id and status filtering.",
+          "config_diff_finding": "Active KMS key changed from 'kms-key-2026-v4' to 'kms-key-2025-v3' which is pending deletion.",
+          "technical_rca_summary": "All checkout payment token decryptions failed due to KMSKeyDisabledException with 100% error rate and 0.003 ms latency. The active KMS key was incorrectly set to a disabled key, requiring an update to the KMS key configuration."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:10Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:10Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:10Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:10Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:10Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:10Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.003,
+                  "error": "PermissionError: KMSKeyDisabledException: Key 'arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3' is in state 'PendingDeletion' (cannot decrypt payment token)",
+                  "details": {
+                    "deployment_id": "cfg-kms-drift-2026-11-02"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "cfg-kms-drift-2026-11-02",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "active_kms_key_id": {
+                  "baseline": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "live": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3"
+                },
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "cfg-kms-drift-2026-11-02"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4o-mini",
+            "llm_latency_ms": 2304.57,
+            "llm_input_tokens": 1708,
+            "llm_output_tokens": 133,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "KMSKeyDisabledException",
+              "remediation_action": "update_kms_key_config",
+              "sql_plan_finding": "Using index idx_orders_customer_status for customer_id and status filtering.",
+              "config_diff_finding": "Active KMS key changed from 'kms-key-2026-v4' to 'kms-key-2025-v3' which is pending deletion.",
+              "technical_rca_summary": "All checkout payment token decryptions failed due to KMSKeyDisabledException with 100% error rate and 0.003 ms latency. The active KMS key was incorrectly set to a disabled key, requiring an update to the KMS key configuration."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "update_kms_key_config",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "update_kms_key_config",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "update_kms_key_config",
+              "applied_changes": [
+                "Updated active_kms_key_id to Enabled key kms-key-2026-v4"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.071,
+                "p95_latency_ms": 0.192,
+                "p99_latency_ms": 0.45,
+                "mean_latency_ms": 0.171,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "FAULT-04-DB-LOCK-CONTENTION": {
+      "anthropic:claude-opus-5-5": {
+        "fault_id": "FAULT-04-DB-LOCK-CONTENTION",
+        "title": "Zombie Exclusive Inventory Lock Blocking Order Commits (`database_locked` / Pool Starvation)",
+        "provider": "anthropic",
+        "model": "claude-opus-5-5",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 0.005,
+          "p95_latency_ms": 0.007,
+          "p99_latency_ms": 0.009,
+          "mean_latency_ms": 0.013,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.06,
+          "p95_latency_ms": 0.076,
+          "p99_latency_ms": 0.09,
+          "mean_latency_ms": 0.094,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "kill_zombie_db_lock",
+        "expected_action": "kill_zombie_db_lock",
+        "incident_resolved": true,
+        "llm_latency_ms": 4996.055,
+        "llm_tokens": {
+          "input": 2281,
+          "output": 428
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "zombie_db_lock_inventory_locks_pid_48912",
+          "remediation_action": "kill_zombie_db_lock",
+          "sql_plan_finding": "The orders query uses idx_orders_customer_status efficiently, KMS key v4 is Enabled, but inventory_locks shows SKU-PRIMARY-CHECKOUT exclusively locked by holder_pid 48912.",
+          "config_diff_finding": "Only db_max_connections drifted from baseline 64 to live 2; canary is disabled, KMS key v4 is active, and retry and cache settings are nominal.",
+          "technical_rca_summary": "All 25 checkout writes failed (100% errors, p99 0.009ms fail-fast) with OperationalError because zombie PID 48912 held an exclusive inventory_locks row for 940s; the SQL plan is index-backed, so this is not a scan regression. Kill PID 48912 to release the lock, then restore db_max_connections from 2 to 64."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:12Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:12Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.005,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:12Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.006,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:12Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.006,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:12Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.006,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:12Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 48912,
+                  "exclusive_locked": true,
+                  "locked_since_ts": 1793610452
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "deploy-2026-10-30-stable",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 2,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "db_max_connections": {
+                  "baseline": 64,
+                  "live": 2
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "anthropic",
+            "llm_model": "claude-opus-5-5",
+            "llm_latency_ms": 4996.055,
+            "llm_input_tokens": 2281,
+            "llm_output_tokens": 428,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "zombie_db_lock_inventory_locks_pid_48912",
+              "remediation_action": "kill_zombie_db_lock",
+              "sql_plan_finding": "The orders query uses idx_orders_customer_status efficiently, KMS key v4 is Enabled, but inventory_locks shows SKU-PRIMARY-CHECKOUT exclusively locked by holder_pid 48912.",
+              "config_diff_finding": "Only db_max_connections drifted from baseline 64 to live 2; canary is disabled, KMS key v4 is active, and retry and cache settings are nominal.",
+              "technical_rca_summary": "All 25 checkout writes failed (100% errors, p99 0.009ms fail-fast) with OperationalError because zombie PID 48912 held an exclusive inventory_locks row for 940s; the SQL plan is index-backed, so this is not a scan regression. Kill PID 48912 to release the lock, then restore db_max_connections from 2 to 64."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "kill_zombie_db_lock",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "kill_zombie_db_lock",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "kill_zombie_db_lock",
+              "applied_changes": [
+                "Terminated zombie lock PID 48912 on inventory_locks and restored db_max_connections=64"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.06,
+                "p95_latency_ms": 0.076,
+                "p99_latency_ms": 0.09,
+                "mean_latency_ms": 0.094,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      },
+      "openai:gpt-4o-mini": {
+        "fault_id": "FAULT-04-DB-LOCK-CONTENTION",
+        "title": "Zombie Exclusive Inventory Lock Blocking Order Commits (`database_locked` / Pool Starvation)",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 0.005,
+          "p95_latency_ms": 0.009,
+          "p99_latency_ms": 0.014,
+          "mean_latency_ms": 0.016,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.059,
+          "p95_latency_ms": 0.066,
+          "p99_latency_ms": 0.094,
+          "mean_latency_ms": 0.083,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "kill_zombie_db_lock",
+        "expected_action": "kill_zombie_db_lock",
+        "incident_resolved": true,
+        "llm_latency_ms": 2147.161,
+        "llm_tokens": {
+          "input": 1489,
+          "output": 105
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "zombie_db_lock",
+          "remediation_action": "kill_zombie_db_lock",
+          "sql_plan_finding": "Using index idx_orders_customer_status for searching orders by customer_id and status.",
+          "config_diff_finding": "db_max_connections reduced from 64 to 2 in live config.",
+          "technical_rca_summary": "All order writes failed due to OperationalError from a zombie lock held for 940s, with a max connection limit of 2. Remediation involves killing the zombie lock to restore functionality."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:17Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.004,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:17Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.005,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:17Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.005,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:17Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.005,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:17Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.005,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:17Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.005,
+                  "error": "OperationalError: database table 'inventory_locks' is locked by zombie PID 48912 (held for 940s; db_max_connections=2)",
+                  "details": {
+                    "deployment_id": "deploy-2026-10-30-stable"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 48912,
+                  "exclusive_locked": true,
+                  "locked_since_ts": 1793610457
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "deploy-2026-10-30-stable",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 2,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "db_max_connections": {
+                  "baseline": 64,
+                  "live": 2
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4o-mini",
+            "llm_latency_ms": 2147.161,
+            "llm_input_tokens": 1489,
+            "llm_output_tokens": 105,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "zombie_db_lock",
+              "remediation_action": "kill_zombie_db_lock",
+              "sql_plan_finding": "Using index idx_orders_customer_status for searching orders by customer_id and status.",
+              "config_diff_finding": "db_max_connections reduced from 64 to 2 in live config.",
+              "technical_rca_summary": "All order writes failed due to OperationalError from a zombie lock held for 940s, with a max connection limit of 2. Remediation involves killing the zombie lock to restore functionality."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "kill_zombie_db_lock",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "kill_zombie_db_lock",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "kill_zombie_db_lock",
+              "applied_changes": [
+                "Terminated zombie lock PID 48912 on inventory_locks and restored db_max_connections=64"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.059,
+                "p95_latency_ms": 0.066,
+                "p99_latency_ms": 0.094,
+                "mean_latency_ms": 0.083,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "FAULT-05-CACHE-MEMORY-LEAK": {
+      "anthropic:claude-opus-5-5": {
+        "fault_id": "FAULT-05-CACHE-MEMORY-LEAK",
+        "title": "Disabled Session Cache Eviction (`NONE`) Exhausting Worker Memory Limit (`OOMKilled`)",
+        "provider": "anthropic",
+        "model": "claude-opus-5-5",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 0.009,
+          "p95_latency_ms": 0.01,
+          "p99_latency_ms": 0.01,
+          "mean_latency_ms": 0.009,
+          "active_workers_memory_mb": 613.6,
+          "sample_errors": [
+            "MemoryError: OOMKilled: Worker RSS (536.8 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+            "MemoryError: OOMKilled: Worker RSS (540.0 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+            "MemoryError: OOMKilled: Worker RSS (543.2 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.028,
+          "p95_latency_ms": 0.036,
+          "p99_latency_ms": 0.041,
+          "mean_latency_ms": 0.042,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "restore_cache_eviction_policy",
+        "expected_action": "restore_cache_eviction_policy",
+        "incident_resolved": true,
+        "llm_latency_ms": 4608.169,
+        "llm_tokens": {
+          "input": 2566,
+          "output": 357
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "SESSION_CACHE_EVICTION_DISABLED_OOM",
+          "remediation_action": "restore_cache_eviction_policy",
+          "sql_plan_finding": "Healthy plan: SEARCH orders USING INDEX idx_orders_customer_status on 25000 rows; KMS v4 key Enabled; no inventory locks held.",
+          "config_diff_finding": "cfg-8821 changed session_cache_eviction from LRU_TTL_300S to NONE; worker_memory_limit_mb stays 512, other keys match baseline.",
+          "technical_rca_summary": "Config push cfg-8821-session-cache set session_cache_eviction=NONE, so worker RSS grew without bound to 613.6MB, over the 512MB limit, causing MemoryError OOMKilled and a 100% checkout failure rate (p99 0.01ms fast-fail). SQL index plan, KMS key and locks are healthy; remediation is restoring session_cache_eviction=LRU_TTL_300S and restarting pods."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:20Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.008,
+                  "error": "MemoryError: OOMKilled: Worker RSS (597.6 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:20Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.008,
+                  "error": "MemoryError: OOMKilled: Worker RSS (600.8 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:20Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.009,
+                  "error": "MemoryError: OOMKilled: Worker RSS (604.0 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:20Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.009,
+                  "error": "MemoryError: OOMKilled: Worker RSS (607.2 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:20Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.008,
+                  "error": "MemoryError: OOMKilled: Worker RSS (610.4 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:20Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.008,
+                  "error": "MemoryError: OOMKilled: Worker RSS (613.6 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "cfg-8821-session-cache",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "NONE",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "cfg-8821-session-cache"
+                },
+                "session_cache_eviction": {
+                  "baseline": "LRU_TTL_300S",
+                  "live": "NONE"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "anthropic",
+            "llm_model": "claude-opus-5-5",
+            "llm_latency_ms": 4608.169,
+            "llm_input_tokens": 2566,
+            "llm_output_tokens": 357,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "SESSION_CACHE_EVICTION_DISABLED_OOM",
+              "remediation_action": "restore_cache_eviction_policy",
+              "sql_plan_finding": "Healthy plan: SEARCH orders USING INDEX idx_orders_customer_status on 25000 rows; KMS v4 key Enabled; no inventory locks held.",
+              "config_diff_finding": "cfg-8821 changed session_cache_eviction from LRU_TTL_300S to NONE; worker_memory_limit_mb stays 512, other keys match baseline.",
+              "technical_rca_summary": "Config push cfg-8821-session-cache set session_cache_eviction=NONE, so worker RSS grew without bound to 613.6MB, over the 512MB limit, causing MemoryError OOMKilled and a 100% checkout failure rate (p99 0.01ms fast-fail). SQL index plan, KMS key and locks are healthy; remediation is restoring session_cache_eviction=LRU_TTL_300S and restarting pods."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "restore_cache_eviction_policy",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "restore_cache_eviction_policy",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "restore_cache_eviction_policy",
+              "applied_changes": [
+                "Restored session_cache_eviction='LRU_TTL_300S' and flushed leaked session buffers"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.028,
+                "p95_latency_ms": 0.036,
+                "p99_latency_ms": 0.041,
+                "mean_latency_ms": 0.042,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      },
+      "openai:gpt-4o-mini": {
+        "fault_id": "FAULT-05-CACHE-MEMORY-LEAK",
+        "title": "Disabled Session Cache Eviction (`NONE`) Exhausting Worker Memory Limit (`OOMKilled`)",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 0.01,
+          "p95_latency_ms": 0.011,
+          "p99_latency_ms": 0.011,
+          "mean_latency_ms": 0.01,
+          "active_workers_memory_mb": 613.6,
+          "sample_errors": [
+            "MemoryError: OOMKilled: Worker RSS (536.8 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+            "MemoryError: OOMKilled: Worker RSS (540.0 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+            "MemoryError: OOMKilled: Worker RSS (543.2 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.062,
+          "p95_latency_ms": 0.072,
+          "p99_latency_ms": 0.073,
+          "mean_latency_ms": 0.09,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "restore_cache_eviction_policy",
+        "expected_action": "restore_cache_eviction_policy",
+        "incident_resolved": true,
+        "llm_latency_ms": 3105.93,
+        "llm_tokens": {
+          "input": 1568,
+          "output": 123
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "OOMKilled",
+          "remediation_action": "restore_cache_eviction_policy",
+          "sql_plan_finding": "Using index idx_orders_customer_status for searching orders by customer_id and status.",
+          "config_diff_finding": "Changed session_cache_eviction from LRU_TTL_300S to NONE.",
+          "technical_rca_summary": "The checkout-order-service pods crashed due to OOMKilled errors with RSS exceeding 512MB after config push cfg-8821, caused by disabling session_cache_eviction. Remediation involves restoring session_cache_eviction policy to LRU_TTL_300S to manage memory usage."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:24Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.009,
+                  "error": "MemoryError: OOMKilled: Worker RSS (597.6 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:24Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.01,
+                  "error": "MemoryError: OOMKilled: Worker RSS (600.8 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:24Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.01,
+                  "error": "MemoryError: OOMKilled: Worker RSS (604.0 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:24Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.01,
+                  "error": "MemoryError: OOMKilled: Worker RSS (607.2 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:24Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.009,
+                  "error": "MemoryError: OOMKilled: Worker RSS (610.4 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:24Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 0.01,
+                  "error": "MemoryError: OOMKilled: Worker RSS (613.6 MB) exceeded worker_memory_limit_mb (512 MB) because session_cache_eviction='NONE'",
+                  "details": {
+                    "deployment_id": "cfg-8821-session-cache"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [
+                "idx_orders_customer_status"
+              ],
+              "explain_query_plan": [
+                {
+                  "id": 5,
+                  "parent": 0,
+                  "notused": 61,
+                  "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "cfg-8821-session-cache",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 2,
+                "retry_backoff_ms": 50,
+                "session_cache_eviction": "NONE",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "cfg-8821-session-cache"
+                },
+                "session_cache_eviction": {
+                  "baseline": "LRU_TTL_300S",
+                  "live": "NONE"
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4o-mini",
+            "llm_latency_ms": 3105.93,
+            "llm_input_tokens": 1568,
+            "llm_output_tokens": 123,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "OOMKilled",
+              "remediation_action": "restore_cache_eviction_policy",
+              "sql_plan_finding": "Using index idx_orders_customer_status for searching orders by customer_id and status.",
+              "config_diff_finding": "Changed session_cache_eviction from LRU_TTL_300S to NONE.",
+              "technical_rca_summary": "The checkout-order-service pods crashed due to OOMKilled errors with RSS exceeding 512MB after config push cfg-8821, caused by disabling session_cache_eviction. Remediation involves restoring session_cache_eviction policy to LRU_TTL_300S to manage memory usage."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "restore_cache_eviction_policy",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "restore_cache_eviction_policy",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "restore_cache_eviction_policy",
+              "applied_changes": [
+                "Restored session_cache_eviction='LRU_TTL_300S' and flushed leaked session buffers"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.062,
+                "p95_latency_ms": 0.072,
+                "p99_latency_ms": 0.073,
+                "mean_latency_ms": 0.09,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "FAULT-06-CASCADING-RETRY-INDEX": {
+      "anthropic:claude-opus-5-5": {
+        "fault_id": "FAULT-06-CASCADING-RETRY-INDEX",
+        "title": "Compound Cascading Outage: Dropped SQL Index + Aggressive 12x Zero-Backoff Retry Storm",
+        "provider": "anthropic",
+        "model": "claude-opus-5-5",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 47.29,
+          "p95_latency_ms": 48.058,
+          "p99_latency_ms": 48.608,
+          "mean_latency_ms": 47.536,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (48.37ms across 12 zero-backoff retries; underlying query performing full table scan)",
+            "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (51.71ms across 12 zero-backoff retries; underlying query performing full table scan)",
+            "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (46.78ms across 12 zero-backoff retries; underlying query performing full table scan)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.039,
+          "p95_latency_ms": 0.045,
+          "p99_latency_ms": 0.095,
+          "mean_latency_ms": 0.061,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "compound_fix_index_and_retries",
+        "expected_action": "compound_fix_index_and_retries",
+        "incident_resolved": true,
+        "llm_latency_ms": 3510.613,
+        "llm_tokens": {
+          "input": 2618,
+          "output": 326
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "missing_orders_index_plus_zero_backoff_retry_storm",
+          "remediation_action": "compound_fix_index_and_retries",
+          "sql_plan_finding": "EXPLAIN shows SCAN orders on 25000 rows with USE TEMP B-TREE FOR ORDER BY and zero active indexes on orders.",
+          "config_diff_finding": "Deploy deploy-2026-11-02-retry-and-mig drifted retry_max_attempts from 2 to 12 and retry_backoff_ms from 50 to 0.",
+          "technical_rca_summary": "Checkout failed 100% with RetryAmplificationError at p99 48.6ms because the unindexed orders query does a full SCAN plus temp B-tree sort, amplified by 12 zero-backoff retries. Remediation: create a covering index on orders for the filter and sort columns, and restore retry_max_attempts=2 and retry_backoff_ms=50."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:29Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.29,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.27ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:29Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.283,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.27ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:29Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.335,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.32ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:29Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.627,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.61ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:29Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.402,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.39ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:29Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.262,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.24ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [],
+              "explain_query_plan": [
+                {
+                  "id": 4,
+                  "parent": 0,
+                  "notused": 216,
+                  "detail": "SCAN orders"
+                },
+                {
+                  "id": 23,
+                  "parent": 0,
+                  "notused": 0,
+                  "detail": "USE TEMP B-TREE FOR ORDER BY"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "deploy-2026-11-02-retry-and-mig",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 12,
+                "retry_backoff_ms": 0,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "deploy-2026-11-02-retry-and-mig"
+                },
+                "retry_backoff_ms": {
+                  "baseline": 50,
+                  "live": 0
+                },
+                "retry_max_attempts": {
+                  "baseline": 2,
+                  "live": 12
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "anthropic",
+            "llm_model": "claude-opus-5-5",
+            "llm_latency_ms": 3510.613,
+            "llm_input_tokens": 2618,
+            "llm_output_tokens": 326,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "missing_orders_index_plus_zero_backoff_retry_storm",
+              "remediation_action": "compound_fix_index_and_retries",
+              "sql_plan_finding": "EXPLAIN shows SCAN orders on 25000 rows with USE TEMP B-TREE FOR ORDER BY and zero active indexes on orders.",
+              "config_diff_finding": "Deploy deploy-2026-11-02-retry-and-mig drifted retry_max_attempts from 2 to 12 and retry_backoff_ms from 50 to 0.",
+              "technical_rca_summary": "Checkout failed 100% with RetryAmplificationError at p99 48.6ms because the unindexed orders query does a full SCAN plus temp B-tree sort, amplified by 12 zero-backoff retries. Remediation: create a covering index on orders for the filter and sort columns, and restore retry_max_attempts=2 and retry_backoff_ms=50."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "compound_fix_index_and_retries",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "compound_fix_index_and_retries",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "compound_fix_index_and_retries",
+              "applied_changes": [
+                "Recreated SQLite index idx_orders_customer_status AND restored retry_max_attempts=2, retry_backoff_ms=50"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.039,
+                "p95_latency_ms": 0.045,
+                "p99_latency_ms": 0.095,
+                "mean_latency_ms": 0.061,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      },
+      "openai:gpt-4o-mini": {
+        "fault_id": "FAULT-06-CASCADING-RETRY-INDEX",
+        "title": "Compound Cascading Outage: Dropped SQL Index + Aggressive 12x Zero-Backoff Retry Storm",
+        "provider": "openai",
+        "model": "gpt-4o-mini",
+        "before_probe": {
+          "total_requests": 25,
+          "failed_requests": 25,
+          "error_rate_pct": 100.0,
+          "p50_latency_ms": 47.43,
+          "p95_latency_ms": 47.823,
+          "p99_latency_ms": 48.333,
+          "mean_latency_ms": 47.525,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [
+            "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.62ms across 12 zero-backoff retries; underlying query performing full table scan)",
+            "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.14ms across 12 zero-backoff retries; underlying query performing full table scan)",
+            "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (46.98ms across 12 zero-backoff retries; underlying query performing full table scan)"
+          ],
+          "healthy": false
+        },
+        "after_probe": {
+          "total_requests": 25,
+          "failed_requests": 0,
+          "error_rate_pct": 0.0,
+          "p50_latency_ms": 0.225,
+          "p95_latency_ms": 0.296,
+          "p99_latency_ms": 0.312,
+          "mean_latency_ms": 0.233,
+          "active_workers_memory_mb": 184.0,
+          "sample_errors": [],
+          "healthy": true
+        },
+        "chosen_action": "create_sql_index",
+        "expected_action": "compound_fix_index_and_retries",
+        "incident_resolved": false,
+        "llm_latency_ms": 2002.651,
+        "llm_tokens": {
+          "input": 1644,
+          "output": 113
+        },
+        "llm_diagnosis": {
+          "diagnosed_root_cause": "full_table_scan",
+          "remediation_action": "create_sql_index",
+          "sql_plan_finding": "Query plan indicates a full table scan on orders without any indexes.",
+          "config_diff_finding": "Configuration shows increased retry attempts from 2 to 12 and removed backoff delay.",
+          "technical_rca_summary": "The checkout-order-service experienced a 100% error rate with a mean latency of 47.525ms due to a full table scan on orders. Remediation involves creating an index on the orders table to reduce latency and prevent retry storms."
+        },
+        "turns": [
+          {
+            "turn": 1,
+            "phase": "STEP_1_TELEMETRY_AND_LOGS",
+            "tool": "tool_read_telemetry_logs",
+            "description": "Read the live telemetry error logs from `telemetry.jsonl` to see the exact exception traceback.",
+            "tool_output": {
+              "total_lines": 25,
+              "recent_entries": [
+                {
+                  "timestamp": "2026-11-02T09:23:33Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 48.924,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (48.90ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:33Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 48.333,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (48.31ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:33Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.36,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.34ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:33Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.631,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.61ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:34Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.439,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.42ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                },
+                {
+                  "timestamp": "2026-11-02T09:23:34Z",
+                  "level": "ERROR",
+                  "service": "checkout-order-service",
+                  "event": "CheckoutTransactionFailed",
+                  "latency_ms": 47.43,
+                  "error": "TimeoutError: RetryAmplificationError: Checkout query exceeded SLA (47.41ms across 12 zero-backoff retries; underlying query performing full table scan)",
+                  "details": {
+                    "deployment_id": "deploy-2026-11-02-retry-and-mig"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "turn": 2,
+            "phase": "STEP_2_SQLITE_EXPLAIN_PLAN",
+            "tool": "tool_inspect_sqlite_schema_and_plan",
+            "description": "Inspect the SQLite `EXPLAIN QUERY PLAN`, active indexes on `orders`, `kms_keys` states, and `inventory_locks`.",
+            "tool_output": {
+              "orders_table_row_count": 25000,
+              "active_indexes_on_orders": [],
+              "explain_query_plan": [
+                {
+                  "id": 4,
+                  "parent": 0,
+                  "notused": 216,
+                  "detail": "SCAN orders"
+                },
+                {
+                  "id": 23,
+                  "parent": 0,
+                  "notused": 0,
+                  "detail": "USE TEMP B-TREE FOR ORDER BY"
+                }
+              ],
+              "kms_keys_table": [
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2025-v3",
+                  "key_state": "PendingDeletion",
+                  "rotated_at": "2025-11-01T00:00:00Z"
+                },
+                {
+                  "key_arn": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                  "key_state": "Enabled",
+                  "rotated_at": "2026-10-15T00:00:00Z"
+                }
+              ],
+              "inventory_locks_table": [
+                {
+                  "sku_id": "SKU-PRIMARY-CHECKOUT",
+                  "holder_pid": 0,
+                  "exclusive_locked": false,
+                  "locked_since_ts": 0
+                }
+              ]
+            }
+          },
+          {
+            "turn": 3,
+            "phase": "STEP_3_CONFIG_DIFF",
+            "tool": "tool_inspect_config_diff",
+            "description": "Diff live `service_config.json` against `service_config.baseline.json` to spot drifted config keys.",
+            "tool_output": {
+              "live_config": {
+                "service_name": "checkout-order-service",
+                "release_version": "v2.14.0-stable",
+                "deployment_id": "deploy-2026-11-02-retry-and-mig",
+                "canary_enabled": false,
+                "canary_weight": 0.0,
+                "canary_tier_divisor": 100.0,
+                "db_max_connections": 64,
+                "db_busy_timeout_ms": 2000,
+                "active_kms_key_id": "arn:aws:kms:us-west-2:111122223333:key/kms-key-2026-v4",
+                "retry_max_attempts": 12,
+                "retry_backoff_ms": 0,
+                "session_cache_eviction": "LRU_TTL_300S",
+                "worker_memory_limit_mb": 512
+              },
+              "drifted_fields": {
+                "deployment_id": {
+                  "baseline": "deploy-2026-10-30-stable",
+                  "live": "deploy-2026-11-02-retry-and-mig"
+                },
+                "retry_backoff_ms": {
+                  "baseline": 50,
+                  "live": 0
+                },
+                "retry_max_attempts": {
+                  "baseline": 2,
+                  "live": 12
+                }
+              }
+            }
+          },
+          {
+            "turn": 4,
+            "phase": "STEP_4_LLM_DIAGNOSIS_AND_DRY_RUN",
+            "tool": "tool_execute_live_remediation(dry_run=True)",
+            "llm_provider": "openai",
+            "llm_model": "gpt-4o-mini",
+            "llm_latency_ms": 2002.651,
+            "llm_input_tokens": 1644,
+            "llm_output_tokens": 113,
+            "llm_diagnosis": {
+              "diagnosed_root_cause": "full_table_scan",
+              "remediation_action": "create_sql_index",
+              "sql_plan_finding": "Query plan indicates a full table scan on orders without any indexes.",
+              "config_diff_finding": "Configuration shows increased retry attempts from 2 to 12 and removed backoff delay.",
+              "technical_rca_summary": "The checkout-order-service experienced a 100% error rate with a mean latency of 47.525ms due to a full table scan on orders. Remediation involves creating an index on the orders table to reduce latency and prevent retry storms."
+            },
+            "tool_output": {
+              "status": "DRY_RUN_OK",
+              "action": "create_sql_index",
+              "note": "Dry-run validated; call with dry_run=False and approval_token='SRE-APPROVAL-LIVE-2026' to apply."
+            }
+          },
+          {
+            "turn": 5,
+            "phase": "STEP_5_LIVE_REMEDIATION_AND_VERIFICATION_PROBE",
+            "tool": "tool_execute_live_remediation(dry_run=False)",
+            "chosen_action": "create_sql_index",
+            "tool_output": {
+              "status": "APPLIED",
+              "action": "create_sql_index",
+              "applied_changes": [
+                "Created SQLite index idx_orders_customer_status ON orders(customer_id, status, created_ts)"
+              ],
+              "post_remediation_load_probe": {
+                "total_requests": 25,
+                "failed_requests": 0,
+                "error_rate_pct": 0.0,
+                "p50_latency_ms": 0.225,
+                "p95_latency_ms": 0.296,
+                "p99_latency_ms": 0.312,
+                "mean_latency_ms": 0.233,
+                "active_workers_memory_mb": 184.0,
+                "sample_errors": [],
+                "healthy": true
+              }
+            },
+            "post_fix_explain_query_plan": [
+              {
+                "id": 5,
+                "parent": 0,
+                "notused": 61,
+                "detail": "SEARCH orders USING INDEX idx_orders_customer_status (customer_id=? AND status=?)"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

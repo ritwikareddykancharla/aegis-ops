@@ -334,7 +334,7 @@ class LiveLLMClient:
             end = cleaned.rfind("}")
             if start != -1 and end != -1 and end > start:
                 cleaned = cleaned[start : end + 1]
-        parsed = json.loads(cleaned)
+        parsed = json.loads(cleaned, strict=False)
         if not isinstance(parsed, dict):
             raise ValueError(f"Expected JSON object from LLM, got {type(parsed).__name__}")
         return parsed
@@ -453,7 +453,7 @@ class LiveLLMClient:
             url = "https://api.anthropic.com/v1/messages"
             body = {
                 "model": self.model,
-                "max_tokens": 1024,
+                "max_tokens": 2048,
                 "system": system_prompt,
                 "messages": [{"role": "user", "content": user_prompt}],
             }

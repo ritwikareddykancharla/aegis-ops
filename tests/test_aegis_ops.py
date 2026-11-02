@@ -630,6 +630,43 @@ class TestAegisOpsSuite(unittest.TestCase):
         self.assertTrue(live_score.overall_pass)
         self.assertIn("Live Gemini Judge", live_score.critique)
 
+    def test_19_live_sqlite_chaos_sandbox_explain_plan_and_remediation(self) -> None:
+        """Verify real SQLite 25k-row fault injection, EXPLAIN QUERY PLAN, safety gate, and post-fix probe."""
+        from aegis_ops.live_sandbox import CHAOS_FAULTS, LiveCheckoutSandbox
+
+        sb = LiveCheckoutSandbox()
+        try:
+            # 1. Inject missing SQL index fault -> EXPLAIN QUERY PLAN must show 'SCAN orders'
+            sb.inject_fault("FAULT-01-MISSING-SQL-INDEX")
+            plan_before = sb.tool_inspect_sqlite_schema_and_plan()
+            self.assertEqual(plan_before["active_indexes_on_orders"], [])
+            self.assertIn("SCAN orders", plan_before["explain_query_plan"][0]["detail"])
+
+            # 2. Safety gate must block unapproved live mutation
+            blocked = sb.tool_execute_live_remediation(
+                "create_sql_index", dry_run=False, approval_token="FORGED-TOKEN"
+            )
+            self.assertEqual(blocked["status"], "BLOCKED")
+
+            # 3. Apply approved index recreation -> EXPLAIN QUERY PLAN must switch to 'SEARCH orders USING INDEX'
+            applied = sb.tool_execute_live_remediation(
+                "create_sql_index", dry_run=False, approval_token="SRE-APPROVAL-LIVE-2026"
+            )
+            self.assertEqual(applied["status"], "APPLIED")
+            self.assertTrue(applied["post_remediation_load_probe"]["healthy"])
+            plan_after = sb.tool_inspect_sqlite_schema_and_plan()
+            self.assertIn("idx_orders_customer_status", plan_after["active_indexes_on_orders"])
+            self.assertIn("SEARCH orders USING INDEX", plan_after["explain_query_plan"][0]["detail"])
+
+            # 4. Verify all 6 chaos faults inject and recover cleanly
+            for fid, meta in CHAOS_FAULTS.items():
+                inj = sb.inject_fault(fid)
+                self.assertFalse(inj["initial_load_probe"]["healthy"])
+                res = sb.tool_execute_live_remediation(meta["expected_remediation"], dry_run=False)
+                self.assertTrue(res["post_remediation_load_probe"]["healthy"], f"Failed recovery on {fid}")
+        finally:
+            sb.close()
+
 
 if __name__ == "__main__":
     unittest.main()

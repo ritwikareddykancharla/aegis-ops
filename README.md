@@ -1,5 +1,8 @@
 # AegisOps — Autonomous DevOps Incident Triage Agent, Step-Level Trajectory Grading Engine & Calibrated LLM-as-a-Judge
 
+> **☁️ Live AWS Deployment (`us-west-2` Lambda Function URL):** [https://ikvs4adub6fg2ipcn7kxxllgsm0thcja.lambda-url.us-west-2.on.aws/](https://ikvs4adub6fg2ipcn7kxxllgsm0thcja.lambda-url.us-west-2.on.aws/)  
+> **Health Check:** `https://ikvs4adub6fg2ipcn7kxxllgsm0thcja.lambda-url.us-west-2.on.aws/api/health` · **Live Execution API:** `curl -s -X POST https://ikvs4adub6fg2ipcn7kxxllgsm0thcja.lambda-url.us-west-2.on.aws/api/run -H 'Content-Type: application/json' -d '{}'`
+
 > **🌐 Live Interactive Web Application & Trace Replay Player:** [**https://ritwikareddykancharla.github.io/aegis-ops/**](https://ritwikareddykancharla.github.io/aegis-ops/)
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-D94E1F.svg)](https://ritwikareddykancharla.github.io/aegis-ops/)

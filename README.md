@@ -17,16 +17,13 @@
 
 ---
 
-## How It Works
+## System Architecture
 
-```mermaid
-flowchart LR
-    Alert["Pager / Alarm Event"] --> Agent["Stateful Triage Agent\n(Checkpoint + Budget Cap)"]
-    Agent --> CW["CloudWatch Logs MCP\n(Error Signatures)"]
-    Agent --> Prom["Prometheus Metrics MCP\n(Latency, Saturation & Deploys)"]
-    Agent --> RB["Runbook MCP\n(Approval-Gated Rollback/Fix)"]
-    Agent --> Eval["Step-Order Trajectory Checker\n& Calibrated Rubric Grader"]
-```
+> **Excalidraw Source:** [`docs/architecture.excalidraw`](docs/architecture.excalidraw)
+
+![AegisOps Architecture Diagram](docs/architecture.svg)
+
+## How It Works
 
 1. **MCP Tool Servers (`aegis_ops/mcp_servers.py`)**  
    Implements three schema-validated MCP servers with structured error codes and per-call OpenTelemetry latency/token spans (`aegis_ops/otel_tracer.py`):

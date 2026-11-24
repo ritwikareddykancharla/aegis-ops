@@ -7,7 +7,7 @@
 </defs>
 <rect width="1180" height="640" fill="#ffffff" />
 <rect width="1180" height="640" fill="url(#excali-grid)" />
-<text x="36" y="42" font-size="24" font-weight="700" fill="#1e1e1e">AegisOps — Autonomous DevOps Triage Agent &amp; Step-Level Trajectory Eval Gate</text>
+<text x="36" y="42" font-size="24" font-weight="700" fill="#1e1e1e">AegisOps — CloudWatch &amp; Prometheus Incident Triage Agent</text>
 <text x="36" y="66" font-family="'JetBrains Mono', monospace" font-size="12.5" fill="#495057">Excalidraw Architecture • Stateful Incident Agent + 3 MCP Servers + DAG Grader + Calibrated LLM Judge</text>
 <rect x="30" y="90" width="360" height="510" rx="10" ry="10" fill="#f8f9fa" stroke="none" /><rect x="30" y="90" width="360" height="510" rx="10" ry="10" fill="none" stroke="#495057" stroke-width="1.8" stroke-dasharray="8 6" />
 <text x="44" y="114" font-size="14.5" font-weight="700" fill="#495057">1. Stateful Triage Agent (Checkpointable FSM)</text>

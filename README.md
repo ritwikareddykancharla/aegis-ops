@@ -5,7 +5,7 @@
 > **Live API Call:** `curl -s -X POST https://ikvs4adub6fg2ipcn7kxxllgsm0thcja.lambda-url.us-west-2.on.aws/api/run -H 'Content-Type: application/json' -d '{}'`  
 > **Interactive Trace Player:** [https://ritwikareddykancharla.github.io/aegis-ops/](https://ritwikareddykancharla.github.io/aegis-ops/)
 
-**AegisOps** is a stateful Python incident-investigation agent and evaluation suite for AWS production outages. It queries CloudWatch logs, Prometheus service metrics, deployment history, and operational runbooks over Model Context Protocol (MCP) tools with OpenTelemetry tracing, gates all write/rollback remediations on human approval, and grades agent tool trajectories and root-cause summaries against SRE benchmarks.
+**AegisOps** investigates production service alerts by walking CloudWatch logs, Prometheus metrics, recent deployments, and runbooks in an explicit diagnostic sequence—preventing agents from guessing root causes, skipping log checks, or triggering unapproved rollbacks during an outage (`+25.0%` root-cause accuracy across 12 AWS outage scenarios; `95.8%` agreement with human SRE postmortem scores).
 
 ---
 

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "aegis-ops"
 version = "0.1.0"
-description = "Autonomous DevOps Incident Triage Agent, Step-Level Trajectory Grading Engine & Calibrated LLM-as-a-Judge"
+description = "Incident triage service across CloudWatch logs, Prometheus metrics, and operational runbooks"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }

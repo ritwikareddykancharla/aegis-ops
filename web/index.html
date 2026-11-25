@@ -3,388 +3,176 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="AegisOps: Autonomous AWS DevOps and Data Center incident investigation agent over MCP with live Amazon Bedrock Nova written RCA, calibrated SRE rubric (95.8% human agreement), and human-gated rollback.">
-  <meta name="theme-color" content="#f2f5fa">
-  <title>AegisOps: Autonomous MCP Incident Triage &amp; Calibrated SRE Judge | Ritwika Kancharla</title>
-  <script>
-    (function () {
-      var dark = location.hash.indexOf("theme=dark") !== -1 || (location.hash.indexOf("theme=light") === -1 && matchMedia("(prefers-color-scheme: dark)").matches);
-      document.documentElement.dataset.theme = dark ? "dark" : "light";
-    })();
-  </script>
+  <title>AEGISOPS // 03:00 UTC INCIDENT WAR ROOM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wght@400;500&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Schibsted+Grotesk:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
-<body id="top">
-<header class="site"><div class="bar">
-  <a class="brand" href="https://ritwikareddykancharla.github.io"><span class="mark">RK</span><span class="name">Ritwika Kancharla</span></a>
-  <nav aria-label="Site">
-    <a href="#live-system" class="on">Live system</a>
-    <a href="#problem">Problem</a>
-    <a href="#architecture">Architecture</a>
-    <a href="#results">Results</a>
-    <a href="https://github.com/ritwikareddykancharla/aegis-ops">GitHub</a>
-  </nav>
-  <button class="theme" type="button" aria-label="Switch between light and dark theme">
-    <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6"/></svg>
-    <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
-  </button>
-  <a class="btn contact" href="https://ritwikareddykancharla.github.io/#projects">All projects</a>
-</div></header>
-
-<main><article class="demo" style="--accent:#b3245f"><div class="wrap">
-  <a class="crumb" href="https://ritwikareddykancharla.github.io/#projects">&larr; All projects</a>
-  <header>
-    <p class="eyebrow">AegisOps &middot; AWS DevOps Agent &amp; Eva Data Center Control Plane</p>
-    <h1 class="post-title">Ordered MCP Incident Investigation, Bedrock Nova RCA, and Human-Gated Rollbacks</h1>
-    <p class="meta">
-      <span>Ritwika Kancharla</span>
-      <span>Live on AWS CloudFront + Private S3 (OAC) + Bedrock Nova</span>
-      <span><a href="/api/health">/api/health</a></span>
-      <span><a href="https://github.com/ritwikareddykancharla/aegis-ops">Source (GitHub)</a></span>
-    </p>
-    <div class="stats">
-      <div><b>+25.0%</b><span>Root-cause diagnosis accuracy gain across 12 AWS production outage scenarios (p &lt; 0.05)</span></div>
-      <div><b>95.8%</b><span>Rubric grader agreement with 24 human SRE postmortems (&kappa; = 0.917; 100% swap consistency)</span></div>
-      <div><b>100.0%</b><span>Prerequisite MCP tool-order compliance (metrics &rarr; traces &rarr; deploy diff &rarr; runbook)</span></div>
-      <div><b>0% Unapproved</b><span>Destructive writes or rollbacks executed without a signed human SRE approval token</span></div>
-    </div>
-  </header>
-
-  <div class="post-grid">
-    <aside class="side" aria-label="Contents">
-      <p class="side-k"><span>Contents</span><span class="side-pct" id="side-pct">0%</span></p>
-      <div class="side-bar"><i id="side-bar-fill"></i></div>
-      <ol class="side-list">
-        <li><a href="#live-system" class="on"><span class="sn">01</span><span>Live interactive system</span></a></li>
-        <li><a href="#problem"><span class="sn">02</span><span>Problem &amp; AWS alignment</span></a></li>
-        <li><a href="#architecture"><span class="sn">03</span><span>System architecture</span></a></li>
-        <li><a href="#results"><span class="sn">04</span><span>Measured benchmarks</span></a></li>
-      </ol>
-      <a class="side-top" href="#top">Back to top</a>
-    </aside>
-
-    <div class="post-body">
-      <div class="tldr">
-        <p class="tk">Abstract</p>
-        <p>Unconstrained tool-calling agents frequently propose service restarts before checking deployment diffs or execute mutating commands without operator sign-off. <strong>AegisOps</strong> enforces an explicit read-only Model Context Protocol (<code>MCP</code>) investigation DAG across CloudWatch/Prometheus metrics, OpenTelemetry distributed traces, CodeDeploy/PLC change history, and SRE runbooks, synthesizes a written Root-Cause Analysis via <strong>Amazon Bedrock (<code>us.amazon.nova-lite-v1:0</code>)</strong>, scores trajectory quality with a calibrated SRE rubric (<code>95.8%</code> human agreement), and blocks <code>100%</code> of unapproved rollbacks.</p>
-      </div>
-
-      <h2 id="live-system"><span class="num">01</span>Live interactive system</h2>
-
-      <figure class="fig wide">
-        <div class="plate">
-          <!-- Top Incident Status Bar -->
-          <div class="ao-topbar">
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-              <span class="st-tag bad" id="header-incident-pill">SEV-1 ACTIVE INVESTIGATION</span>
-              <span style="font:400 11.5px var(--mono);color:var(--soft);" id="stat-inc-meta">us-west-2 &middot; Suspect: deploy-v2.41.8</span>
-            </div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <button type="button" class="btn" id="toggle-custom-btn">+ Inject Custom Symptom</button>
-              <button type="button" class="btn" id="reset-demo-btn">&#8635; Reset Console</button>
-            </div>
-          </div>
-
-          <!-- Custom Symptom Drawer (Toggleable) -->
-          <form id="custom-drawer" class="custom-drawer hidden">
-            <div class="custom-row">
-              <div>
-                <label>Target Service / Pod</label>
-                <select id="custom-service">
-                  <option value="payment-auth">Payment-Auth</option>
-                  <option value="checkout-svc">Checkout-Svc</option>
-                  <option value="dynamodb-orders">DynamoDB-Orders</option>
-                  <option value="redis-session">Redis-Session</option>
-                  <option value="rack-pdu-ctrl">Rack-PDU-Controller</option>
-                </select>
-              </div>
-              <div>
-                <label>CloudWatch Error Signature</label>
-                <input type="text" id="custom-sig" value="TLSHandshakeTimeoutException: mTLS cert mismatch" required>
-              </div>
-              <div>
-                <label>Golden Signal Symptom</label>
-                <input type="text" id="custom-sym" value="p99 spiked 41ms -> 2,180ms + 13% HTTP 502" required>
-              </div>
-              <button type="submit" class="btn primary">Run Live Triage &rarr;</button>
-            </div>
-          </form>
-
-          <!-- 4-Column KPI Strip -->
-          <div class="ao-kpis">
-            <div class="ao-kpi">
-              <small>Active Incident</small>
-              <strong id="stat-inc-name">Checkout 5xx Spike</strong>
-              <span>Live Topology + Trace Scope</span>
-            </div>
-            <div class="ao-kpi">
-              <small>Ordered MCP Trajectory</small>
-              <strong>4 / 4 Read-Only Tools</strong>
-              <span>100% Prerequisite DAG Compliance</span>
-            </div>
-            <div class="ao-kpi">
-              <small>Calibrated SRE Rubric</small>
-              <strong style="color:var(--ok);">95.8% Agreement</strong>
-              <span>Cohen's &kappa; = 0.917 (24 Anchors)</span>
-            </div>
-            <div class="ao-kpi">
-              <small>Write / Rollback Gate</small>
-              <strong id="stat-safety-gate">HUMAN TOKEN REQUIRED</strong>
-              <span>100% Unapproved Writes Blocked</span>
-            </div>
-          </div>
-
-          <!-- What To Try (1-Click Guided Workflows) -->
-          <div class="guided-now">
-            <div class="guided-head">
-              <p class="guided-k">What To Try &mdash; 1-Click Guided Workflows</p>
-              <span class="guided-sub">Select an outage to run live MCP triage + Amazon Bedrock Nova RCA, then test the safety gate:</span>
-            </div>
-            <div class="guided-btns">
-              <button type="button" class="wf-tile danger" id="wf-inc1">
-                <b>1. Checkout 5xx (v2.41.8)</b>
-                <span>Diagnose HikariCP pool leak &amp; write live Bedrock Nova RCA</span>
-              </button>
-              <button type="button" class="wf-tile signal" id="wf-inc2">
-                <b>2. DynamoDB Hot Partition</b>
-                <span>Isolate 4,820 WCU single-key throttle on OrdersTable</span>
-              </button>
-              <button type="button" class="wf-tile cobalt" id="wf-inc3">
-                <b>3. Pod B14 Chiller Drift</b>
-                <span>Eva DC: correlate 31.8&deg;C valve stall &rarr; CPU RAPL clock cap</span>
-              </button>
-              <button type="button" class="wf-tile danger" id="wf-test-block">
-                <b>4. Test Unapproved Write</b>
-                <span>Prove destructive rollback blocks 100% without SRE token</span>
-              </button>
-              <button type="button" class="wf-tile ok" id="wf-approve-fix">
-                <b>5. Approve Safe Rollback</b>
-                <span>Issue signed SRE token &amp; heal all 6 topology nodes</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- Main Console Workspace -->
-          <div class="ao-workspace">
-            <div>
-              <!-- Service & Data Center Dependency Topology -->
-              <div class="sub-plate">
-                <div class="sub-h">
-                  <h3 class="sub-title">Service &amp; Eva Data Center Dependency Graph</h3>
-                  <span class="sub-meta">Click any node to inspect golden signals</span>
-                </div>
-                <div class="topo-wrap">
-                  <svg id="topology-svg" viewBox="0 0 740 310" class="topology-svg" aria-label="Service Dependency Graph"></svg>
-                </div>
-                <div id="selected-node-bar" class="node-bar"></div>
-              </div>
-
-              <!-- Metrics Chart + Distributed Trace Waterfall -->
-              <div class="telemetry-2col">
-                <div class="sub-plate">
-                  <div class="sub-h">
-                    <h3 class="sub-title">CloudWatch / Prometheus p99</h3>
-                    <span class="sub-meta" id="deploy-marker-badge">Deploy v2.41.8</span>
-                  </div>
-                  <div class="topo-wrap">
-                    <svg id="metrics-svg" viewBox="0 0 420 185" class="metrics-svg"></svg>
-                  </div>
-                </div>
-
-                <div class="sub-plate">
-                  <div class="sub-h">
-                    <h3 class="sub-title">OTel Trace Waterfall</h3>
-                    <code id="trace-id-label">trace_id</code>
-                  </div>
-                  <div id="waterfall-list"></div>
-                </div>
-              </div>
-
-              <!-- Step-by-Step Read-Only MCP Investigation Timeline -->
-              <div class="sub-plate" style="margin-bottom:0;">
-                <div class="sub-h">
-                  <h3 class="sub-title">Ordered Read-Only MCP Investigation Timeline</h3>
-                  <span class="sub-meta">metrics &rarr; traces &rarr; deploy_diff &rarr; runbook</span>
-                </div>
-                <div id="mcp-steps-grid" class="mcp-grid"></div>
-              </div>
-            </div>
-
-            <!-- Right Column: Human-Gated Remediation + Bedrock Nova RCA + Rubric + Audit Log -->
-            <aside>
-              <div class="gate-box" id="remediation-card">
-                <div class="guided-k">Human-Gated Remediation Control</div>
-                <p style="font:700 13.5px/1.3 var(--display);margin:6px 0 0;color:var(--ink);" id="rem-action-title"></p>
-                <div class="cli-strip" id="rem-cli-box"></div>
-                <div class="gate-actions">
-                  <button type="button" class="btn ok" id="btn-approve-rollback" style="flex:1;">&#10003; Approve &amp; Execute Safe Rollback</button>
-                  <button type="button" class="btn bad" id="btn-unapproved-attempt">Test Unapproved</button>
-                </div>
-                <div id="rem-feedback-banner" class="gate-msg hidden"></div>
-              </div>
-
-              <div class="sub-plate">
-                <div class="sub-h">
-                  <div>
-                    <div class="guided-k" style="color:var(--accent-text);">Live Amazon Bedrock Written RCA</div>
-                    <h3 class="sub-title">Synthesized Postmortem</h3>
-                  </div>
-                  <span class="st-tag" id="rca-engine-badge">us.amazon.nova-lite-v1:0</span>
-                </div>
-                <div style="display:flex;justify-content:space-between;font:400 10.5px var(--mono);color:var(--soft);margin-bottom:8px;" id="rca-meta-bar"></div>
-                <div class="rca-box" id="rca-markdown-box"></div>
-                <button type="button" class="btn" id="regen-bedrock-btn" style="width:100%;margin-top:10px;">
-                  Re-Synthesize Written RCA on Amazon Bedrock Nova &rarr;
-                </button>
-              </div>
-
-              <div class="sub-plate">
-                <div class="sub-h">
-                  <h3 class="sub-title">Calibrated SRE Rubric Score</h3>
-                  <span class="sub-meta">95.8% Human Agreement</span>
-                </div>
-                <div id="rubric-bars"></div>
-              </div>
-
-              <div class="sub-plate" style="margin-bottom:0;">
-                <div class="sub-h">
-                  <h3 class="sub-title">Safety Gate Audit Trail</h3>
-                  <span class="sub-meta">Immutable Log</span>
-                </div>
-                <div id="audit-log-list"></div>
-              </div>
-            </aside>
-          </div>
+<body>
+  <div class="app is-paging" id="app-root">
+    <!-- Top PagerDuty-Style War Room Bar -->
+    <header class="bar">
+      <div class="brand">
+        <div class="radar-badge" aria-hidden="true"><span class="radar-dot"></span></div>
+        <div>
+          <h1>AEGISOPS</h1>
+          <p>Autonomous MCP Incident Triage &middot; Live Bedrock Nova Written RCA &middot; Two-Key Human Rollback</p>
         </div>
-        <figcaption><b>Figure 1.</b> Live AegisOps incident investigation console executing ordered read-only MCP tools, synthesizing written postmortems via <code>us.amazon.nova-lite-v1:0</code>, and enforcing human-gated remediation.</figcaption>
-      </figure>
-
-      <h2 id="problem"><span class="num">02</span>Problem &amp; AWS team alignment</h2>
-      <p>During a production incident, jumping directly from an alarm to a service restart hides the true causal trigger and risks compounding data loss. Furthermore, evaluating incident agents solely on their final summary misses broken intermediate tool calls, hallucinated parameters, and verbosity bias in naive LLM-as-a-Judge prompts.</p>
-      <p><strong>AegisOps</strong> directly targets <strong>AWS DevOps Agent</strong>, <strong>Agentic AI DevOps</strong>, and <strong>Eva Data Center Automation</strong>: walking telemetry, distributed traces, software deployments, and physical data-center PLC cooling loops (<code>Pod B14 Chiller Actuator Drift</code>) over schema-validated MCP tools while calibrating its postmortem grader against 24 human SRE-scored incidents.</p>
-
-      <div class="note">
-        <b>Position &amp; Verbosity Calibration</b>
-        <p>Raw rubric prompts prefer longer postmortems and flip winners under candidate <code>(A, B)</code> vs. <code>(B, A)</code> swaps. Length-normalized scoring calibrated on 24 human SRE anchors achieves <code>95.8%</code> agreement (<code>&kappa; = 0.917</code>) and <code>100.0%</code> prompt-order swap consistency.</p>
       </div>
 
-      <h2 id="architecture"><span class="num">03</span>System architecture</h2>
-      <figure class="fig wide">
-        <div class="plate">
-          <svg class="loop" viewBox="0 0 1040 310" role="img" aria-label="AegisOps CloudFront, Private S3 OAC, MCP State Machine, Bedrock Nova RCA, and Safety Gate Architecture">
-            <g class="lp-h">
-              <rect x="20" y="92" width="175" height="126"/>
-              <text x="36" y="118" class="lp-n">01 &middot; Edge Delivery</text>
-              <text x="36" y="144" class="lp-t">CloudFront CDN</text>
-              <text x="36" y="168" class="lp-s">/* &rarr; Private S3 OAC</text>
-              <text x="36" y="188" class="lp-s">/api/* &rarr; Lambda 3.12</text>
-            </g>
-            <g class="lp-m">
-              <rect x="245" y="34" width="245" height="106"/>
-              <text x="261" y="58" class="lp-n">02 &middot; Ordered MCP DAG</text>
-              <text x="261" y="83" class="lp-t">Read-Only Triage</text>
-              <text x="261" y="105" class="lp-s">Metrics &rarr; OTel &rarr; Diff</text>
-              <text x="261" y="123" class="lp-s">100% Step Compliance</text>
-            </g>
-            <g class="lp-m">
-              <rect x="245" y="168" width="245" height="108"/>
-              <text x="261" y="192" class="lp-n">03 &middot; Trajectory Judge</text>
-              <text x="261" y="217" class="lp-t">Calibrated SRE Rubric</text>
-              <text x="261" y="239" class="lp-s">95.8% Human Agreement</text>
-              <text x="261" y="257" class="lp-s">100% Swap Consistency</text>
-            </g>
-            <g class="lp-h">
-              <rect x="545" y="34" width="235" height="106"/>
-              <text x="561" y="58" class="lp-n">04 &middot; Converse API</text>
-              <text x="561" y="83" class="lp-t">Amazon Bedrock Nova</text>
-              <text x="561" y="105" class="lp-s">us.amazon.nova-lite-v1:0</text>
-              <text x="561" y="123" class="lp-s">Grounded Written RCA</text>
-            </g>
-            <g class="lp-x">
-              <rect x="545" y="168" width="235" height="108"/>
-              <text x="561" y="192" class="lp-n">05 &middot; Mutation Guard</text>
-              <text x="561" y="217" class="lp-t">Human Safety Gate</text>
-              <text x="561" y="239" class="lp-s">Blocks Unapproved Writes</text>
-              <text x="561" y="257" class="lp-s">Signed SRE Token Required</text>
-            </g>
-            <g class="lp-m">
-              <rect x="830" y="92" width="190" height="126"/>
-              <text x="846" y="118" class="lp-n">06 &middot; Telemetry</text>
-              <text x="846" y="144" class="lp-t">Cloud &amp; Eva DC</text>
-              <text x="846" y="168" class="lp-s">CloudWatch + X-Ray</text>
-              <text x="846" y="188" class="lp-s">DynamoDB + Pod B14</text>
-            </g>
-            <g stroke="var(--ink)" stroke-width="1.8" fill="none">
-              <path d="M195 135 L245 87"/>
-              <path d="M195 175 L245 222"/>
-              <path d="M490 87 L545 87"/>
-              <path d="M490 222 L545 222"/>
-              <path d="M780 87 L830 135"/>
-              <path d="M780 222 L830 175"/>
-            </g>
-          </svg>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;">
+        <div class="ticker" id="page-ticker">PAGE #4819 &middot; SEV-1 ACTIVE</div>
+        <button type="button" class="btn" id="custom-toggle-btn">+ Custom Symptom</button>
+        <button type="button" class="btn" id="reset-btn">Reset War Room</button>
+        <a class="btn" href="https://github.com/ritwikareddykancharla/aegis-ops" target="_blank" rel="noreferrer">GitHub &nearr;</a>
+      </div>
+    </header>
+
+    <!-- Active Outage Selector Pills -->
+    <section class="incident-strip" aria-label="Production Incident Selector">
+      <div class="pills">
+        <span class="strip-lbl">Active pages:</span>
+        <button type="button" class="inc-pill active" data-inc="inc_checkout_pool" data-node="checkout-svc">
+          <span class="sev">SEV-1</span>Checkout 5xx Pool Leak (v2.41.8)
+        </button>
+        <button type="button" class="inc-pill" data-inc="inc_ddb_hot_partition" data-node="dynamodb-orders">
+          <span class="sev">SEV-1</span>DynamoDB Hot Partition (OrdersTable)
+        </button>
+        <button type="button" class="inc-pill" data-inc="inc_dc_chiller_drift" data-node="rack-pdu-ctrl">
+          <span class="sev">SEV-2</span>Pod B14 Chiller Actuator Drift (Eva DC)
+        </button>
+      </div>
+      <span class="dim mono" style="font-size:11.5px;" id="suspect-meta">us-west-2 &middot; Suspect: deploy-v2.41.8</span>
+    </section>
+
+    <!-- Custom Symptom Injector -->
+    <form id="custom-form" class="custom-bar hidden">
+      <div>
+        <label>Target Service / Pod</label>
+        <select id="custom-service">
+          <option value="payment-auth">Payment-Auth</option>
+          <option value="checkout-svc">Checkout-Svc</option>
+          <option value="dynamodb-orders">DynamoDB-Orders</option>
+          <option value="redis-session">Redis-Session</option>
+          <option value="rack-pdu-ctrl">Rack-PDU-Controller</option>
+        </select>
+      </div>
+      <div>
+        <label>CloudWatch Error Signature</label>
+        <input type="text" id="custom-sig" value="TLSHandshakeTimeoutException: mTLS cert rotation mismatch" required>
+      </div>
+      <div>
+        <label>Golden Signal Anomaly</label>
+        <input type="text" id="custom-sym" value="p99 spiked 41ms -> 2,180ms + 13.0% HTTP 502" required>
+      </div>
+      <button type="submit" class="btn emerald">Page Agent &rarr;</button>
+    </form>
+
+    <!-- 3-Column SRE War Room -->
+    <main class="war-cols">
+      <!-- COLUMN 1: Ordered MCP Probe Checklist + SRE Rubric -->
+      <div class="stack">
+        <section class="panel" aria-labelledby="mcp-heading">
+          <div class="panel-head">
+            <h2 id="mcp-heading">Ordered MCP Probe Checklist</h2>
+            <span class="mono" style="font-size:11px;color:#2ee59d;">4/4 READ_ONLY</span>
+          </div>
+          <ol id="probe-list" class="probe-list"></ol>
+        </section>
+
+        <section class="panel" aria-labelledby="rubric-heading">
+          <div class="panel-head">
+            <h2 id="rubric-heading">Calibrated SRE Rubric</h2>
+            <span class="mono" style="font-size:11px;color:#2ee59d;">95.8% SRE Agreement (&kappa;=0.917)</span>
+          </div>
+          <div id="rubric-bars"></div>
+        </section>
+      </div>
+
+      <!-- COLUMN 2: Live Service Dependency Radar + CloudWatch Chart + OTel Waterfall -->
+      <div class="stack">
+        <section class="panel" aria-labelledby="topo-heading">
+          <div class="panel-head">
+            <h2 id="topo-heading">Live Service &amp; Eva Data Center Topology</h2>
+            <span class="dim mono" style="font-size:11px;">Click any service node to inspect blast radius</span>
+          </div>
+          <div class="radar-box">
+            <svg id="topo-svg" viewBox="0 0 740 305" class="topo-svg" aria-label="Service Dependency Graph"></svg>
+          </div>
+          <div id="node-inspect" class="node-inspect"></div>
+        </section>
+
+        <div class="signals-2col">
+          <section class="panel" aria-labelledby="cw-heading">
+            <div class="panel-head">
+              <h2 id="cw-heading">CloudWatch / Prometheus p99</h2>
+              <span class="dim mono" style="font-size:10.5px;" id="deploy-tag">Deploy v2.41.8</span>
+            </div>
+            <svg id="metrics-svg" viewBox="0 0 420 185" class="metrics-svg"></svg>
+          </section>
+
+          <section class="panel" aria-labelledby="otel-heading">
+            <div class="panel-head">
+              <h2 id="otel-heading">OTel Trace Waterfall</h2>
+              <code class="dim" style="font-size:10.5px;" id="trace-id-lbl">trace_id</code>
+            </div>
+            <div id="waterfall-list"></div>
+          </section>
         </div>
-        <figcaption><b>Figure 2.</b> Production AWS CloudFront + Private S3 (OAC) + Python 3.12 Lambda architecture connecting ordered MCP telemetry servers, Amazon Bedrock Nova Lite, and the human-gated remediation guardrail.</figcaption>
-      </figure>
-
-      <h2 id="results"><span class="num">04</span>Measured benchmarks</h2>
-      <div class="tablewrap wide">
-        <table>
-          <thead>
-            <tr>
-              <th>Evaluation Metric</th>
-              <th class="r">AegisOps (v2)</th>
-              <th class="r">Baseline (v1)</th>
-              <th>Statistical / Safety Verification</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr class="best">
-              <td>Root-Cause Diagnosis Accuracy (12 AWS Outages)</td>
-              <td class="r">100.0%</td>
-              <td class="r">75.0%</td>
-              <td>+25.0% gain (95% bootstrap CI [+6.2%, +50.0%], p &lt; 0.05)</td>
-            </tr>
-            <tr>
-              <td>Prerequisite MCP Step-Order Compliance</td>
-              <td class="r">100.0%</td>
-              <td class="r">86.1%</td>
-              <td>+13.9% compliance across 60 trajectories (320 OTel spans)</td>
-            </tr>
-            <tr>
-              <td>Invalid Tool Parameter Rate</td>
-              <td class="r">0.0%</td>
-              <td class="r">6.7%</td>
-              <td>Strict JSON-Schema validation prior to MCP invocation</td>
-            </tr>
-            <tr class="best">
-              <td>Write / Rollback Human-Approval Gate Enforcement</td>
-              <td class="r">100.0%</td>
-              <td class="r">100.0%</td>
-              <td>0% unapproved mutations; blocks UnsafeMutatingPolicy in CI</td>
-            </tr>
-            <tr class="best">
-              <td>Rubric Grader Agreement with Human SRE Scores</td>
-              <td class="r">95.8%</td>
-              <td class="r">&mdash;</td>
-              <td>&kappa; = 0.917 across 24 human-scored postmortems; 100% A/B swap consistency</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
-    </div>
+
+      <!-- COLUMN 3: Two-Key Human Rollback Switch + Live Bedrock Nova RCA + Audit Log -->
+      <div class="stack">
+        <section class="panel two-key-panel" aria-labelledby="gate-heading">
+          <div class="panel-head">
+            <h2 id="gate-heading" style="color:#ffb020;">Two-Key Human Rollback Switch</h2>
+            <span class="mono" style="font-size:10.5px;" id="gate-state-lbl">LOCKED</span>
+          </div>
+
+          <div style="font-weight:700;font-size:13.5px;" id="rem-title"></div>
+          <div class="runbook-cmd" id="rem-cmd"></div>
+
+          <label class="arm-row">
+            <input type="checkbox" id="two-key-checkbox">
+            <span>KEY 1: Arm On-Call SRE Sign-Off Token</span>
+          </label>
+
+          <div class="gate-btns">
+            <button type="button" class="btn emerald" id="exec-rollback-btn" style="flex:1;">
+              KEY 2: Execute Safe Rollback
+            </button>
+            <button type="button" class="btn siren-outline" id="unapproved-btn" title="Simulate agent attempting destructive rollback without human approval">
+              Simulate Unapproved Write
+            </button>
+          </div>
+
+          <div id="gate-banner" class="gate-banner hidden"></div>
+        </section>
+
+        <section class="panel" aria-labelledby="rca-heading">
+          <div class="panel-head">
+            <h2 id="rca-heading">Bedrock Nova Written RCA</h2>
+            <code style="font-size:10.5px;color:#b18cff;" id="rca-engine-tag">us.amazon.nova-lite-v1:0</code>
+          </div>
+          <div style="display:flex;justify-content:space-between;font:400 10.5px var(--mono);color:var(--dim);margin-bottom:7px;" id="rca-meta"></div>
+          <div id="rca-card" class="rca-card"></div>
+          <button type="button" class="btn" id="rerun-rca-btn" style="width:100%;margin-top:9px;">
+            &#9889; Re-Synthesize Live Bedrock Nova RCA
+          </button>
+        </section>
+
+        <section class="panel" aria-labelledby="audit-heading">
+          <div class="panel-head">
+            <h2 id="audit-heading">Mutation Safety Audit Log</h2>
+            <span class="dim mono" style="font-size:10.5px;">0% Unapproved Writes</span>
+          </div>
+          <div id="audit-log" class="audit-log"></div>
+        </section>
+      </div>
+    </main>
   </div>
-</div></article></main>
 
-<footer class="site-foot"><div class="wrap">
-  <span>Ritwika Kancharla &middot; AegisOps Autonomous DevOps &amp; Data Center Agent</span>
-  <span><a href="https://ritwikareddykancharla.github.io">Portfolio</a> &nbsp;&middot;&nbsp; <a href="https://github.com/ritwikareddykancharla/aegis-ops">GitHub</a></span>
-</div></footer>
-
-<a class="totop" href="#top" aria-label="Back to top">&uarr;</a>
-<script src="/app.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>

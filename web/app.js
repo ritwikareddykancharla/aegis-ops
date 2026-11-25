@@ -1,33 +1,9 @@
-/* AegisOps Blueprint UI Controller — Stateless browser memory + URL hash (zero web storage) */
+/* AegisOps 3:00 AM SRE War Room Controller — Stateless browser memory */
 (() => {
-  const root = document.documentElement;
   const state = {
     data: null,
     selectedNodeId: "checkout-svc",
   };
-
-  /* Theme toggle without web storage */
-  const themeBtn = document.querySelector(".theme");
-  if (themeBtn) {
-    themeBtn.addEventListener("click", () => {
-      const next = root.dataset.theme === "dark" ? "light" : "dark";
-      root.dataset.theme = next;
-      history.replaceState(null, "", `#theme=${next}`);
-    });
-  }
-
-  /* Reading progress bar */
-  function updateReadingProgress() {
-    const body = document.querySelector(".post-body");
-    const fill = document.getElementById("side-bar-fill");
-    const pct = document.getElementById("side-pct");
-    if (!body || !fill || !pct) return;
-    const r = body.getBoundingClientRect();
-    const p = Math.min(1, Math.max(0, (window.innerHeight * 0.45 - r.top) / Math.max(r.height, 1)));
-    fill.style.transform = `scaleX(${p})`;
-    pct.textContent = `${Math.round(p * 100)}%`;
-  }
-  window.addEventListener("scroll", updateReadingProgress, { passive: true });
 
   async function api(path, method = "GET", body = null) {
     const opts = { method, headers: { "Content-Type": "application/json" } };
@@ -44,28 +20,28 @@
       .replace(/>/g, "&gt;");
   }
 
-  function renderMd(md) {
+  function formatRca(md) {
     let h = esc(md);
-    h = h.replace(/`([^`]+)`/g, "<code>$1</code>");
-    h = h.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-    h = h.replace(/^### (.*)$/gm, "<strong style='display:block;margin:6px 0;font-family:var(--display);color:var(--ink);'>$1</strong>");
+    h = h.replace(/`([^`]+)`/g, "<code style='color:#2ee59d'>$1</code>");
+    h = h.replace(/\*\*([^*]+)\*\*/g, "<strong style='color:#fff'>$1</strong>");
+    h = h.replace(/^### (.*)$/gm, "<div style='color:#b18cff;font-weight:700;margin:4px 0 6px;'>$1</div>");
     h = h.replace(/^- (.*)$/gm, "<div style='margin:4px 0;'>&bull; $1</div>");
     h = h.replace(/\n\n/g, "<br>");
     return h;
   }
 
-  function statusColors(st) {
-    if (st === "CRITICAL") return { fill: "var(--signal-soft)", stroke: "var(--bad)", dot: "var(--bad)", txt: "var(--bad)" };
-    if (st === "AMBER") return { fill: "var(--paper)", stroke: "var(--warn)", dot: "var(--warn)", txt: "var(--warn)" };
-    return { fill: "var(--card)", stroke: "var(--ok)", dot: "var(--ok)", txt: "var(--ok)" };
+  function palette(status) {
+    if (status === "CRITICAL") return { bg: "rgba(255,59,92,0.16)", stroke: "#ff3b5c", dot: "#ff3b5c", text: "#ff8fa2" };
+    if (status === "AMBER") return { bg: "rgba(255,176,32,0.12)", stroke: "#ffb020", dot: "#ffb020", text: "#ffd17a" };
+    return { bg: "rgba(46,229,157,0.10)", stroke: "#2ee59d", dot: "#2ee59d", text: "#2ee59d" };
   }
 
   function renderTopology(topo) {
-    const svg = document.getElementById("topology-svg");
+    const svg = document.getElementById("topo-svg");
     const map = {};
     topo.nodes.forEach((n) => (map[n.id] = n));
     const W = 166;
-    const H = 64;
+    const H = 62;
 
     const edges = topo.edges
       .map((e) => {
@@ -80,23 +56,23 @@
         const my = (y1 + y2) / 2 - 6;
         const hot = a.status === "CRITICAL" || b.status === "CRITICAL";
         return `
-          <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${hot ? "var(--bad)" : "var(--cobalt)"}" stroke-width="${hot ? 2.4 : 1.5}" ${hot ? 'stroke-dasharray="5,4"' : ""} />
-          <text x="${mx}" y="${my}" text-anchor="middle" font-size="9" font-family="var(--mono)" fill="var(--soft)">${esc(e.protocol)}</text>
+          <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${hot ? "#ff3b5c" : "#3a4368"}" stroke-width="${hot ? 2.4 : 1.6}" ${hot ? 'stroke-dasharray="5,4"' : ""} />
+          <text x="${mx}" y="${my}" text-anchor="middle" font-size="9.5" font-family="JetBrains Mono, monospace" fill="#8b93b0">${esc(e.protocol)}</text>
         `;
       })
       .join("");
 
     const nodes = topo.nodes
       .map((n) => {
-        const c = statusColors(n.status);
+        const p = palette(n.status);
         const sel = n.id === state.selectedNodeId;
         return `
           <g class="topo-node" data-id="${n.id}" style="cursor:pointer;">
-            <rect x="${n.x}" y="${n.y}" width="${W}" height="${H}" fill="${c.fill}" stroke="${sel ? "var(--ink)" : c.stroke}" stroke-width="${sel ? 3 : 1.8}" />
-            <rect x="${n.x + 10}" y="${n.y + 12}" width="8" height="8" fill="${c.dot}" />
-            <text x="${n.x + 24}" y="${n.y + 20}" font-size="11.5" font-weight="800" font-family="var(--display)" fill="var(--ink)">${esc(n.label)}</text>
-            <text x="${n.x + 10}" y="${n.y + 37}" font-size="9.5" font-family="var(--mono)" fill="var(--soft)">${esc(n.tier)}</text>
-            <text x="${n.x + 10}" y="${n.y + 53}" font-size="9.5" font-weight="500" font-family="var(--mono)" fill="${c.txt}">${esc(n.metric)}</text>
+            <rect x="${n.x}" y="${n.y}" width="${W}" height="${H}" rx="9" fill="${p.bg}" stroke="${sel ? "#ffffff" : p.stroke}" stroke-width="${sel ? 2.6 : 1.6}" />
+            <circle cx="${n.x + 14}" cy="${n.y + 17}" r="4.5" fill="${p.dot}" />
+            <text x="${n.x + 25}" y="${n.y + 21}" font-size="11.5" font-weight="700" fill="#eef1fa">${esc(n.label)}</text>
+            <text x="${n.x + 14}" y="${n.y + 37}" font-size="9.5" font-family="JetBrains Mono, monospace" fill="#8b93b0">${esc(n.tier)}</text>
+            <text x="${n.x + 14}" y="${n.y + 52}" font-size="10" font-weight="600" font-family="JetBrains Mono, monospace" fill="${p.text}">${esc(n.metric)}</text>
           </g>
         `;
       })
@@ -106,24 +82,24 @@
     svg.querySelectorAll(".topo-node").forEach((g) => {
       g.addEventListener("click", () => {
         state.selectedNodeId = g.dataset.id;
-        renderAll();
+        renderWarRoom();
       });
     });
 
     const s = map[state.selectedNodeId] || topo.nodes[0];
-    document.getElementById("selected-node-bar").innerHTML = `
-      <span>Selected: <strong>${esc(s.label)}</strong> (${esc(s.tier)})</span>
-      <span>State: <strong>${s.status}</strong> &middot; ${esc(s.metric)} (${s.latency_ms} ms)</span>
+    document.getElementById("node-inspect").innerHTML = `
+      <span>NODE // <strong style="color:#fff">${esc(s.label)}</strong> (${esc(s.tier)})</span>
+      <span>HEARTBEAT: <strong style="color:${palette(s.status).text}">${s.status}</strong> &middot; ${esc(s.metric)} (${s.latency_ms} ms)</span>
     `;
   }
 
   function renderMetrics(ms) {
     const svg = document.getElementById("metrics-svg");
-    document.getElementById("deploy-marker-badge").textContent = ms.deploy_label;
+    document.getElementById("deploy-tag").textContent = ms.deploy_label;
     const vals = ms.p99_latency_ms;
     const labels = ms.timestamps;
     const maxV = Math.max(...vals, 500) * 1.12;
-    const padL = 42, padR = 14, padT = 18, padB = 26;
+    const padL = 40, padR = 14, padT = 18, padB = 26;
     const plotW = 420 - padL - padR;
     const plotH = 185 - padT - padB;
 
@@ -138,25 +114,25 @@
     const mPt = pts[ms.deploy_marker_idx] || pts[2];
 
     svg.innerHTML = `
-      <line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}" stroke="var(--rule)" />
-      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="var(--rule)" />
-      <line x1="${mPt.x}" y1="${padT}" x2="${mPt.x}" y2="${padT + plotH}" stroke="var(--signal)" stroke-dasharray="4,4" stroke-width="1.6" />
-      <text x="${mPt.x + 5}" y="${padT + 11}" font-size="9" font-family="var(--mono)" fill="var(--signal)">${esc(ms.deploy_label)}</text>
-      <polyline fill="none" stroke="var(--cobalt)" stroke-width="2.6" points="${poly}" />
+      <line x1="${padL}" y1="${padT + plotH}" x2="${padL + plotW}" y2="${padT + plotH}" stroke="#242940" />
+      <line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT + plotH}" stroke="#242940" />
+      <line x1="${mPt.x}" y1="${padT}" x2="${mPt.x}" y2="${padT + plotH}" stroke="#ffb020" stroke-dasharray="4,3" stroke-width="1.5" />
+      <text x="${mPt.x + 4}" y="${padT + 11}" font-size="9" font-family="JetBrains Mono, monospace" fill="#ffb020">${esc(ms.deploy_label)}</text>
+      <polyline fill="none" stroke="#ff3b5c" stroke-width="2.4" points="${poly}" />
       ${pts
         .map(
           (p, i) => `
-        <rect x="${p.x - 3}" y="${p.y - 3}" width="6" height="6" fill="${p.v > 400 ? "var(--bad)" : "var(--ok)"}" />
-        ${i % 2 === 0 || i === pts.length - 1 ? `<text x="${p.x}" y="${padT + plotH + 16}" text-anchor="middle" font-size="8.5" font-family="var(--mono)" fill="var(--soft)">${esc(p.label)}</text>` : ""}
+        <circle cx="${p.x}" cy="${p.y}" r="3.4" fill="${p.v > 400 ? "#ff3b5c" : "#2ee59d"}" />
+        ${i % 2 === 0 || i === pts.length - 1 ? `<text x="${p.x}" y="${padT + plotH + 16}" text-anchor="middle" font-size="8.5" font-family="JetBrains Mono, monospace" fill="#8b93b0">${esc(p.label)}</text>` : ""}
       `
         )
         .join("")}
-      <text x="${padL + 4}" y="${padT + 11}" font-size="9" font-family="var(--mono)" fill="var(--soft)">Peak ${Math.max(...vals)} ms</text>
+      <text x="${padL + 4}" y="${padT + 11}" font-size="9" font-family="JetBrains Mono, monospace" fill="#8b93b0">Peak ${Math.max(...vals)} ms</text>
     `;
   }
 
   function renderWaterfall(wf) {
-    document.getElementById("trace-id-label").textContent = wf.trace_id;
+    document.getElementById("trace-id-lbl").textContent = wf.trace_id;
     const total = Math.max(wf.total_ms, 1);
     document.getElementById("waterfall-list").innerHTML = wf.spans
       .map((sp) => {
@@ -164,90 +140,99 @@
         const width = Math.max(4, Math.min(100 - left, (sp.dur_ms / total) * 100));
         const col =
           sp.status.includes("CRITICAL") || sp.status.includes("ERROR")
-            ? "var(--bad)"
+            ? "#ff3b5c"
             : sp.status === "WARN"
-            ? "var(--signal)"
-            : "var(--ok)";
+            ? "#ffb020"
+            : "#2ee59d";
         return `
-        <div class="wf-span">
-          <div class="wf-span-h"><span><strong>${esc(sp.service)}</strong> &middot; ${esc(sp.op)}</span><strong>${sp.dur_ms}ms</strong></div>
-          <div class="wf-track"><div class="wf-fill" style="left:${left}%;width:${width}%;background:${col};"></div></div>
+        <div class="span-row">
+          <div class="span-head"><span><strong>${esc(sp.service)}</strong> &middot; ${esc(sp.op)}</span><strong>${sp.dur_ms}ms</strong></div>
+          <div class="span-track"><div class="span-bar" style="left:${left}%;width:${width}%;background:${col};"></div></div>
         </div>`;
       })
       .join("");
   }
 
-  function renderAll() {
+  function renderWarRoom() {
     const d = state.data;
     if (!d) return;
     const inc = d.incident;
+    const appRoot = document.getElementById("app-root");
 
-    const pill = document.getElementById("header-incident-pill");
-    if (d.remediated) {
-      pill.textContent = "RESOLVED · ALL 6 SERVICES HEALTHY";
-      pill.className = "st-tag ok";
-    } else {
-      pill.textContent = `${inc.severity} ACTIVE · ${inc.root_node.toUpperCase()}`;
-      pill.className = "st-tag bad";
-    }
+    appRoot.classList.toggle("is-paging", !d.remediated);
+    appRoot.classList.toggle("is-healed", Boolean(d.remediated));
 
-    document.getElementById("stat-inc-name").textContent = inc.short_label.replace(/^\d+\.\s*/, "");
-    document.getElementById("stat-inc-meta").textContent = `${inc.region} · Suspect: ${inc.suspect_change}`;
-    document.getElementById("stat-safety-gate").textContent = d.remediated ? "APPROVED & EXECUTED" : "HUMAN TOKEN REQUIRED";
+    document.getElementById("page-ticker").textContent = d.remediated
+      ? `INCIDENT RESOLVED // ALL 6 HEARTBEATS GREEN`
+      : `ACTIVE PAGE // ${inc.severity} · ${inc.root_node.toUpperCase()}`;
 
-    renderTopology(d.topology);
-    renderMetrics(d.metrics_series);
-    renderWaterfall(d.trace_waterfall);
+    document.getElementById("suspect-meta").textContent = `${inc.region} · Suspect: ${inc.suspect_change}`;
 
-    document.getElementById("mcp-steps-grid").innerHTML = d.mcp_timeline
+    document.querySelectorAll(".inc-pill").forEach((b) => {
+      b.classList.toggle("active", b.dataset.inc === d.active_incident_id);
+    });
+
+    // Ordered MCP Probe Checklist
+    document.getElementById("probe-list").innerHTML = d.mcp_timeline
       .map(
         (m) => `
-      <div class="mcp-box">
-        <div class="mcp-top"><span>0${m.step} <code>${esc(m.tool)}</code></span><span style="color:var(--ok);">${m.mode} &middot; ${m.latency_ms}ms</span></div>
-        <div style="font:400 9.5px var(--mono);color:var(--soft);">MCP: ${esc(m.server)}</div>
-        <p>${esc(m.finding)}</p>
-      </div>`
+      <li class="probe-item">
+        <span class="probe-chip">0${m.step}</span>
+        <div>
+          <div class="probe-top"><span>${esc(m.tool)}</span><span style="color:#2ee59d;">${m.latency_ms}ms</span></div>
+          <div class="probe-srv">${esc(m.server)}</div>
+          <p class="probe-find">${esc(m.finding)}</p>
+        </div>
+      </li>`
       )
       .join("");
 
-    const remCard = document.getElementById("remediation-card");
-    remCard.classList.toggle("healed", d.remediated);
-    document.getElementById("rem-action-title").textContent = `${inc.runbook_id}: ${inc.remediation_title}`;
-    document.getElementById("rem-cli-box").textContent = `$ ${inc.remediation_cli}`;
-
-    document.getElementById("rca-engine-badge").textContent = d.rca.engine;
-    document.getElementById("rca-meta-bar").innerHTML = `<span>Latency: ${d.rca.latency_ms} ms</span><span>Runbook: ${esc(inc.runbook_id)}</span>`;
-    document.getElementById("rca-markdown-box").innerHTML = renderMd(d.rca.rca_markdown);
-
+    // Calibrated SRE Rubric
     const rub = d.rubric_evaluation;
     const dims = [
-      ["Factuality (Trace + Metric Citations)", rub.dimensions.factuality],
+      ["Factuality (Trace + Metric Grounding)", rub.dimensions.factuality],
       ["Completeness (Causal Chain + Runbook)", rub.dimensions.completeness],
-      ["Actionability (Rollback Precision)", rub.dimensions.actionability],
+      ["Actionability (Safe Rollback Spec)", rub.dimensions.actionability],
       ["Safety Gate (0 Unapproved Mutations)", rub.dimensions.safety_gate],
     ];
     document.getElementById("rubric-bars").innerHTML = dims
       .map(
         ([lbl, sc]) => `
-      <div class="rubric-row">
+      <div class="rubric-item">
         <div class="rubric-lbl"><span>${lbl}</span><strong>${Math.round(sc * 100)}%</strong></div>
         <div class="rubric-track"><div class="rubric-fill" style="width:${Math.round(sc * 100)}%"></div></div>
       </div>`
       )
       .join("");
 
-    const auditEl = document.getElementById("audit-log-list");
+    renderTopology(d.topology);
+    renderMetrics(d.metrics_series);
+    renderWaterfall(d.trace_waterfall);
+
+    // Two-Key Rollback Panel
+    document.getElementById("rem-title").textContent = `${inc.runbook_id}: ${inc.remediation_title}`;
+    document.getElementById("rem-cmd").textContent = `$ ${inc.remediation_cli}`;
+    const armed = document.getElementById("two-key-checkbox").checked;
+    document.getElementById("gate-state-lbl").textContent = d.remediated ? "HEALED" : armed ? "KEY 1 ARMED" : "LOCKED";
+
+    // Bedrock Nova Written RCA
+    document.getElementById("rca-engine-tag").textContent = d.rca.engine;
+    document.getElementById("rca-meta").innerHTML = `<span>Latency: ${d.rca.latency_ms} ms</span><span>SOP: ${esc(inc.runbook_id)}</span>`;
+    document.getElementById("rca-card").innerHTML = formatRca(d.rca.rca_markdown);
+
+    // Safety Audit Log
+    const auditEl = document.getElementById("audit-log");
     if (!d.safety_audit_log || d.safety_audit_log.length === 0) {
-      auditEl.innerHTML = `<div style="font:400 10.5px var(--mono);color:var(--soft);">No mutating MCP calls attempted yet. Try Guided Workflow #4 or #5.</div>`;
+      auditEl.innerHTML = `<div class="dim">No mutating MCP calls attempted yet. Arm Key 1 or test an unapproved write above.</div>`;
     } else {
       auditEl.innerHTML = d.safety_audit_log
         .map(
           (a) => `
-        <div class="audit-entry ${a.decision.includes("BLOCKED") ? "blocked" : "approved"}">
-          <div style="display:flex;justify-content:space-between;font-weight:500;color:var(--ink);">
-            <span>${esc(a.decision)}</span><span>${esc(a.timestamp)}</span>
+        <div class="audit-row ${a.decision.includes("BLOCKED") ? "blocked" : "approved"}">
+          <div style="display:flex;justify-content:space-between;font-weight:700;">
+            <span>${esc(a.decision)}</span><span class="dim">${esc(a.timestamp)}</span>
           </div>
-          <div style="color:var(--body);margin-top:3px;">${esc(a.detail)}</div>
+          <div class="dim" style="margin-top:2px;">${esc(a.detail)}</div>
         </div>`
         )
         .join("");
@@ -256,69 +241,78 @@
 
   async function selectIncident(incId, node) {
     state.selectedNodeId = node;
-    document.getElementById("rca-markdown-box").innerHTML =
-      `Executing 4 ordered read-only MCP tools &amp; generating written RCA via <code>us.amazon.nova-lite-v1:0</code>...`;
-    const res = await api("/api/investigate", "POST", { incident_id: incId, run_bedrock: true });
-    state.data = res;
-    document.getElementById("rem-feedback-banner").classList.add("hidden");
-    renderAll();
+    document.getElementById("two-key-checkbox").checked = false;
+    document.getElementById("gate-banner").classList.add("hidden");
+    document.getElementById("rca-card").innerHTML =
+      `<span style="color:#b18cff;">// Running 4 MCP read-only probes &amp; synthesizing written RCA via us.amazon.nova-lite-v1:0...</span>`;
+    state.data = await api("/api/investigate", "POST", { incident_id: incId, run_bedrock: true });
+    renderWarRoom();
   }
 
   async function attemptRemediation(approved) {
     const res = await api("/api/remediate", "POST", { approved });
     state.data = res.state;
-    const msg = document.getElementById("rem-feedback-banner");
-    msg.classList.remove("hidden", "blocked", "approved");
+    const banner = document.getElementById("gate-banner");
+    banner.classList.remove("hidden", "blocked", "approved");
     if (res.blocked) {
-      msg.classList.add("blocked");
-      msg.textContent = "SAFETY_GATE_VIOLATION: Mutating rollback rejected (100% blocked without human SRE token).";
+      banner.classList.add("blocked");
+      banner.textContent = "SAFETY_GATE_VIOLATION: Mutating rollback blocked 100% — Key 1 SRE Sign-Off was not armed.";
     } else {
-      msg.classList.add("approved");
-      msg.textContent = `APPROVED (${res.approval_token}): Rollback executed; all 6 topology services verified HEALTHY.`;
+      banner.classList.add("approved");
+      banner.textContent = `EXECUTED (${res.approval_token}): Safe rollback complete — all 6 heartbeats GREEN.`;
     }
-    renderAll();
+    renderWarRoom();
   }
 
   function bind() {
-    document.getElementById("wf-inc1").addEventListener("click", () => selectIncident("inc_checkout_pool", "checkout-svc"));
-    document.getElementById("wf-inc2").addEventListener("click", () => selectIncident("inc_ddb_hot_partition", "dynamodb-orders"));
-    document.getElementById("wf-inc3").addEventListener("click", () => selectIncident("inc_dc_chiller_drift", "rack-pdu-ctrl"));
-    document.getElementById("wf-test-block").addEventListener("click", () => attemptRemediation(false));
-    document.getElementById("wf-approve-fix").addEventListener("click", () => attemptRemediation(true));
+    document.querySelectorAll(".inc-pill").forEach((b) => {
+      b.addEventListener("click", () => selectIncident(b.dataset.inc, b.dataset.node));
+    });
 
-    document.getElementById("btn-approve-rollback").addEventListener("click", () => attemptRemediation(true));
-    document.getElementById("btn-unapproved-attempt").addEventListener("click", () => attemptRemediation(false));
-    document.getElementById("regen-bedrock-btn").addEventListener("click", () => {
+    const keyCheckbox = document.getElementById("two-key-checkbox");
+    keyCheckbox.addEventListener("change", () => renderWarRoom());
+
+    document.getElementById("exec-rollback-btn").addEventListener("click", () => {
+      attemptRemediation(keyCheckbox.checked);
+    });
+
+    document.getElementById("unapproved-btn").addEventListener("click", () => {
+      keyCheckbox.checked = false;
+      attemptRemediation(false);
+    });
+
+    document.getElementById("rerun-rca-btn").addEventListener("click", () => {
       if (state.data) selectIncident(state.data.active_incident_id, state.selectedNodeId);
     });
 
-    document.getElementById("reset-demo-btn").addEventListener("click", async () => {
+    document.getElementById("reset-btn").addEventListener("click", async () => {
+      keyCheckbox.checked = false;
+      document.getElementById("gate-banner").classList.add("hidden");
       state.data = await api("/api/reset", "POST", {});
-      document.getElementById("rem-feedback-banner").classList.add("hidden");
-      renderAll();
+      renderWarRoom();
     });
 
-    const drawer = document.getElementById("custom-drawer");
-    document.getElementById("toggle-custom-btn").addEventListener("click", () => drawer.classList.toggle("hidden"));
-    drawer.addEventListener("submit", async (e) => {
+    const customForm = document.getElementById("custom-form");
+    document.getElementById("custom-toggle-btn").addEventListener("click", () => customForm.classList.toggle("hidden"));
+    customForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      drawer.classList.add("hidden");
+      customForm.classList.add("hidden");
       const svc = document.getElementById("custom-service").value;
       state.selectedNodeId = svc;
+      keyCheckbox.checked = false;
       state.data = await api("/api/incidents/custom", "POST", {
         service_id: svc,
         error_signature: document.getElementById("custom-sig").value,
         metric_symptom: document.getElementById("custom-sym").value,
       });
-      renderAll();
+      renderWarRoom();
     });
   }
 
   async function init() {
     bind();
     state.data = await api("/api/state");
-    renderAll();
-    updateReadingProgress();
+    renderWarRoom();
   }
 
   init();

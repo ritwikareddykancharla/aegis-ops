@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AegisOps — AWS DevOps &amp; Data Center Incident Investigation Agent</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <!-- Top AWS DevOps Agent Header -->
+  <header class="topbar">
+    <div class="brand-left">
+      <div class="brand-icon">AO</div>
+      <div>
+        <div class="brand-row">
+          <span class="brand-title">AegisOps</span>
+          <span class="brand-tag">Autonomous AWS DevOps &amp; Eva Data Center Agent</span>
+          <span class="incident-pill" id="header-incident-pill">SEV-1 ACTIVE INVESTIGATION</span>
+        </div>
+        <div class="brand-sub">
+          Reads Logs, Metrics, OTel Traces &amp; Topology over MCP &middot; Live Bedrock Nova Written RCA &middot; 95.8% SRE Rubric &middot; Human-Gated Rollback
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <button type="button" class="btn-outline" id="open-custom-btn">+ Inject Custom Symptom</button>
+      <button type="button" class="btn-outline" id="open-arch-btn">&#9881; CloudFront + MCP Architecture</button>
+      <button type="button" class="btn-outline" id="reset-demo-btn">&#8635; Reset Console</button>
+    </div>
+  </header>
+
+  <!-- Summary Telemetry Strip -->
+  <section class="summary-strip">
+    <div class="stat-box">
+      <span class="stat-label">Active Incident</span>
+      <strong class="stat-val" id="stat-inc-name">Checkout 5xx Spike</strong>
+      <span class="stat-sub" id="stat-inc-meta">us-west-2 &middot; Suspect: v2.41.8</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">Ordered MCP Trajectory</span>
+      <strong class="stat-val" id="stat-mcp-steps">4 / 4 Read-Only Tools</strong>
+      <span class="stat-sub">100% Prerequisite DAG Compliance</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">Calibrated SRE Rubric</span>
+      <strong class="stat-val emerald-txt" id="stat-rubric-score">99.5% PASS</strong>
+      <span class="stat-sub">95.8% Human-SRE Agreement (&kappa;=0.917)</span>
+    </div>
+    <div class="stat-box">
+      <span class="stat-label">Write / Rollback Safety Gate</span>
+      <strong class="stat-val" id="stat-safety-gate">HUMAN APPROVAL REQUIRED</strong>
+      <span class="stat-sub">100% Unapproved Mutations Blocked</span>
+    </div>
+  </section>
+
+  <!-- 3-Column Incident Investigation Console -->
+  <main class="console-grid">
+    <!-- Column 1: What To Try (1-Click Guided Workflows) + Production Incidents -->
+    <aside class="sidebar">
+      <div class="panel guided-panel">
+        <div class="kicker">WHAT TO TRY (1-CLICK GUIDED WORKFLOWS)</div>
+        <p class="guided-copy">
+          Click any guided workflow below to watch AegisOps investigate live telemetry over MCP, write a Bedrock Nova RCA, and enforce human-gated rollback:
+        </p>
+        <div class="wf-stack">
+          <button type="button" class="wf-btn wf-red" id="wf-inc1">
+            <strong>1. Checkout 5xx Spike (Deploy v2.41.8)</strong>
+            <span>Investigate HikariCP pool leak &amp; synthesize live Bedrock Nova RCA</span>
+          </button>
+          <button type="button" class="wf-btn wf-orange" id="wf-inc2">
+            <strong>2. DynamoDB Hot Partition Throttling</strong>
+            <span>Isolate 4,820 WCU single-key throttle on <code>OrdersTable</code></span>
+          </button>
+          <button type="button" class="wf-btn wf-blue" id="wf-inc3">
+            <strong>3. Pod B14 Chiller Drift (Eva DC)</strong>
+            <span>Correlate 31.8&deg;C cold-aisle valve drift &rarr; host CPU DVFS cap</span>
+          </button>
+          <button type="button" class="wf-btn wf-amber" id="wf-test-block">
+            <strong>4. Test Unapproved Rollback (Blocked)</strong>
+            <span>Verify mutating MCP call is 100% blocked without SRE token</span>
+          </button>
+          <button type="button" class="wf-btn wf-green" id="wf-approve-fix">
+            <strong>5. Approve &amp; Execute Safe Rollback</strong>
+            <span>Issue signed SRE token &amp; watch topology turn green</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title-row">
+          <span class="panel-title">Safety Gate Audit Trail</span>
+          <span class="badge-neutral">Zero Unapproved Writes</span>
+        </div>
+        <div id="audit-log-list" class="audit-list"></div>
+      </div>
+    </aside>
+
+    <!-- Column 2: Visual Service Topology Map + Metrics Chart + Trace Waterfall -->
+    <section class="center-col">
+      <!-- Interactive SVG Service Dependency Graph -->
+      <div class="panel">
+        <div class="panel-title-row">
+          <div>
+            <h2 class="panel-h2">Live Service &amp; Data Center Dependency Topology</h2>
+            <p class="panel-sub">Click any node to inspect live health status, golden signals, and upstream/downstream blast radius.</p>
+          </div>
+          <div class="topo-legend">
+            <span><i class="swatch sw-green"></i>Healthy</span>
+            <span><i class="swatch sw-amber"></i>Degraded</span>
+            <span><i class="swatch sw-red"></i>Critical Root Cause</span>
+          </div>
+        </div>
+
+        <div class="topology-canvas-wrap">
+          <svg id="topology-svg" viewBox="0 0 740 315" class="topology-svg" aria-label="Service Dependency Topology"></svg>
+        </div>
+        <div id="selected-node-bar" class="node-detail-bar"></div>
+      </div>
+
+      <!-- CloudWatch / Prometheus Metrics Chart + OTel Distributed Trace Waterfall -->
+      <div class="two-col-row">
+        <div class="panel">
+          <div class="panel-title-row">
+            <h3 class="panel-h3">CloudWatch / Prometheus Golden Signals</h3>
+            <span class="badge-neutral" id="deploy-marker-badge">Deploy Marker</span>
+          </div>
+          <svg id="metrics-svg" viewBox="0 0 420 190" class="metrics-svg"></svg>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title-row">
+            <h3 class="panel-h3">OpenTelemetry Trace Waterfall</h3>
+            <code class="trace-id-tag" id="trace-id-label">trace_id</code>
+          </div>
+          <div id="waterfall-list" class="waterfall-list"></div>
+        </div>
+      </div>
+
+      <!-- Step-by-Step MCP Investigation Timeline -->
+      <div class="panel">
+        <div class="panel-title-row">
+          <div>
+            <h3 class="panel-h3">Step-by-Step Read-Only MCP Investigation Timeline</h3>
+            <p class="panel-sub">Deterministic diagnostic DAG prevents guesswork before consulting deployment diffs &amp; runbooks.</p>
+          </div>
+          <span class="badge-green">4/4 Read-Only Tools Verified</span>
+        </div>
+        <div id="mcp-steps-grid" class="mcp-steps-grid"></div>
+      </div>
+    </section>
+
+    <!-- Column 3: Live Bedrock Nova Written RCA + Rubric Score + Human-Gated Remediation -->
+    <aside class="right-col">
+      <!-- Human-Gated Remediation Action Card -->
+      <div class="panel remediation-card" id="remediation-card">
+        <div class="kicker">HUMAN-GATED REMEDIATION CONTROL</div>
+        <h3 class="rem-title" id="rem-action-title">Loading runbook...</h3>
+        <div class="rem-cli" id="rem-cli-box"></div>
+        <div class="rem-btn-row">
+          <button type="button" class="btn-approve" id="btn-approve-rollback">
+            &#10003; Approve &amp; Execute Safe Rollback
+          </button>
+          <button type="button" class="btn-block-test" id="btn-unapproved-attempt" title="Simulate agent attempting mutation without human approval">
+            Simulate Unapproved Write
+          </button>
+        </div>
+        <div id="rem-feedback-banner" class="rem-feedback hidden"></div>
+      </div>
+
+      <!-- Live Amazon Bedrock Nova Written Root-Cause Analysis -->
+      <div class="panel">
+        <div class="panel-title-row">
+          <div>
+            <div class="kicker" style="color:#6d28d9;">AMAZON BEDROCK WRITTEN RCA</div>
+            <h3 class="panel-h3">Synthesized Postmortem &amp; Diagnosis</h3>
+          </div>
+          <span class="bedrock-badge" id="rca-engine-badge">us.amazon.nova-lite-v1:0</span>
+        </div>
+        <div class="rca-meta-bar" id="rca-meta-bar"></div>
+        <div class="rca-content" id="rca-markdown-box"></div>
+        <button type="button" class="btn-outline full-w" id="regen-bedrock-btn" style="margin-top:10px;">
+          &#9889; Re-Run Live Amazon Bedrock Nova Investigation
+        </button>
+      </div>
+
+      <!-- SRE Rubric Evaluator Card -->
+      <div class="panel">
+        <div class="panel-title-row">
+          <h3 class="panel-h3">Calibrated SRE Rubric Evaluator</h3>
+          <span class="badge-green" id="rubric-verdict-pill">95.8% SRE Agreement</span>
+        </div>
+        <div id="rubric-bars" class="rubric-bars"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Custom Symptom Injection Modal -->
+  <div id="custom-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="panel-title-row">
+        <h3 class="panel-h3">Inject Custom Production Log / Metric Symptom</h3>
+        <button type="button" class="btn-outline" id="close-custom-btn">&times; Close</button>
+      </div>
+      <form id="custom-form" class="custom-form">
+        <label>Target Topology Service / Facility Node</label>
+        <select id="custom-service">
+          <option value="payment-auth">Payment-Auth (Fargate PCI)</option>
+          <option value="checkout-svc">Checkout-Svc (EKS Compute)</option>
+          <option value="dynamodb-orders">DynamoDB-Orders (Persistence)</option>
+          <option value="redis-session">Redis-Session (ElastiCache)</option>
+          <option value="rack-pdu-ctrl">Rack-PDU-Controller (Eva DC Pod B14)</option>
+        </select>
+        <label>CloudWatch Error / Exception Signature</label>
+        <input type="text" id="custom-sig" value="TLSHandshakeTimeoutException: mTLS cert rotation mismatch" required />
+        <label>Prometheus / CloudWatch Metric Symptom</label>
+        <input type="text" id="custom-sym" value="p99 latency spiked 41ms -> 2,180ms + 13.0% HTTP 502 errors" required />
+        <button type="submit" class="btn-approve full-w" style="margin-top:10px;">
+          Inject Symptom &amp; Run Live Bedrock MCP Triage &rarr;
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Architecture Diagram Modal -->
+  <div id="arch-modal" class="modal-backdrop hidden">
+    <div class="modal-card wide">
+      <div class="panel-title-row">
+        <h3 class="panel-h3">AegisOps — CloudFront + S3 OAC + MCP Diagnostic Engine + Bedrock Architecture</h3>
+        <button type="button" class="btn-outline" id="close-arch-btn">&times; Close</button>
+      </div>
+      <img src="/architecture.svg" alt="AegisOps Architecture" style="width:100%;height:auto;border-radius:10px;margin-top:10px;" />
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

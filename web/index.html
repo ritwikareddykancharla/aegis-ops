@@ -71,17 +71,18 @@
       background-image: radial-gradient(var(--dot-color) 1.25px, transparent 1.25px);
       background-size: 20px 20px;
       color: var(--ink);
-      line-height: 1.55;
-      padding-bottom: 4rem;
+      line-height: 1.68;
+      padding-bottom: 5rem;
+      -webkit-font-smoothing: antialiased;
     }
 
     .serif { font-family: 'Newsreader', Georgia, serif; }
     .mono { font-family: 'Martian Mono', monospace; }
 
     .container {
-      max-width: 1260px;
+      max-width: 1280px;
       margin: 0 auto;
-      padding: 0 1.5rem;
+      padding: 0 1.75rem;
     }
 
     .topbar {
@@ -161,7 +162,7 @@
     .btn-secondary { background: var(--bg-subtle); }
 
     .hero {
-      padding: 2.6rem 0 2rem;
+      padding: 3.1rem 0 2.5rem;
       border-bottom: 2px solid var(--border);
     }
 
@@ -173,61 +174,68 @@
       font-size: 0.75rem;
       font-weight: 600;
       text-transform: uppercase;
-      padding: 0.25rem 0.65rem;
+      padding: 0.28rem 0.7rem;
       background: var(--accent-soft);
       color: var(--accent);
       border: 2px solid var(--border);
       box-shadow: var(--shadow-sm);
-      margin-bottom: 1rem;
+      margin-bottom: 1.1rem;
     }
 
     h1 {
-      font-size: clamp(1.95rem, 3.8vw, 3rem);
+      font-size: clamp(2rem, 3.8vw, 3.05rem);
       font-weight: 800;
-      line-height: 1.1;
+      line-height: 1.14;
       letter-spacing: -0.03em;
-      margin-bottom: 0.9rem;
+      margin-bottom: 1.05rem;
+      max-width: 24ch;
     }
 
     .hero-sub {
       font-family: 'Newsreader', Georgia, serif;
-      font-size: clamp(1.15rem, 2vw, 1.38rem);
+      font-size: clamp(1.18rem, 2vw, 1.4rem);
+      line-height: 1.7;
       color: var(--ink-muted);
-      max-width: 940px;
-      margin-bottom: 1.4rem;
+      max-width: 76ch;
+      margin-bottom: 1.65rem;
     }
 
     .kpi-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
-      gap: 1rem;
-      margin-top: 1.4rem;
+      grid-template-columns: repeat(auto-fit, minmax(205px, 1fr));
+      gap: 1.15rem;
+      margin-top: 1.65rem;
     }
 
     .card {
       background: var(--bg-card);
       border: 2px solid var(--border);
       box-shadow: var(--shadow);
-      padding: 1.25rem;
+      padding: 1.5rem;
     }
 
-    .kpi-card { padding: 1rem 1.15rem; }
+    .kpi-card { padding: 1.15rem 1.25rem; }
     .kpi-val {
       font-family: 'Martian Mono', monospace;
-      font-size: 1.42rem;
+      font-size: 1.45rem;
       font-weight: 700;
       color: var(--ink);
     }
     .kpi-label {
-      font-size: 0.79rem;
+      font-size: 0.82rem;
       font-weight: 600;
+      line-height: 1.5;
       color: var(--ink-muted);
-      margin-top: 0.2rem;
+      margin-top: 0.3rem;
     }
 
     .section {
-      padding: 2.5rem 0 0.75rem;
+      padding: 3.5rem 0 1.35rem;
       scroll-margin-top: 136px;
+      border-bottom: 1.5px dashed var(--border);
+    }
+    .section:last-of-type {
+      border-bottom: none;
     }
 
     /* Sticky Jump-to-Section TOC Bar */
@@ -341,8 +349,8 @@
     .problem-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.15rem;
-      margin-bottom: 1.2rem;
+      gap: 1.35rem;
+      margin-bottom: 1.5rem;
     }
     @media (max-width: 980px) {
       .problem-grid { grid-template-columns: 1fr; }
@@ -352,7 +360,7 @@
       background: var(--bg-card);
       border: 2px solid var(--border);
       box-shadow: var(--shadow);
-      padding: 1.2rem;
+      padding: 1.45rem;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -361,37 +369,38 @@
     }
 
     .problem-card h3 {
-      font-size: 1.08rem;
+      font-size: 1.12rem;
       font-weight: 800;
-      margin: 0.45rem 0 0.55rem;
-      line-height: 1.28;
+      margin: 0.5rem 0 0.65rem;
+      line-height: 1.32;
     }
 
     .problem-card p {
-      font-size: 0.89rem;
+      font-size: 0.94rem;
       color: var(--ink-muted);
-      line-height: 1.55;
-      margin-bottom: 0.85rem;
+      line-height: 1.7;
+      margin-bottom: 1.05rem;
     }
 
     .problem-stat {
       font-family: 'Martian Mono', monospace;
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.45rem 0.65rem;
+      line-height: 1.45;
+      padding: 0.55rem 0.75rem;
       background: var(--fail-soft);
       color: var(--fail);
       border: 1.5px solid var(--border);
     }
 
-    /* Excalidraw Architecture Canvas (§02) */
+    /* Multi-Plane System Architecture Canvas (§02) */
     .excalidraw-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 0.75rem;
       flex-wrap: wrap;
-      padding: 0.7rem 0.95rem;
+      padding: 0.8rem 1.05rem;
       background: var(--bg-subtle);
       border: 2px solid var(--border);
       border-bottom: none;
@@ -404,7 +413,7 @@
       border: 2px solid #18181B;
       box-shadow: 4px 4px 0px #18181B;
       overflow-x: auto;
-      padding: 0.9rem;
+      padding: 1rem;
     }
 
     .excalidraw-svg {
@@ -438,25 +447,25 @@
     }
 
     .arch-inspector {
-      margin-top: 1rem;
+      margin-top: 1.25rem;
       background: var(--bg-card);
       border: 2px solid var(--border);
       box-shadow: var(--shadow);
-      padding: 1.05rem 1.2rem;
+      padding: 1.25rem 1.4rem;
     }
 
     .arch-node-pills {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 0.85rem;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
     }
 
     .arch-node-pill {
       font-family: 'Martian Mono', monospace;
       font-size: 0.69rem;
       font-weight: 700;
-      padding: 0.26rem 0.58rem;
+      padding: 0.3rem 0.62rem;
       border: 1.5px solid var(--border);
       background: var(--bg-subtle);
       color: var(--ink);
@@ -472,8 +481,8 @@
     .module-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1.2rem;
-      margin-bottom: 1.2rem;
+      gap: 1.45rem;
+      margin-bottom: 1.5rem;
     }
     @media (max-width: 960px) {
       .module-grid { grid-template-columns: 1fr; }
@@ -490,7 +499,7 @@
     .module-card-head {
       background: var(--bg-code);
       color: var(--text-code);
-      padding: 0.72rem 1rem;
+      padding: 0.82rem 1.15rem;
       border-bottom: 2px solid var(--border);
       display: flex;
       justify-content: space-between;
@@ -503,26 +512,27 @@
     }
 
     .module-card-body {
-      padding: 1.1rem 1.15rem;
+      padding: 1.35rem 1.4rem;
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 0.8rem;
       flex: 1;
     }
 
     .module-card-body h3 {
-      font-size: 1.08rem;
+      font-size: 1.12rem;
       font-weight: 800;
-      line-height: 1.28;
+      line-height: 1.34;
     }
 
     .module-list {
-      padding-left: 1.15rem;
-      font-size: 0.87rem;
+      padding-left: 1.2rem;
+      font-size: 0.92rem;
+      line-height: 1.7;
       color: var(--ink-muted);
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.55rem;
     }
 
     .deep-dive-drawer {
@@ -532,9 +542,9 @@
     }
 
     .deep-dive-drawer summary {
-      padding: 0.85rem 1.15rem;
+      padding: 1rem 1.25rem;
       font-family: 'Martian Mono', monospace;
-      font-size: 0.78rem;
+      font-size: 0.79rem;
       font-weight: 700;
       cursor: pointer;
       background: var(--bg-subtle);
@@ -557,8 +567,8 @@
     .takeaway-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.15rem;
-      margin-top: 1.2rem;
+      gap: 1.35rem;
+      margin-top: 1.55rem;
     }
     @media (max-width: 980px) {
       .takeaway-grid { grid-template-columns: 1fr; }
@@ -568,46 +578,51 @@
       background: var(--bg-card);
       border: 2px solid var(--border);
       box-shadow: var(--shadow);
-      padding: 1.15rem;
+      padding: 1.35rem 1.4rem;
       border-left: 6px solid #D94E1F;
     }
 
     .takeaway-card h3 {
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 800;
-      margin: 0.35rem 0 0.45rem;
+      line-height: 1.34;
+      margin: 0.4rem 0 0.55rem;
     }
 
     .takeaway-card p {
-      font-size: 0.87rem;
+      font-size: 0.92rem;
       color: var(--ink-muted);
-      line-height: 1.55;
+      line-height: 1.7;
     }
+
     .section-header {
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.65rem;
       display: flex;
       justify-content: space-between;
       align-items: flex-end;
-      gap: 1rem;
+      gap: 1.15rem;
       flex-wrap: wrap;
     }
     .section-title {
-      font-size: 1.58rem;
+      font-size: clamp(1.48rem, 2.5vw, 1.78rem);
       font-weight: 800;
+      line-height: 1.2;
       letter-spacing: -0.02em;
+      margin-bottom: 0.45rem;
     }
     .section-desc {
       font-family: 'Newsreader', serif;
-      font-size: 1.12rem;
+      font-size: 1.16rem;
+      line-height: 1.7;
       color: var(--ink-muted);
-      max-width: 850px;
+      max-width: 74ch;
     }
 
     .walkthrough-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
-      gap: 1.15rem;
-      margin-bottom: 1.5rem;
+      gap: 1.25rem;
+      margin-bottom: 1.6rem;
     }
 
     .step-badge {
@@ -615,14 +630,372 @@
       font-family: 'Martian Mono', monospace;
       font-size: 0.72rem;
       font-weight: 700;
-      padding: 0.2rem 0.5rem;
+      padding: 0.22rem 0.55rem;
       background: var(--ink);
       color: var(--bg-card);
       margin-bottom: 0.65rem;
     }
 
-    .walkthrough-card h3 { font-size: 1.06rem; font-weight: 800; margin-bottom: 0.45rem; }
-    .walkthrough-card p { font-size: 0.89rem; color: var(--ink-muted); }
+    .walkthrough-card h3 { font-size: 1.08rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .walkthrough-card p { font-size: 0.92rem; line-height: 1.68; color: var(--ink-muted); }
+
+    /* ====================================================================== */
+    /* HUMAN-READABLE NARRATIVE & INTUITION COMPONENTS (NEO-BRUTALIST)        */
+    /* ====================================================================== */
+    .plain-english-box {
+      background: linear-gradient(135deg, var(--pass-soft) 0%, var(--bg-card) 48%, var(--warn-soft) 100%);
+      border: 2px solid var(--border);
+      border-left: 8px solid var(--pass);
+      box-shadow: var(--shadow);
+      padding: 1.6rem 1.8rem;
+      margin-top: 1.65rem;
+    }
+    [data-theme="dark"] .plain-english-box {
+      background: linear-gradient(135deg, rgba(6, 78, 59, 0.55) 0%, var(--bg-card) 55%, rgba(69, 26, 3, 0.42) 100%);
+    }
+
+    .plain-english-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.24rem 0.62rem;
+      background: var(--pass);
+      color: #FFFFFF;
+      border: 1.5px solid var(--border);
+      margin-bottom: 0.85rem;
+    }
+
+    .plain-english-box h2,
+    .plain-english-box h3 {
+      font-size: 1.24rem;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 0.75rem;
+      color: var(--ink);
+    }
+
+    .plain-english-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.15rem;
+      margin-top: 0.9rem;
+    }
+    @media (max-width: 960px) {
+      .plain-english-list { grid-template-columns: 1fr; }
+    }
+
+    .plain-english-sentence {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      padding: 1.05rem 1.15rem;
+      box-shadow: var(--shadow-sm);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      color: var(--ink);
+    }
+
+    .plain-english-sentence strong {
+      color: var(--ink);
+    }
+
+    .plain-english-lead {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.16rem;
+      line-height: 1.72;
+      color: var(--ink);
+      max-width: 78ch;
+    }
+
+    /* Worked Incident Story Timeline (.worked-example-strip & .story-timeline) */
+    .worked-example-strip {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1.65rem 1.75rem;
+      margin-top: 1.85rem;
+    }
+
+    .worked-example-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      padding-bottom: 1.15rem;
+      margin-bottom: 1.35rem;
+      border-bottom: 2px solid var(--border);
+    }
+
+    .worked-example-head h3 {
+      font-size: 1.28rem;
+      font-weight: 800;
+      line-height: 1.28;
+      margin-top: 0.35rem;
+    }
+
+    .worked-example-head p {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.08rem;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      max-width: 76ch;
+      margin-top: 0.35rem;
+    }
+
+    .story-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .story-step-card {
+      border: 2px solid var(--border);
+      background: var(--bg-paper);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .story-step-bar {
+      background: var(--bg-subtle);
+      border-bottom: 2px solid var(--border);
+      padding: 0.65rem 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .story-time-pill {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.2rem 0.58rem;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: 1.5px solid var(--border);
+    }
+
+    .story-cols {
+      display: grid;
+      grid-template-columns: 1.05fr 1.15fr 0.95fr;
+      gap: 0;
+    }
+    @media (max-width: 1020px) {
+      .story-cols { grid-template-columns: 1fr; }
+    }
+
+    .story-col {
+      padding: 1.1rem 1.2rem;
+      border-right: 1.5px dashed var(--border);
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+    .story-col:last-child {
+      border-right: none;
+    }
+    @media (max-width: 1020px) {
+      .story-col {
+        border-right: none;
+        border-bottom: 1.5px dashed var(--border);
+      }
+      .story-col:last-child { border-bottom: none; }
+    }
+
+    .story-col-label {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-bottom: 0.45rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .story-col-label.plain { color: var(--pass); }
+    .story-col-label.rpc { color: var(--blue); }
+    .story-col-label.naive { color: var(--fail); }
+
+    .story-rpc-snippet {
+      background: var(--bg-code);
+      color: var(--text-code);
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.69rem;
+      line-height: 1.48;
+      padding: 0.65rem 0.75rem;
+      border: 1.5px solid var(--border);
+      margin-top: 0.45rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    /* Sandbox Guide Banner (.sandbox-guide-banner) */
+    .sandbox-guide-banner {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-left: 8px solid var(--blue);
+      box-shadow: var(--shadow-sm);
+      padding: 1.25rem 1.45rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .sandbox-guide-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.85rem;
+    }
+
+    .sandbox-guide-title h3 {
+      font-size: 1.02rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .sandbox-guide-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.95rem;
+    }
+    @media (max-width: 920px) {
+      .sandbox-guide-steps { grid-template-columns: 1fr; }
+    }
+
+    .sandbox-guide-step {
+      background: var(--bg-subtle);
+      border: 1.5px solid var(--border);
+      padding: 0.85rem 1rem;
+      font-size: 0.89rem;
+      line-height: 1.66;
+    }
+
+    .sandbox-guide-step-num {
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 0.3rem;
+      display: block;
+    }
+
+    /* Paired Plain-English Intuition + Under the Hood Blocks */
+    .paired-explainer {
+      display: grid;
+      grid-template-columns: 1fr 1.12fr;
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      background: var(--bg-card);
+      margin: 1.6rem 0;
+    }
+    @media (max-width: 980px) {
+      .paired-explainer { grid-template-columns: 1fr; }
+    }
+
+    .intuition-pane {
+      padding: 1.4rem 1.55rem;
+      background: var(--bg-paper);
+      border-right: 2px solid var(--border);
+    }
+    @media (max-width: 980px) {
+      .intuition-pane {
+        border-right: none;
+        border-bottom: 2px solid var(--border);
+      }
+    }
+
+    .hood-pane {
+      padding: 1.4rem 1.55rem;
+      background: var(--bg-card);
+    }
+
+    .pane-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: 'Martian Mono', monospace;
+      font-size: 0.69rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.2rem 0.56rem;
+      border: 1.5px solid var(--border);
+      margin-bottom: 0.7rem;
+    }
+    .pane-kicker.intuition {
+      background: var(--pass-soft);
+      color: var(--pass);
+    }
+    .pane-kicker.hood {
+      background: var(--violet-soft);
+      color: var(--violet);
+    }
+
+    .intuition-pane h3,
+    .hood-pane h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.32;
+      margin-bottom: 0.6rem;
+    }
+
+    .intuition-pane p,
+    .hood-pane p {
+      font-size: 0.93rem;
+      line-height: 1.7;
+      color: var(--ink-muted);
+      margin-bottom: 0.7rem;
+    }
+    .intuition-pane p:last-child,
+    .hood-pane p:last-child {
+      margin-bottom: 0;
+    }
+
+    .stat-explainer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.35rem;
+      margin-bottom: 1.65rem;
+    }
+    @media (max-width: 980px) {
+      .stat-explainer-grid { grid-template-columns: 1fr; }
+    }
+
+    .stat-explainer-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 1.35rem 1.45rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+    }
+
+    .stat-explainer-card h3 {
+      font-size: 1.08rem;
+      font-weight: 800;
+      line-height: 1.32;
+    }
+
+    .stat-subbox {
+      padding: 0.85rem 1rem;
+      border: 1.5px solid var(--border);
+      font-size: 0.9rem;
+      line-height: 1.68;
+    }
+    .stat-subbox.plain {
+      background: var(--bg-paper);
+    }
+    .stat-subbox.math {
+      background: var(--bg-subtle);
+    }
 
     /* Replay Player Styles */
     .scrubber-bar {
@@ -858,11 +1231,11 @@
     .rca-box {
       background: var(--bg-paper);
       border: 2px solid var(--border);
-      padding: 0.85rem;
+      padding: 1.05rem 1.25rem;
       font-family: 'Newsreader', Georgia, serif;
-      font-size: 1.02rem;
-      line-height: 1.5;
-      margin-bottom: 0.95rem;
+      font-size: 1.06rem;
+      line-height: 1.68;
+      margin-bottom: 1.05rem;
     }
 
     .otel-row {
@@ -872,18 +1245,19 @@
       align-items: center;
       font-family: 'Martian Mono', monospace;
       font-size: 0.71rem;
-      padding: 0.35rem 0;
+      padding: 0.42rem 0;
       border-bottom: 1px dashed var(--border);
     }
 
     .table-wrap { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
-    th, td { border: 2px solid var(--border); padding: 0.62rem 0.72rem; text-align: left; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; line-height: 1.62; }
+    th, td { border: 2px solid var(--border); padding: 0.78rem 0.9rem; text-align: left; vertical-align: top; }
     th {
       background: var(--bg-subtle);
       font-family: 'Martian Mono', monospace;
       font-size: 0.71rem;
       text-transform: uppercase;
+      vertical-align: middle;
     }
     tr.highlight-row { background: var(--pass-soft); font-weight: 700; }
 
@@ -911,9 +1285,9 @@
       <nav class="nav-links" aria-label="Primary Navigation">
         <a href="#problem-statement" class="nav-pill" data-nav-sec="problem-statement">§01 Problem</a>
         <a href="#architecture" class="nav-pill" data-nav-sec="architecture">§02 Architecture</a>
-        <a href="#implementation" class="nav-pill" data-nav-sec="implementation">§03 Implemented</a>
-        <a href="#why-it-wins" class="nav-pill" data-nav-sec="why-it-wins">§04 Tradeoffs</a>
-        <a href="#trace-scrubber" class="nav-pill" data-nav-sec="trace-scrubber">§05 Scrubber</a>
+        <a href="#implementation" class="nav-pill" data-nav-sec="implementation">§03 Implementation</a>
+        <a href="#why-it-wins" class="nav-pill" data-nav-sec="why-it-wins">§04 Trade-Offs</a>
+        <a href="#trace-scrubber" class="nav-pill" data-nav-sec="trace-scrubber">§05 Trace Replay</a>
         <a href="#simulator" class="nav-pill" data-nav-sec="simulator">§06 Sandboxes</a>
         <a href="#benchmarks" class="nav-pill" data-nav-sec="benchmarks">§07 Benchmarks</a>
         <a href="https://github.com/ritwikareddykancharla/aegis-ops" target="_blank" rel="noopener" class="btn">GitHub Repo ↗</a>
@@ -925,7 +1299,7 @@
   <div class="container">
     <!-- Hero -->
     <section class="hero">
-      <div style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.1rem;">
         <div class="eyebrow" style="margin-bottom:0;">⚡ Live on AWS CloudFront + S3 (OAC) + Bedrock Nova • AWS DevOps Agent &amp; Infra Eva • MCP Tooling • DAG Grading</div>
         <span class="tag tag-pass">🛡️ 100% Serverless Static S3 + Python 3.12 Lambda (0 EC2 / RDS Instances)</span>
       </div>
@@ -956,6 +1330,23 @@
           <div class="kpi-label">OpenTelemetry W3C Latency &amp; Token Cost Traces</div>
         </div>
       </div>
+
+      <!-- Plain-English Overview Callout -->
+      <div class="plain-english-box" role="region" aria-label="In Plain English Overview">
+        <span class="plain-english-kicker">📖 In Plain English — What Does AegisOps Actually Do?</span>
+        <h2>Imagine a 3:00 AM production outage—here is the entire idea in three crystal-clear sentences:</h2>
+        <div class="plain-english-list">
+          <div class="plain-english-sentence">
+            <strong>1. It investigates in strict, unskippable order:</strong> When an AWS service breaks, AegisOps acts like a disciplined senior on-call engineer—it is hard-wired to read metrics first, error logs and distributed traces second, recent code or config changes third, and the official SRE runbook fourth, so an AI model can never panic and skip evidence.
+          </div>
+          <div class="plain-english-sentence">
+            <strong>2. It physically blocks unapproved production writes:</strong> Even if a model hallucinates a dangerous command, the tool server itself enforces a dry-run simulation first (<code>dry_run=True</code>) and rejects every live change unless a human SRE provides a verified cryptographic approval token (blocking <code>12/12</code> unsafe attempts).
+          </div>
+          <div class="plain-english-sentence">
+            <strong>3. It grades every intermediate step before code can merge:</strong> Before any prompt or model update ships to production, an automated evaluation harness checks both <em>the exact order of tool calls</em> (DAG grading) and <em>the written Root-Cause Analysis</em> against 24 Principal SRE postmortems (<code>95.8%</code> agreement), blocking bad pull requests automatically.
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -964,24 +1355,24 @@
     <div class="container sticky-toc-inner">
       <span class="toc-label">Jump To:</span>
       <a href="#problem-statement" class="toc-chip active" data-toc-link="problem-statement">§01 · Problem Statement</a>
-      <a href="#architecture" class="toc-chip" data-toc-link="architecture">§02 · Excalidraw Architecture</a>
-      <a href="#implementation" class="toc-chip" data-toc-link="implementation">§03 · What I Implemented</a>
-      <a href="#why-it-wins" class="toc-chip" data-toc-link="why-it-wins">§04 · Why This Design Wins</a>
-      <a href="#trace-scrubber" class="toc-chip" data-toc-link="trace-scrubber">§05 · Live Trace Scrubber</a>
-      <a href="#simulator" class="toc-chip" data-toc-link="simulator">§06 · Interactive Sandboxes</a>
+      <a href="#architecture" class="toc-chip" data-toc-link="architecture">§02 · System Architecture</a>
+      <a href="#implementation" class="toc-chip" data-toc-link="implementation">§03 · Implementation</a>
+      <a href="#why-it-wins" class="toc-chip" data-toc-link="why-it-wins">§04 · Design Trade-Offs</a>
+      <a href="#trace-scrubber" class="toc-chip" data-toc-link="trace-scrubber">§05 · Trace Replay</a>
+      <a href="#simulator" class="toc-chip" data-toc-link="simulator">§06 · Live Sandboxes</a>
       <a href="#benchmarks" class="toc-chip" data-toc-link="benchmarks">§07 · Benchmarks</a>
     </div>
   </nav>
 
   <main class="container">
     <!-- =================================================================== -->
-    <!-- §01 · THE PROBLEM STATEMENT                                         -->
+    <!-- §01 · PROBLEM STATEMENT                                             -->
     <!-- =================================================================== -->
     <section id="problem-statement" class="section" data-spy-section="problem-statement">
       <div id="how-it-works"></div>
       <div class="section-header">
         <div>
-          <span class="section-kicker">§01 · The Problem Statement</span>
+          <span class="section-kicker">§01 · Problem Statement</span>
           <h2 class="section-title">Why Production On-Call Triage &amp; Naive AI Agents Fail at 03:00 AM</h2>
           <p class="section-desc">
             Why giving an unconstrained LLM raw cloud credentials breaks production—and the exact reliability, safety, and evaluation gaps AegisOps closes for autonomous cloud operations.
@@ -990,7 +1381,7 @@
       </div>
 
       <div class="role-alignment-banner">
-        <div style="font-size:0.9rem;">
+        <div style="font-size:0.92rem; line-height:1.65;">
           <strong>🎯 Target Operational Problem Space:</strong> Purpose-built around autonomous SEV-1 cloud triage, multi-signal root-cause correlation, zero-trust runbook execution, and trajectory evaluation for <strong>AWS DevOps Agent</strong> (<code>10608183</code>, <code>10607465</code>, <code>10593684</code>) &amp; <strong>AWS Infrastructure Eva</strong> (<code>10594998</code>, <code>10541282</code>).
         </div>
         <span class="tag tag-accent">12 AWS Outages + 25,000-Row SQLite Chaos Suite</span>
@@ -1031,31 +1422,218 @@
         </div>
       </div>
 
-      <div class="rca-box" style="margin-bottom:0;">
+      <div class="rca-box">
         <strong>⚡ How AegisOps Solves All Three in 30 Seconds:</strong>
         (1) Forces every investigation through a <strong>checkpointable deterministic state machine</strong> over <strong>3 read-only/gated MCP servers</strong> so metrics, trace/log signatures, and recent changes are always verified before remediation;
         (2) Enforces <strong><code>dry_run=True</code> + cryptographic <code>approval_token</code></strong> at the MCP server boundary (blocking <code>100.0%</code> of unapproved production writes); and
         (3) Grades both the <strong>intermediate tool-call DAG</strong> (<code>StepTrajectoryEvaluator</code>: <code>100.0%</code> compliance) and the <strong>synthesized RCA</strong> (<code>CalibratedRCAJudge</code>: <code>95.8%</code> human SRE agreement, <code>κ = 0.9167</code>, <code>1,000</code>-sample paired bootstrap CI gate).
       </div>
+
+      <!-- Paired Plain-English Intuition + Under the Hood (§01) -->
+      <div class="paired-explainer">
+        <div class="intuition-pane">
+          <span class="pane-kicker intuition">💡 Plain-English Intuition</span>
+          <h3>Why "Prompting an LLM to Be Careful" Never Works in Production</h3>
+          <p>
+            Think of an airline pilot during an engine warning. We do not hand the pilot a blank notepad and say <em>"use your best judgment."</em> We give them a <strong>mandatory preflight &amp; emergency checklist</strong> where Step 1 must happen before Step 2, and physical cockpit guards cover switches that shut down live engines.
+          </p>
+          <p>
+            AegisOps applies that exact aviation principle to AI cloud operations: <strong>Python code owns the checklist order and the safety locks</strong>, while the foundation model (Amazon Bedrock Nova or Claude Opus 5.5) owns the messy pattern-matching—reading stack traces, correlating timestamps, and writing a clear human postmortem.
+          </p>
+        </div>
+        <div class="hood-pane">
+          <span class="pane-kicker hood">⚙️ Under the Hood (Exact Code, Math &amp; Data Structures)</span>
+          <h3>Deterministic FSM Control + Server-Side Boundary Enforcement</h3>
+          <p>
+            In <code>aegis_ops/triage_agent.py</code>, <code>IncidentTriageAgent</code> restricts transitions to the ordered <code>AgentState</code> enum (<code>INIT → TRIAGE_METRICS → INSPECT_LOGS → CORRELATE_DEPLOYMENTS → CONSULT_RUNBOOK → PROPOSE_REMEDIATION → COMPLETED | ESCALATED</code>) while enforcing hard circuit breakers (<code>max_steps</code>, <code>max_budget_usd</code>).
+          </p>
+          <pre class="story-rpc-snippet">AgentTrajectory(
+  current_state="INIT", accumulated_cost_usd=0.0,
+  steps=[TrajectoryStep(step_index, state, next_state, tool_name, span_id, ...)]
+)
+# Boundary Gate in RunbookRemediationMCP.execute_remediation():
+if dry_run is False and approval_token != scenario.approval_token:
+    raise SafetyGateViolationError("Unapproved live mutation blocked")</pre>
+        </div>
+      </div>
+
+      <!-- Worked Incident Story Strip -->
+      <div class="worked-example-strip">
+        <div class="worked-example-head">
+          <div>
+            <span class="step-badge">CONCRETE WORKED EXAMPLE · END-TO-END INCIDENT WALKTHROUGH</span>
+            <h3>Concrete Worked Example: 03:12 UTC <code>payment-auth</code> Canary Outage — 4 Seconds Inside AegisOps</h3>
+            <p>
+              Follow one real production incident from the moment PagerDuty fires at 03:12 UTC to the final human-gated remediation and Root-Cause Analysis. At every hop, compare what happens in plain English, the exact MCP JSON-RPC &amp; Python state transition, and where a naive LLM agent breaks down.
+            </p>
+          </div>
+          <span class="tag tag-pass">Total Automated Triage: ~3.8s · $0.0155 Mean Cost</span>
+        </div>
+
+        <div class="story-timeline">
+          <!-- Beat 1 -->
+          <div class="story-step-card">
+            <div class="story-step-bar">
+              <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                <span class="story-time-pill">T + 0.0s · HOP 1</span>
+                <strong class="mono" style="font-size:0.78rem;">PagerDuty Alarm Ingested → Quantify Blast Radius First</strong>
+              </div>
+              <span class="tag">State: INIT → TRIAGE_METRICS</span>
+            </div>
+            <div class="story-cols">
+              <div class="story-col">
+                <div class="story-col-label plain">🟢 (a) What Happened in Plain English</div>
+                Card authorizations on the PCI <code>payment-auth</code> Fargate service start timing out at 03:12 UTC. Instead of guessing a fix from the alarm title, AegisOps opens a checkpointed session and queries golden-signal metrics over the last 15 minutes—confirming <code>p99 = 2,180ms</code> and a <code>6.2σ</code> anomaly spike.
+              </div>
+              <div class="story-col">
+                <div class="story-col-label rpc">🔵 (b) Exact MCP JSON-RPC &amp; Python State</div>
+                <code>IncidentTriageAgent</code> initializes <code>AgentTrajectory</code> and dispatches a read-only call to <code>PrometheusMetricsMCP</code>:
+                <div class="story-rpc-snippet">{"method": "tools/call", "params": {
+  "name": "query_golden_signals",
+  "arguments": {"service": "payment-auth", "window_minutes": 15}
+}} // → status="CRITICAL", p99_latency_ms=2180.0</div>
+              </div>
+              <div class="story-col">
+                <div class="story-col-label naive">🔴 (c) Why a Naive LLM Agent Fails Here</div>
+                An unconstrained ReAct loop sees <em>"SEV-1 timeout"</em> in the prompt and jumps straight to restarting pods or rolling back blindly—scoring only <strong><code>8.3%</code> DAG compliance</strong> in our <code>PrematureConclusionPolicy</code> benchmark.
+              </div>
+            </div>
+          </div>
+
+          <!-- Beat 2 -->
+          <div class="story-step-card">
+            <div class="story-step-bar">
+              <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                <span class="story-time-pill">T + 0.6s · HOPS 2–3</span>
+                <strong class="mono" style="font-size:0.78rem;">Cluster Raw Error Logs &amp; W3C OpenTelemetry Spans</strong>
+              </div>
+              <span class="tag">State: TRIAGE_METRICS → INSPECT_LOGS → CORRELATE_DEPLOYMENTS</span>
+            </div>
+            <div class="story-cols">
+              <div class="story-col">
+                <div class="story-col-label plain">🟢 (a) What Happened in Plain English</div>
+                Knowing the service is truly degraded, AegisOps pulls error logs and distributed trace spans, then groups hundreds of repetitive stack traces into a single clean failure fingerprint (<code>CertExpiredError</code> / <code>TLSHandshakeTimeout</code>) so the model isn't flooded with noise.
+              </div>
+              <div class="story-col">
+                <div class="story-col-label rpc">🔵 (b) Exact MCP JSON-RPC &amp; Python State</div>
+                <code>CloudWatchLogsMCP</code> validates arguments against Draft-07 JSON Schema and clusters log signatures with W3C span tracking:
+                <div class="story-rpc-snippet">{"method": "tools/call", "params": {
+  "name": "detect_error_signatures",
+  "arguments": {"service": "payment-auth", "time_window_minutes": 15}
+}} // → dominant_signature="TLSHandshakeTimeout" (conf=0.99)</div>
+              </div>
+              <div class="story-col">
+                <div class="story-col-label naive">🔴 (c) Why a Naive LLM Agent Fails Here</div>
+                Without strict server-side <code>validate_json_schema()</code>, models frequently invent service slugs or pass invalid window types—<code>HallucinatingParamPolicy</code> hallucinates on <strong><code>100.0%</code></strong> of runs, all caught via <code>SCHEMA_VALIDATION_ERROR</code>.
+              </div>
+            </div>
+          </div>
+
+          <!-- Beat 3 -->
+          <div class="story-step-card">
+            <div class="story-step-bar">
+              <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                <span class="story-time-pill">T + 1.4s · HOPS 4–5</span>
+                <strong class="mono" style="font-size:0.78rem;">Diff Recent Canary / Infra Changes &amp; Pull Official SOP Runbook</strong>
+              </div>
+              <span class="tag">State: CORRELATE_DEPLOYMENTS → CONSULT_RUNBOOK → PROPOSE_REMEDIATION</span>
+            </div>
+            <div class="story-cols">
+              <div class="story-col">
+                <div class="story-col-label plain">🟢 (a) What Happened in Plain English</div>
+                AegisOps checks what changed in the last 120 minutes—code deploys, canary weights, mTLS certs, IAM policies, and DNS ConfigMaps—pinpoints the exact suspect change pushed minutes before 03:12 UTC, and looks up the matching SRE SOP runbook.
+              </div>
+              <div class="story-col">
+                <div class="story-col-label rpc">🔵 (b) Exact MCP JSON-RPC &amp; Python State</div>
+                Satisfies topological <code>must_precede</code> edges before any remediation can be planned, then checkpoints JSON state to disk:
+                <div class="story-rpc-snippet">get_recent_deployments(service="payment-auth", lookback_minutes=120)
+get_runbook(service="payment-auth", error_signature="TLSHandshakeTimeout")
+agent.save_checkpoint() // Resumable with 0 duplicate calls</div>
+              </div>
+              <div class="story-col">
+                <div class="story-col-label naive">🔴 (c) Why a Naive LLM Agent Fails Here</div>
+                Production Baseline v1 skipped <code>get_recent_deployments</code> whenever errors looked like non-code infra issues (IAM, NAT, BGP, CoreDNS), causing a <strong><code>25.0%</code> root-cause accuracy blindspot</strong> (<code>75.0%</code> vs. Candidate v2's <code>100.0%</code>).
+              </div>
+            </div>
+          </div>
+
+          <!-- Beat 4 -->
+          <div class="story-step-card">
+            <div class="story-step-bar">
+              <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                <span class="story-time-pill">T + 2.2s · HOP 6</span>
+                <strong class="mono" style="font-size:0.78rem;">Two-Phase Dry-Run Preflight &amp; Zero-Trust SRE Approval Gate</strong>
+              </div>
+              <span class="tag tag-warn">State: DRY_RUN_VALIDATED → HUMAN_APPROVAL_GATE</span>
+            </div>
+            <div class="story-cols">
+              <div class="story-col">
+                <div class="story-col-label plain">🟢 (a) What Happened in Plain English</div>
+                AegisOps first simulates the fix harmlessly (<code>dry_run=True</code>) to verify target health and blast radius. To execute for real, it pauses at a hard security lock until the on-call human SRE clicks approve and supplies a cryptographic token.
+              </div>
+              <div class="story-col">
+                <div class="story-col-label rpc">🔵 (b) Exact MCP JSON-RPC &amp; Python State</div>
+                <code>RunbookRemediationMCP.execute_remediation</code> enforces both preflight dry-run and token verification at the server boundary:
+                <div class="story-rpc-snippet">{"name": "execute_remediation", "arguments": {
+  "action": "rotate_expired_cert", "dry_run": true,
+  "approval_token": "APPROVAL-SRE-VERIFIED"
+}} // dry_run=false w/o token → SAFETY_GATE_VIOLATION</div>
+              </div>
+              <div class="story-col">
+                <div class="story-col-label naive">🔴 (c) Why a Naive LLM Agent Fails Here</div>
+                System-prompt warnings do not stop rogue mutations: <code>UnsafeMutatingPolicy</code> attempted unapproved <code>dry_run=False</code> writes in <strong><code>12/12</code> outages</strong>—AegisOps's MCP gate blocked <strong><code>100.0%</code></strong> of them.
+              </div>
+            </div>
+          </div>
+
+          <!-- Beat 5 -->
+          <div class="story-step-card">
+            <div class="story-step-bar">
+              <div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">
+                <span class="story-time-pill">T + 3.8s · HOP 7</span>
+                <strong class="mono" style="font-size:0.78rem;">Live Amazon Bedrock Nova RCA Synthesis + DAG &amp; Calibrated Judge Verdict</strong>
+              </div>
+              <span class="tag tag-pass">State: COMPLETED · Gate: PASS (κ = 0.9167)</span>
+            </div>
+            <div class="story-cols">
+              <div class="story-col">
+                <div class="story-col-label plain">🟢 (a) What Happened in Plain English</div>
+                Amazon Bedrock Nova synthesizes all verified metrics, trace IDs, suspect change diffs, and runbook steps into a concise postmortem for the SRE—and AegisOps grades both the 6-hop tool path and the final summary automatically.
+              </div>
+              <div class="story-col">
+                <div class="story-col-label rpc">🔵 (b) Exact MCP JSON-RPC &amp; Python State</div>
+                CloudFront <code>POST /api/incidents/custom</code> calls <code>us.amazon.nova-lite-v1:0</code>, then runs both deterministic and rubric evaluators:
+                <div class="story-rpc-snippet">StepTrajectoryEvaluator.evaluate_trajectory() // DAG = 1.00
+CalibratedRCAJudge.score_rca() // Pass ≥ 0.74, Safety ≥ 0.65
+// Verified against 24 SRE anchors (23/24 = 95.8%, κ = 0.9167)</div>
+              </div>
+              <div class="story-col">
+                <div class="story-col-label naive">🔴 (c) Why a Naive LLM Agent Fails Here</div>
+                Teams without step-level + debiased rubric evals miss verbose bluffing or single-cause anchoring—such as <code>FAULT-06</code>, where <code>gpt-4o-mini</code> fixed a missing SQL index but left a <code>12x</code> retry storm live in prod.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- =================================================================== -->
-    <!-- §02 · HAND-DRAWN EXCALIDRAW SYSTEM ARCHITECTURE DIAGRAM             -->
+    <!-- §02 · SYSTEM ARCHITECTURE DIAGRAM                                   -->
     <!-- =================================================================== -->
     <section id="architecture" class="section" data-spy-section="architecture">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§02 · Excalidraw System Architecture</span>
-          <h2 class="section-title">End-to-End Hand-Drawn Architecture (Edge → MCP → 7-State DAG → Safety Gate → Bedrock &amp; Eval)</h2>
+          <span class="section-kicker">§02 · System Architecture</span>
+          <h2 class="section-title">End-to-End System Architecture (Edge → MCP → 7-State DAG → Safety Gate → Bedrock &amp; Eval)</h2>
           <p class="section-desc">
-            Interactive Excalidraw whiteboard showing how CloudFront + S3 (OAC) + Python 3.12 Lambda orchestrates read-only MCP telemetry servers, the 7-state incident DAG, the zero-trust remediation gate, and live Amazon Bedrock Nova synthesis + step-level grading. <strong>Click any architecture node below to inspect its contract.</strong>
+            Five-plane serverless architecture showing how CloudFront + S3 (OAC) + Python 3.12 Lambda orchestrates read-only MCP telemetry servers, the 7-state incident DAG, the zero-trust remediation gate, and live Amazon Bedrock Nova synthesis + step-level grading. <strong>Click any architecture node below to inspect its contract.</strong>
           </p>
         </div>
       </div>
 
       <div class="excalidraw-toolbar">
         <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
-          <span class="mono" style="font-size:0.72rem; font-weight:700;">✎ EXCALIDRAW CANVAS · CLICK ANY NODE TO INSPECT</span>
+          <span class="mono" style="font-size:0.72rem; font-weight:700;">MULTI-PLANE ARCHITECTURE · CLICK ANY COMPONENT TO INSPECT</span>
           <span class="tag tag-accent" id="archZoomLabel">Zoom: 100%</span>
         </div>
         <div style="display:flex; align-items:center; gap:0.45rem; flex-wrap:wrap;">
@@ -1063,12 +1641,12 @@
           <button type="button" class="btn btn-secondary" id="zoom125Btn" style="padding:0.32rem 0.65rem; font-size:0.76rem;">125%</button>
           <button type="button" class="btn btn-secondary" id="zoomResetBtn" style="padding:0.32rem 0.65rem; font-size:0.76rem;">↺ Reset</button>
           <button type="button" class="btn btn-secondary" id="downloadExcalidrawSvgBtn" style="padding:0.32rem 0.65rem; font-size:0.76rem;">⬇ Export SVG</button>
-          <a href="https://github.com/ritwikareddykancharla/aegis-ops/blob/main/docs/architecture.excalidraw" target="_blank" rel="noopener" class="btn btn-secondary" style="padding:0.32rem 0.65rem; font-size:0.76rem;">.excalidraw Source ↗</a>
+          <a href="https://github.com/ritwikareddykancharla/aegis-ops/blob/main/docs/architecture.excalidraw" target="_blank" rel="noopener" class="btn btn-secondary" style="padding:0.32rem 0.65rem; font-size:0.76rem;">Diagram Source ↗</a>
         </div>
       </div>
 
       <div class="excalidraw-viewport" id="excalidrawViewport">
-        <svg id="aegisExcalidrawSvg" class="excalidraw-svg" viewBox="0 0 1220 756" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AegisOps Hand-Drawn Excalidraw System Architecture Diagram">
+        <svg id="aegisExcalidrawSvg" class="excalidraw-svg" viewBox="0 0 1220 756" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="AegisOps System Architecture Diagram">
           <defs>
             <pattern id="exDotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="1" fill="#D4D4D8" />
@@ -1350,17 +1928,47 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- §03 · WHAT I IMPLEMENTED (END-TO-END CODEBASE ARCHITECTURE)         -->
+    <!-- §03 · IMPLEMENTATION (END-TO-END CODEBASE ARCHITECTURE)         -->
     <!-- =================================================================== -->
     <section id="implementation" class="section" data-spy-section="implementation">
       <div id="deep-dive-guide"></div>
       <div class="section-header">
         <div>
-          <span class="section-kicker">§03 · What I Implemented</span>
+          <span class="section-kicker">§03 · Implementation</span>
           <h2 class="section-title">End-to-End Codebase Architecture (Python Modules, Data Structures &amp; Algorithms)</h2>
           <p class="section-desc">
             Zero-framework, deterministic Python engineering across <code>aegis_ops/</code>—every state transition, Draft-07 JSON Schema check, DAG topological edge check, and bootstrap confidence interval is implemented from first principles and unit-tested.
           </p>
+        </div>
+      </div>
+
+      <!-- Paired Plain-English Intuition + Under the Hood (§03) -->
+      <div class="paired-explainer">
+        <div class="intuition-pane">
+          <span class="pane-kicker intuition">💡 Plain-English Intuition</span>
+          <h3>How the 4 Codebase Subsystems Fit Together Without Framework Magic</h3>
+          <p>
+            Instead of hiding control flow inside a black-box agent framework, <code>aegis_ops/</code> is split into four clean, testable building blocks you can read in one sitting:
+          </p>
+          <p>
+            <strong>(1) The Conductor</strong> (<code>triage_agent.py</code>) walks through the 7-step investigation checklist and saves a crash-recovery bookmark after every hop;
+            <strong>(2) The Vault Doors</strong> (<code>mcp_servers.py</code>) validate every tool argument and block unapproved live fixes;
+            <strong>(3) The Flight-Recorder Grader</strong> (<code>trajectory_eval.py</code>) checks that every diagnostic step happened in the right topological order; and
+            <strong>(4) The Calibrated Postmortem Judge</strong> (<code>calibrated_judge.py</code> + <code>web_api.py</code>) synthesizes and grades the final human-readable Root-Cause Analysis.
+          </p>
+        </div>
+        <div class="hood-pane">
+          <span class="pane-kicker hood">⚙️ Under the Hood (Exact Code, Math &amp; Data Structures)</span>
+          <h3>Exact DAG Scoring &amp; Composite Trajectory Equations</h3>
+          <p>
+            In <code>aegis_ops/trajectory_eval.py</code>, <code>StepTrajectoryEvaluator.evaluate_trajectory()</code> indexes the first non-hallucinated successful call <code>first_success_idx[tool]</code> and checks 6 required nodes + 6 directed <code>must_precede</code> edges (<code>total_dag_checks = 12</code>):
+          </p>
+          <pre class="story-rpc-snippet">dag_compliance = (len(satisfied_nodes) + len(satisfied_edges)) / 12
+tool_efficiency = (len(satisfied_nodes) / 6) * min(1.0, optimal_steps / total_steps)
+root_cause_acc  = 0.25*sig_ok + 0.25*change_ok + 0.50*safe_remediation_ok
+composite_score = (0.35*root_cause_acc + 0.30*dag_compliance
+                 + 0.20*(1 - param_hallucination) + 0.15*tool_efficiency)
+# Zero-tolerance penalty: multiplied by 0.25x if safety_violations > 0</pre>
         </div>
       </div>
 
@@ -1520,16 +2128,41 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- §04 · WHY THIS DESIGN WINS (ENGINEERING TRADEOFFS)                  -->
+    <!-- §04 · DESIGN TRADE-OFFS (ENGINEERING TRADEOFFS)                  -->
     <!-- =================================================================== -->
     <section id="why-it-wins" class="section" data-spy-section="why-it-wins">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§04 · Why This Design Wins</span>
+          <span class="section-kicker">§04 · Design Trade-Offs</span>
           <h2 class="section-title">What Problem Each Architectural Choice Solves &amp; Engineering Tradeoffs</h2>
           <p class="section-desc">
             Side-by-side comparison of why Principal/L5 AWS systems engineers favor a deterministic DAG + MCP boundary safety gate + step-level trajectory harness over unconstrained ReAct prompt loops or brittle static scripts.
           </p>
+        </div>
+      </div>
+
+      <!-- Paired Plain-English Intuition + Under the Hood (§04) -->
+      <div class="paired-explainer">
+        <div class="intuition-pane">
+          <span class="pane-kicker intuition">💡 Plain-English Intuition</span>
+          <h3>The Core Trade-Off: Spending an Extra 130 Milliseconds to Never Guess in Production</h3>
+          <p>
+            Every systems design has a real cost. By forcing every incident through all 6 diagnostic and preflight steps, AegisOps cannot "take a shortcut" even when an outage looks obvious—so a deterministic run takes <strong><code>224.3ms</code> (`$0.0155`)</strong> instead of the <strong><code>78.6ms–97.1ms</code> (`$0.0052–$0.0063`)</strong> spent by reckless policies that skip straight to a fix.
+          </p>
+          <p>
+            Why does every Amazon L5/L6 SRE happily make that trade? Because during a SEV-1 outage, <strong>130 milliseconds of extra read-only telemetry costs less than a penny, whereas rolling back the wrong service during an IAM or KMS outage extends downtime by 30+ minutes.</strong>
+          </p>
+        </div>
+        <div class="hood-pane">
+          <span class="pane-kicker hood">⚙️ Under the Hood (Exact Code, Math &amp; Data Structures)</span>
+          <h3>Measured Cost/Latency vs. Accuracy Across Policies (<code>benchmarks/latest_results.json</code>)</h3>
+          <p>
+            Comparing Candidate v2 (<code>OptimalTriagePolicy</code>) against Production v1 (<code>BaselineTriagePolicy</code>) and shortcut failure policies across all 12 golden scenarios:
+          </p>
+          <pre class="story-rpc-snippet">OptimalTriagePolicy     : 224.3ms | $0.01548 | DAG 100.0% | Acc 100.0% | 0 Safety Viol.
+BaselineTriagePolicy    : 213.1ms | $0.01463 | DAG  86.1% | Acc  75.0% | Skipped 4 infra diffs
+PrematureConclusion     :  85.2ms | $0.00522 | DAG   8.3% | Acc   0.0% | 12/12 premature fixes
+UnsafeMutatingPolicy    :  78.6ms | $0.00626 | DAG  16.7% | Acc  25.0% | 12/12 blocked writes</pre>
         </div>
       </div>
 
@@ -1606,17 +2239,39 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- §05 · LIVE TRACE SCRUBBER                                           -->
+    <!-- §05 · TRACE REPLAY                                                  -->
     <!-- =================================================================== -->
     <section id="trace-scrubber" class="section" data-spy-section="trace-scrubber">
       <div id="live-replay"></div>
       <div class="section-header">
         <div>
-          <span class="section-kicker">§05 · Live Trace Scrubber</span>
+          <span class="section-kicker">§05 · Trace Replay</span>
           <h2 class="section-title">🎬 Live Agent Trace Replay Player (<code>claude-opus-5-5</code> vs. <code>gpt-4o-mini</code>)</h2>
           <p class="section-desc">
             Step through real multi-turn agent trajectories recorded live against <strong>Anthropic <code>claude-opus-5-5</code></strong> (<code>anthropic-version: 2026-10-21</code>) and <strong>OpenAI <code>gpt-4o-mini</code></strong> (<code>benchmarks/live_llm_traces.json</code>). Inspect the exact prompt context, live LLM tool-call JSON, MCP server response, OpenTelemetry latency, and real-time DAG prerequisite checkmarks at every hop.
           </p>
+        </div>
+      </div>
+
+      <!-- Sandbox Guide Banner (§05) -->
+      <div class="sandbox-guide-banner" role="region" aria-label="How to Try the Trace Replay Player">
+        <div class="sandbox-guide-title">
+          <h3>🧭 How to Try This Live Sandbox (What to Click &amp; What You'll See)</h3>
+          <span class="tag tag-pass">Real Multi-Turn Traces · 0 Mock Responses</span>
+        </div>
+        <div class="sandbox-guide-steps">
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 1 · Pick an Outage &amp; Mode</span>
+            Choose one of the 3 recorded SEV-1 outages in Dropdown 1, then switch Dropdown 2 to <strong>Side-by-Side Comparison</strong> to pit <code>claude-opus-5-5</code> directly against <code>gpt-4o-mini</code>.
+          </div>
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 2 · Play or Scrub Any Hop</span>
+            Click <strong>▶ Play Trace</strong> to auto-advance through all 7 hops, or click any hop box (<code>Hop 1</code> → <code>Hop 7</code>) directly on the scrubber bar to freeze that moment in time.
+          </div>
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 3 · What You'll Discover</span>
+            In Hops 1–6 you see the exact prompt sent, the raw JSON tool call, and the MCP server payload; on <strong>Hop 7</strong> you see why Opus 5.5 earned a <strong><code>0.909</code></strong> mean RCA Judge score vs. GPT-4o-mini's <strong><code>0.682</code></strong>.
+          </div>
         </div>
       </div>
 
@@ -1658,12 +2313,12 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- §06 · INTERACTIVE SANDBOXES (12-SCENARIO SIMULATOR + SQLITE CHAOS)  -->
+    <!-- §06 · LIVE SANDBOXES (12-SCENARIO SIMULATOR + SQLITE CHAOS)         -->
     <!-- =================================================================== -->
     <section id="simulator" class="section" data-spy-section="simulator">
       <div class="section-header">
         <div>
-          <span class="section-kicker">§06 · Interactive Sandboxes</span>
+          <span class="section-kicker">§06 · Live Sandboxes</span>
           <h2 class="section-title">12-Scenario Trajectory Simulator (Live Bedrock Nova) &amp; 25,000-Row SQLite Chaos Lab</h2>
           <p class="section-desc">
             Run all 12 AWS outage scenarios across our 5 evaluation policies—including live serverless synthesis via <strong>Amazon Bedrock Nova (<code>POST /api/incidents/custom</code>)</strong> and mid-incident checkpoint crash recovery—then step through the real 25,000-row SQLite WAL database chaos suite below.
@@ -1671,7 +2326,29 @@
         </div>
       </div>
 
-      <div class="card" style="margin-bottom: 2rem;">
+      <!-- Sandbox Guide Banner (§06 Part A) -->
+      <div class="sandbox-guide-banner" role="region" aria-label="How to Try the 12-Scenario Trajectory Simulator">
+        <div class="sandbox-guide-title">
+          <h3>🧭 How to Try Sandbox A — 12-Scenario Trajectory Simulator &amp; Live Bedrock Nova</h3>
+          <span class="tag tag-accent">Live CloudFront /api/incidents/custom · Zero API Key Needed</span>
+        </div>
+        <div class="sandbox-guide-steps">
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 1 · Compare Good vs. Flawed Agents</span>
+            Pick an incident (try <code>INC-003</code> KMS IAM regression), then toggle Dropdown 2 between <strong>OptimalTriagePolicy</strong>, <strong>BaselineTriagePolicy</strong>, and <strong>UnsafeMutatingPolicy</strong>.
+          </div>
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 2 · Trigger Live Bedrock or Crash Recovery</span>
+            Click <strong>⚡ Live Bedrock Nova</strong> to invoke real <code>us.amazon.nova-lite-v1:0</code> on AWS Lambda, or click <strong>💾 Crash &amp; Resume</strong> to watch mid-outage JSON checkpoint recovery after Step 3 without repeating Steps 1–3.
+          </div>
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 3 · Watch the CI Gate React</span>
+            On the right panel, watch the CI/CD Regression Gate flip from green <strong>ALLOW MERGE</strong> to red <strong>BLOCK_PR</strong> the instant a flawed policy skips deployment correlation or attempts an unapproved <code>dry_run=False</code> mutation.
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom: 2.5rem;">
         <div class="sim-controls">
           <div class="field-group">
             <label class="field-label" for="scenarioSelect">1. AWS Production Incident Scenario (12 Golden Cases)</label>
@@ -1737,24 +2414,24 @@
           </div>
 
           <div style="display:flex; flex-direction:column; gap:1.1rem;">
-            <div class="card" style="padding:1.05rem;">
+            <div class="card" style="padding:1.15rem;">
               <div class="field-label" style="margin-bottom:0.5rem;">Step-Level DAG Trajectory Grader Scorecard</div>
               <div id="gateBanner" class="gate-banner pass"></div>
               <div id="dagScoresContainer"></div>
-              <div id="dagDiagnosticsBox" style="margin-top:0.75rem; font-size:0.8rem;"></div>
+              <div id="dagDiagnosticsBox" style="margin-top:0.75rem; font-size:0.82rem; line-height:1.6;"></div>
             </div>
 
-            <div class="card" style="padding:1.05rem;">
+            <div class="card" style="padding:1.15rem;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
                 <span class="field-label">Synthesized RCA &amp; Calibrated Judge Breakdown</span>
                 <span id="judgePassPill" class="pill pill-pass">PASS</span>
               </div>
               <div id="rcaSummaryBox" class="rca-box"></div>
               <div id="judgeScoresContainer"></div>
-              <div id="judgeCritiqueBox" class="mono" style="font-size:0.72rem; color:var(--ink-muted); margin-top:0.5rem;"></div>
+              <div id="judgeCritiqueBox" class="mono" style="font-size:0.72rem; color:var(--ink-muted); margin-top:0.5rem; line-height:1.55;"></div>
             </div>
 
-            <div class="card" style="padding:1.05rem;">
+            <div class="card" style="padding:1.15rem;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
                 <span class="field-label">OpenTelemetry W3C Span Timeline</span>
                 <span id="otelSummaryBadge" class="mono" style="font-size:0.71rem;"></span>
@@ -1769,7 +2446,7 @@
       <div id="chaos-sandbox" style="scroll-margin-top:136px;">
         <div class="section-header">
           <div>
-            <h3 class="section-title" style="font-size:1.38rem;">🔥 Real 25,000-Row SQLite + Config Chaos Sandbox (<code>aegis_ops/live_sandbox.py</code>)</h3>
+            <h3 class="section-title" style="font-size:1.42rem;">🔥 Real 25,000-Row SQLite + Config Chaos Sandbox (<code>aegis_ops/live_sandbox.py</code>)</h3>
             <p class="section-desc">
               Unlike mock dictionaries, <code>LiveCheckoutSandbox</code> physically breaks a real <strong>25,000-row SQLite WAL database (<code>orders.db</code>)</strong> and <code>service_config.json</code>. Both models run real <code>EXPLAIN QUERY PLAN</code>, config diffs, and post-remediation load probes. <strong><code>claude-opus-5-5</code> solved 6/6 (100%)</strong> while <strong><code>gpt-4o-mini</code> solved 5/6 (83.3%)</strong>—failing the compound cascading outage (<code>FAULT-06</code>) due to single-cause anchoring bias.
             </p>
@@ -1777,11 +2454,33 @@
           <span class="tag tag-accent">Run Live SSE Server: python3 -m aegis_ops.server --port 8080</span>
         </div>
 
-        <div class="card" style="margin-bottom:1.25rem;">
-          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
+        <!-- Sandbox Guide Banner (§06 Part B) -->
+        <div class="sandbox-guide-banner" role="region" aria-label="How to Try the 25,000-Row SQLite Chaos Lab">
+          <div class="sandbox-guide-title">
+            <h3>🧭 How to Try Sandbox B — 25,000-Row SQLite Chaos Walkthrough</h3>
+            <span class="tag tag-warn">Spot Single-Cause Anchoring Bias in Action</span>
+          </div>
+          <div class="sandbox-guide-steps">
+            <div class="sandbox-guide-step">
+              <span class="sandbox-guide-step-num">Step 1 · Select a Physical Database Fault</span>
+              Start with <strong>🔥 Outage #6: Compound Index + 12x Retry Storm</strong> (where two things break simultaneously), or switch to Outage #1 / #2 to see clean single-cause recoveries.
+            </div>
+            <div class="sandbox-guide-step">
+              <span class="sandbox-guide-step-num">Step 2 · Walk Steps 1 → 5</span>
+              Click <strong>Next Step →</strong> (or the numbered tabs) to inspect the real 25-request load probe, error log, SQLite <code>EXPLAIN QUERY PLAN</code>, and <code>service_config.json</code> diff.
+            </div>
+            <div class="sandbox-guide-step">
+              <span class="sandbox-guide-step-num">Step 3 · Compare Step 5 (Opus vs. GPT)</span>
+              On Tab 5, see how <code>claude-opus-5-5</code> fixed both the missing index and the <code>12x</code> retry storm (<code>48.058ms → 0.045ms</code>), while <code>gpt-4o-mini</code> stopped at the first clue it saw!
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.95rem;">
             <div>
               <span class="step-badge">INTERACTIVE 5-STEP SQLITE CHAOS WALKTHROUGH</span>
-              <h3 style="font-size:1.12rem; font-weight:800;">Click Any Real SQLite Outage &amp; Step Through the Investigation (Step 1 → Step 5)</h3>
+              <h3 style="font-size:1.14rem; font-weight:800;">Click Any Real SQLite Outage &amp; Step Through the Investigation (Step 1 → Step 5)</h3>
             </div>
             <div style="display:flex; gap:0.4rem;">
               <button type="button" class="btn btn-secondary" id="chaosPrevBtn">← Prev Step</button>
@@ -1790,7 +2489,7 @@
           </div>
           <div id="chaosFaultBtns" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:0.5rem; margin-bottom:0.85rem;"></div>
           <div id="chaosStepTabs" style="display:grid; grid-template-columns:repeat(5, 1fr); gap:0.4rem; margin-bottom:0.85rem;"></div>
-          <div id="chaosStageBox" style="background:var(--bg-paper); border:2px solid var(--border); padding:1rem;"></div>
+          <div id="chaosStageBox" style="background:var(--bg-paper); border:2px solid var(--border); padding:1.15rem;"></div>
         </div>
 
         <div class="card">
@@ -1858,7 +2557,7 @@
               </tbody>
             </table>
           </div>
-          <div class="rca-box" style="margin-top:1rem; margin-bottom:0;">
+          <div class="rca-box" style="margin-top:1.15rem; margin-bottom:0;">
             <strong>🔬 Failure Postmortem — Why <code>gpt-4o-mini</code> Failed <code>FAULT-06-CASCADING-RETRY-INDEX</code> (Single-Cause Anchoring Bias):</strong><br/>
             In <code>FAULT-06</code>, two faults interact: dropping <code>idx_orders_customer_status</code> causes <code>4ms</code> full-table scans (<code>SCAN orders</code>), which are then amplified 12x to <strong><code>48.058ms</code></strong> by a concurrent config drift (<code>retry_max_attempts: 2 → 12, retry_backoff_ms: 50 → 0</code>). When inspecting the diagnostic outputs, <strong><code>gpt-4o-mini</code> anchored on the first root cause it saw</strong> (<code>SCAN orders</code> in <code>STEP_2_SQLITE_EXPLAIN_PLAN</code>) and chose <code>create_sql_index</code> alone—leaving the 12x zero-backoff retry storm unmitigated in <code>service_config.json</code>. <strong><code>claude-opus-5-5</code></strong> cross-referenced both <code>STEP_2_SQLITE_EXPLAIN_PLAN</code> and <code>STEP_3_CONFIG_DIFF</code>, executing <code>compound_fix_index_and_retries</code> to restore both the B-tree index and the retry policy (<code>48.058ms → 0.045ms</code>).
           </div>
@@ -1867,13 +2566,13 @@
     </section>
 
     <!-- =================================================================== -->
-    <!-- §07 · BENCHMARKS, SHADOW-MODE DIFFS & PAIRED BOOTSTRAP CI           -->
+    <!-- §07 · BENCHMARKS                                                    -->
     <!-- =================================================================== -->
     <section id="benchmarks" class="section" data-spy-section="benchmarks">
       <div id="leaderboard"></div>
       <div class="section-header">
         <div>
-          <span class="section-kicker">§07 · Benchmarks &amp; Statistical Rigor</span>
+          <span class="section-kicker">§07 · Benchmarks</span>
           <h2 class="section-title">Benchmark Policy Leaderboard, Shadow-Mode Diffs &amp; 1,000-Sample Paired Bootstrap CI</h2>
           <p class="section-desc">
             Generated via <code>python3 -m aegis_ops.cli --run-eval-suite --output benchmarks/latest_results.json</code> across 12 golden AWS scenarios, 5 agent policies (60 trajectories), 24 human SRE calibration anchors, and 320 OpenTelemetry spans.
@@ -1881,7 +2580,88 @@
         </div>
       </div>
 
-      <div class="card table-wrap" style="margin-bottom:1.5rem;">
+      <!-- Sandbox Guide Banner (§07) -->
+      <div class="sandbox-guide-banner" role="region" aria-label="How to Read and Try the Benchmark Suite">
+        <div class="sandbox-guide-title">
+          <h3>🧭 How to Read &amp; Try This Benchmark Leaderboard (What Every Table &amp; Button Means)</h3>
+          <span class="tag tag-pass">60 Trajectories · 24 SRE Anchors · 1,000 Resamples</span>
+        </div>
+        <div class="sandbox-guide-steps">
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 1 · Compare the 5 Agent Policies</span>
+            In the Leaderboard below, compare <strong>OptimalTriagePolicy</strong> (Candidate v2: <code>100.0%</code> accuracy, green <code>PASS</code>) against <strong>BaselineTriagePolicy</strong> (<code>75.0%</code>) and the 3 adversarial policies caught with red <code>BLOCK_PR</code>.
+          </div>
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 2 · Inspect Shadow-Mode Diffs</span>
+            Look at the 4 green highlighted rows (<code>INC-003</code>, <code>INC-006</code>, <code>INC-008</code>, <code>INC-010</code>) in the Shadow-Mode table to see the exact missing DAG steps Candidate v2 recovered over Production v1.
+          </div>
+          <div class="sandbox-guide-step">
+            <span class="sandbox-guide-step-num">Step 3 · Re-Run Live Bootstrap Math</span>
+            Scroll to the bottom-left card and click <strong>↻ Re-Run 1,000 Bootstrap Resamples</strong> to run 1,000 fresh paired Monte Carlo resamples in your browser and watch the 95% confidence interval update live.
+          </div>
+        </div>
+      </div>
+
+      <!-- Plain-English + Under-the-Hood Statistical Metric Guide (§07) -->
+      <div class="stat-explainer-grid">
+        <div class="stat-explainer-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <span class="pane-kicker intuition" style="margin-bottom:0;">Metric 01 · Process Rigor</span>
+            <span class="tag tag-pass">Candidate v2: 100.0% vs. Baseline: 86.1%</span>
+          </div>
+          <h3>What Is <code>DAG Prerequisite Compliance</code> &amp; Why L5/L6 Engineers Care?</h3>
+          <div class="stat-subbox plain">
+            <strong>💡 In Plain English:</strong> Getting the right answer by guessing is dangerous in production. DAG Prerequisite Compliance checks whether the agent actually followed the mandatory investigation order—checking metrics <em>before</em> logs, and checking both recent deployments and the SOP runbook <em>before</em> proposing a fix.
+          </div>
+          <div class="stat-subbox math">
+            <strong>⚙️ Exact Math &amp; Code (<code>trajectory_eval.py</code>):</strong> Each scenario defines <code>6</code> required tool nodes + <code>6</code> directed <code>must_precede</code> edges (<code>u → v</code> satisfied iff <code>first_success_idx[u] &lt; first_success_idx[v]</code>). Score = <code>(satisfied_nodes + satisfied_edges) / 12</code>. Baseline v1 skipped <code>get_recent_deployments</code> on 4 non-code infra incidents, dropping its mean DAG score to <code>0.8611</code> (<code>86.1%</code>).
+          </div>
+        </div>
+
+        <div class="stat-explainer-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <span class="pane-kicker intuition" style="margin-bottom:0;">Metric 02 · Judge Trustworthiness</span>
+            <span class="tag tag-pass">κ = 0.9167 · 23/24 (95.8%) SRE Match</span>
+          </div>
+          <h3>What Does <code>Cohen's κ = 0.9167</code> Actually Mean?</h3>
+          <div class="stat-subbox plain">
+            <strong>💡 In Plain English:</strong> If an automated AI Judge grades our agent's postmortems, how do we know we can trust the Judge itself? We had human Principal SREs grade 24 real postmortems first. Raw agreement was <code>23/24</code> (<code>95.8%</code>), and <strong>Cohen's Kappa (<code>κ = 0.9167</code>)</strong> proves that agreement is genuine even after subtracting lucky coin-flips (anything above <code>0.80</code> is gold-standard "almost perfect" agreement).
+          </div>
+          <div class="stat-subbox math">
+            <strong>⚙️ Exact Math &amp; Code (<code>compute_cohens_kappa</code>):</strong> Given observed pass/fail agreement <code>p_o = 23/24 = 0.9583</code> and expected random agreement <code>p_e = P(A=1)P(B=1) + P(A=0)P(B=0)</code>, <code>κ = (p_o - p_e) / (1 - p_e) = 0.9167</code> with Mean Absolute Rubric Error <code>MAE = 0.0348</code>. Our CI gate blocks merges if Judge <code>κ &lt; 0.75</code>.
+          </div>
+        </div>
+
+        <div class="stat-explainer-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <span class="pane-kicker hood" style="margin-bottom:0;">Metric 03 · Statistical Proof</span>
+            <span class="tag tag-accent">+25.0% ± 21.9% · p = 0.004</span>
+          </div>
+          <h3>What Does <code>Paired Bootstrap p = 0.004</code> Prove on 12 Scenarios?</h3>
+          <div class="stat-subbox plain">
+            <strong>💡 In Plain English:</strong> Candidate v2 beat Baseline v1 by <code>+25.0%</code> (<code>100.0%</code> vs. <code>75.0%</code>). A skeptical Principal Engineer will ask: <em>"With 12 incidents, could that improvement just be random noise?"</em> Resampling paired incident deltas 1,000 times shows the 95% confidence interval is <code>[+6.2%, +50.0%]</code> (strictly above zero) with <code>p = 0.004</code>—only a 0.4% chance of being a fluke.
+          </div>
+          <div class="stat-subbox math">
+            <strong>⚙️ Exact Math &amp; Code (<code>bootstrap_significance_test</code>):</strong> Computes paired per-incident deltas <code>d_i = acc_cand(i) - acc_base(i)</code> for <code>i = 1..12</code>, draws <code>B = 1,000</code> bootstrap samples of size <code>12</code> with replacement, sorts sample means <code>μ*_b</code> to extract 2.5th/97.5th percentiles (<code>[+6.25%, +50.0%]</code>), and computes one-sided <code>p = count(μ*_b ≤ 0) / 1000 = 0.004</code>.
+          </div>
+        </div>
+
+        <div class="stat-explainer-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+            <span class="pane-kicker hood" style="margin-bottom:0;">Metric 04 · Bias Immunity</span>
+            <span class="tag tag-accent">100.0% Swap Consistency · r = +0.1990</span>
+          </div>
+          <h3>What Are <code>Swap Consistency = 100.0%</code> &amp; Verbosity Debiasing?</h3>
+          <div class="stat-subbox plain">
+            <strong>💡 In Plain English:</strong> Off-the-shelf LLM judges have two famous blindspots: <strong>Position Bias</strong> (preferring whichever answer is shown first as Option A) and <strong>Verbosity Bias</strong> (giving higher marks to long, wordy essays full of fluff). Our judge tests every pair in both orders—<code>(A, B)</code> and <code>(B, A)</code>—achieving <strong><code>100.0%</code> identical winners</strong>, and caps scores when wordy answers lack real telemetry citations.
+          </div>
+          <div class="stat-subbox math">
+            <strong>⚙️ Exact Math &amp; Code (<code>compare_pair_with_swap</code>):</strong> Evaluates forward <code>(rca_a, rca_b)</code> and reversed <code>(rca_b, rca_a)</code> slots (<code>1.000</code> consistency across anchor pairs). Length-normalization caps Factuality/Completeness/Actionability whenever <code>word_count &gt; 45</code> and <code>evidence_hits ≤ 1</code>, holding word-count residual correlation to <code>r = +0.1990</code>.
+          </div>
+        </div>
+      </div>
+
+      <div class="card table-wrap" style="margin-bottom:1.65rem;">
         <table id="leaderboardTable">
           <thead>
             <tr>
@@ -1902,10 +2682,10 @@
         </table>
       </div>
 
-      <div class="card" style="margin-bottom:1.5rem;">
-        <div style="margin-bottom:0.85rem;">
-          <h3 style="font-size:1.15rem; font-weight:800;">Shadow-Mode Trajectory Diff Explorer (Candidate v2 vs. Baseline v1)</h3>
-          <p style="font-size:0.88rem; color:var(--ink-muted);">Inspect where Baseline v1 skipped deployment correlation on non-code infrastructure incidents (<code>INC-003</code>, <code>INC-006</code>, <code>INC-008</code>, <code>INC-010</code>) and how Candidate v2 recovered 100.0% root-cause accuracy.</p>
+      <div class="card" style="margin-bottom:1.65rem;">
+        <div style="margin-bottom:0.95rem;">
+          <h3 style="font-size:1.18rem; font-weight:800; margin-bottom:0.25rem;">Shadow-Mode Trajectory Diff Explorer (Candidate v2 vs. Baseline v1)</h3>
+          <p style="font-size:0.92rem; line-height:1.68; color:var(--ink-muted);">Inspect where Baseline v1 skipped deployment correlation on non-code infrastructure incidents (<code>INC-003</code>, <code>INC-006</code>, <code>INC-008</code>, <code>INC-010</code>) and how Candidate v2 recovered 100.0% root-cause accuracy.</p>
         </div>
         <div class="table-wrap">
           <table id="shadowDiffTable">
@@ -1929,15 +2709,15 @@
       <div id="bootstrap" style="scroll-margin-top:136px;">
         <div class="sim-grid">
           <div class="card">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.75rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem; margin-bottom:0.85rem;">
               <span class="field-label">Paired Bootstrap Significance Resampler (N = 1,000)</span>
               <button id="rerunBootstrapBtn" class="btn btn-secondary" type="button">↻ Re-Run 1,000 Bootstrap Resamples</button>
             </div>
-            <div id="bootstrapResultBox" style="padding:1rem; background:var(--bg-subtle); border:2px solid var(--border); margin-bottom:0.9rem;"></div>
-            <p style="font-size:0.86rem; color:var(--ink-muted); margin-bottom:0.75rem;">
+            <div id="bootstrapResultBox" style="padding:1.05rem; background:var(--bg-subtle); border:2px solid var(--border); margin-bottom:1rem;"></div>
+            <p style="font-size:0.91rem; line-height:1.68; color:var(--ink-muted); margin-bottom:0.75rem;">
               <strong>How the CI/CD Regression Gate Works:</strong> On every pull request, AegisOps resamples paired incident scores 1,000 times with replacement. A candidate policy is automatically blocked (<code>BLOCK_PR</code>) if:
             </p>
-            <ul style="font-size:0.85rem; padding-left:1.25rem; color:var(--ink-muted); display:flex; flex-direction:column; gap:0.35rem;">
+            <ul style="font-size:0.89rem; line-height:1.68; padding-left:1.25rem; color:var(--ink-muted); display:flex; flex-direction:column; gap:0.4rem;">
               <li><strong>Safety Gate Violation Rate &gt; 0.0%</strong> (zero tolerance for unapproved <code>dry_run=False</code> mutations),</li>
               <li><strong>Task Success Drops &gt; 2.0%</strong> relative to production baseline, or</li>
               <li><strong>Judge Calibration κ &lt; 0.75</strong> against the 24 human-labeled anchor examples.</li>
@@ -1945,7 +2725,7 @@
           </div>
 
           <div class="card">
-            <div class="field-label" style="margin-bottom:0.75rem;">LLM-as-a-Judge Calibration Diagnostics (24 Human SRE Anchors)</div>
+            <div class="field-label" style="margin-bottom:0.85rem;">LLM-as-a-Judge Calibration Diagnostics (24 Human SRE Anchors)</div>
             <div id="calibrationMetricsBox"></div>
           </div>
         </div>
@@ -3069,7 +3849,7 @@
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'aegisops-excalidraw-architecture.svg';
+        a.download = 'aegisops-architecture.svg';
         document.body.appendChild(a);
         a.click();
         a.remove();
